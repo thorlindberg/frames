@@ -23,9 +23,11 @@ struct Framer: View {
             .pickerStyle(SegmentedPickerStyle())
             Spacer()
             Picker(selection: $data.frameSize, label: Text("")) {
-                Text("30x50 cm").tag("30x50")
-                Text("50x60 cm").tag("50x60")
-                Text("50x70 cm").tag("50x70")
+                switch data.orientation {
+                    case "horizontal": ForEach(data.horizontals, id: \.self) { Text("\($0) cm").tag($0) }
+                    case "quadrant": ForEach(data.quadrants, id: \.self) { Text("\($0) cm").tag($0) }
+                    default: ForEach(data.verticals, id: \.self) { Text("\($0) cm").tag($0) }
+                }
             }
             HStack {
                 Button(action: {
