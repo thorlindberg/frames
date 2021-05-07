@@ -6,39 +6,48 @@ struct Content: View {
     
     var body: some View {
         NavigationView {
-            ZStack {
-                Picture(model: model)
-                if model.data.isAdjusting {
+            VStack(spacing: 0) {
+                if model.data.image == nil {
+                    Image(systemName: "photo")
+                        .font(.system(size: 150))
+                        .opacity(0.1)
+                } else {
+                    Spacer()
+                    Image(uiImage: model.data.image!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding(.horizontal, 30)
+                    Spacer()
                     TabView(selection: $model.data.orientation) {
-                        Adjust(model: model).tabItem { Label("Vertical", systemImage: "rectangle.portrait") }.tag("vertical")
-                        Adjust(model: model).tabItem { Label("Horizontal", systemImage: "rectangle") }.tag("horizontal")
-                        Adjust(model: model).tabItem { Label("Quadrant", systemImage: "square") }.tag("quadrant")
+                        Adjust(model: model)
+                            .tabItem { Label("Vertical", systemImage: "rectangle.portrait") }
+                            .tag("vertical")
+                        Adjust(model: model)
+                            .tabItem { Label("Horizontal", systemImage: "rectangle") }
+                            .tag("horizontal")
+                        Adjust(model: model)
+                            .tabItem { Label("Quadrant", systemImage: "square") }
+                            .tag("quadrant")
                     }
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItemGroup(placement: .cancellationAction) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button(action: {
                         model.data.isPresented.toggle()
                     }) {
-                        Image(systemName: "photo")
+                        Image(systemName: "camera")
                     }
-                    Button(action: {
-                        model.data.isAdjusting.toggle()
-                    }) {
-                        Image(systemName: model.data.isAdjusting ? "aspectratio.fill" : "aspectratio")
-                    }
-                    .disabled(model.data.image == nil)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        //
+                        model.data.isAugmenting.toggle()
                     }) {
                         Text("View in AR")
                             .fontWeight(.bold)
                     }
-                    .disabled(model.data.image == nil || model.data.aspectratio.isEmpty)
+                    // .disabled(model.data.image == nil)
                 }
             }
         }
@@ -71,6 +80,18 @@ struct Content: View {
                 }
             }
             .padding(.vertical, 100)
+        }
+        .sheet(isPresented: $model.data.isAugmenting) {
+            VStack {
+                HStack {
+                    Button("Close") {
+                        model.data.isAugmenting.toggle()
+                    }
+                    Spacer()
+                }
+                .padding()
+                ARQuickLookView(name: "photo")
+            }
         }
     }
     

@@ -6,9 +6,6 @@ struct Adjust: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            Spacer()
-            Picture(model: model)
-            Spacer()
             Divider()
             Picker(selection: $model.data.aspectratio, label: Text("")) {
                 switch model.data.orientation {
