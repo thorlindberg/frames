@@ -4,7 +4,7 @@ import SwiftUI
 struct FramesApp: App {
     var body: some Scene {
         WindowGroup {
-            Content()
+            Content(model: Data())
         }
     }
 }
