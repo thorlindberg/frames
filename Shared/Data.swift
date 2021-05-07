@@ -4,9 +4,8 @@ struct Data {
     
     struct Format: Hashable {
         var firstLaunch: Bool
-        var showActions: Bool
         var isImporting: Bool
-        var isScanning: Bool
+        var isResizing: Bool
         var image: [Int]
         var orientation: String
         var frameSize: String
@@ -17,9 +16,8 @@ struct Data {
     
     var data: Format = Format(
         firstLaunch: true, // replace with Bool on whether device has launched the app before!
-        showActions: false,
         isImporting: false,
-        isScanning: false,
+        isResizing: false,
         image: [],
         orientation: "vertical",
         frameSize: "",

@@ -5,17 +5,17 @@ struct Content: View {
     @State var data: Data.Format = Data().data
     
     var body: some View {
-        if data.isScanning {
-            Scanner(data: $data, viewModel: ContentViewModel())
-        } else {
+        if data.isResizing {
             TabView(selection: $data.orientation) {
-                Framer(data: $data).tabItem { Label("Vertical", systemImage: "rectangle.portrait") }
+                Framer(data: $data, viewModel: ContentViewModel()).tabItem { Label("Vertical", systemImage: "rectangle.portrait") }
                     .tag("vertical")
-                Framer(data: $data).tabItem { Label("Horizontal", systemImage: "rectangle") }
+                Framer(data: $data, viewModel: ContentViewModel()).tabItem { Label("Horizontal", systemImage: "rectangle") }
                     .tag("horizontal")
-                Framer(data: $data).tabItem { Label("Quadrant", systemImage: "square") }
+                Framer(data: $data, viewModel: ContentViewModel()).tabItem { Label("Quadrant", systemImage: "square") }
                     .tag("quadrant")
             }
+        } else {
+            Framer(data: $data, viewModel: ContentViewModel())
         }
     }
     

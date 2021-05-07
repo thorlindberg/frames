@@ -1,55 +1,10 @@
-import SwiftUI
-import VisionKit
-
-final class ContentViewModel: NSObject, ObservableObject {
-    @Published var errorMessage: String?
-    @Published var imageArray: [UIImage] = []
-    
-    func getDocumentCameraViewController() -> VNDocumentCameraViewController {
-        let vc = VNDocumentCameraViewController()
-        vc.delegate = self
-        return vc
-    }
-    
-    func removeImage(image: UIImage) {
-        imageArray.removeAll{$0 == image}
-    }
-}
-
-extension ContentViewModel: VNDocumentCameraViewControllerDelegate {
-    
-    func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
-        controller.dismiss(animated: true, completion: nil)
-    }
-    
-    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
-        errorMessage = error.localizedDescription
-    }
-    
-    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
-        print("Did Finish With Scan.")
-        for i in 0..<scan.pageCount {
-            self.imageArray.append(scan.imageOfPage(at:i))
-        }
-        controller.dismiss(animated: true, completion: nil)
-    }
-}
-
+/*
 struct Scanner: View {
     
     @Binding var data: Data.Format
     @ObservedObject var viewModel: ContentViewModel
     
     var body: some View {
-        VStack {
-            Button(action: {
-                data.isScanning.toggle()
-                data.image = [0] // placeholder for image data
-            }) {
-                Text("[SAVE SCAN]")
-            }
-        }
-        /*
         NavigationView {
             List {
                 if let error = viewModel.errorMessage {
@@ -77,7 +32,7 @@ struct Scanner: View {
                     }
                 }
             }
-            .navigationTitle("Vinson kit Demo")
+            .navigationTitle("Vision kit Demo")
             .navigationBarItems(leading: Button(action: {
                 let items = viewModel.imageArray
                 let ac = UIActivityViewController(activityItems: items, applicationActivities: nil)
@@ -91,7 +46,7 @@ struct Scanner: View {
             }))
             
         }
-        */
     }
     
 }
+*/
