@@ -7,42 +7,65 @@ struct Content: View {
     var body: some View {
         NavigationView {
             TabView(selection: $model.data.orientation) {
-                Adjust(model: model)
-                    .tabItem { Label("Vertical", systemImage: "rectangle.portrait") }
+                Framer(model: model)
+                    .tabItem { Image(systemName: "rectangle.portrait") }
                     .tag("vertical")
-                Adjust(model: model)
-                    .tabItem { Label("Horizontal", systemImage: "rectangle") }
+                Framer(model: model)
+                    .tabItem { Image(systemName: "rectangle") }
                     .tag("horizontal")
-                Adjust(model: model)
-                    .tabItem { Label("Quadrant", systemImage: "square") }
+                Framer(model: model)
+                    .tabItem { Image(systemName: "square") }
                     .tag("quadrant")
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        model.data.isPresented.toggle()
-                    }) {
-                        Image(systemName: "camera")
+                ToolbarItemGroup(placement: .cancellationAction) {
+                    Menu("Add image") {
+                        Button(action: {
+                            model.data.isImporting.toggle()
+                        }) {
+                            Label("Import from Photos", systemImage: "photo")
+                        }
+                        Button(action: {
+                            UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                .first?
+                                .rootViewController?
+                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                        }) {
+                            Label("Scan with Camera", systemImage: "viewfinder")
+                        }
                     }
+                    /*
+                    Button(action: {
+                        // collage editor
+                    }) {
+                        Image(systemName: "square.grid.3x2")
+                    }
+                    */
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
-                        model.data.isAugmenting.toggle()
-                    }) {
-                        Text("View in AR")
-                            .fontWeight(.bold)
+                    if model.data.images.count != 1 {
+                        Menu("View in AR") {
+                            Button(action: {
+                                model.data.isAugmenting.toggle()
+                            }) {
+                                Label("View photo collage", systemImage: "square.grid.3x2")
+                            }
+                            Button(action: {
+                                model.data.isAugmenting.toggle()
+                            }) {
+                                Label("View single photo", systemImage: "square")
+                            }
+                        }
+                    } else {
+                        Button(action: {
+                            model.data.isAugmenting.toggle()
+                        }) {
+                            Text("View in AR")
+                        }
                     }
-                    // .disabled(model.data.image == nil)
                 }
             }
-        }
-        .actionSheet(isPresented: $model.data.isPresented) {
-            ActionSheet(title: Text("Add image"), buttons: [
-                .default(Text("Import from Photos")) { model.data.isImporting.toggle() },
-                .default(Text("Scan with Camera")) { UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController?.present(model.getDocumentCameraViewController(), animated: true, completion: nil) },
-                .cancel()
-            ])
         }
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model)

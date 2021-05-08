@@ -7,10 +7,10 @@ final class Data: NSObject, ObservableObject {
     
     struct Format: Hashable {
         var firstLaunch: Bool
-        var isPresented: Bool
         var isImporting: Bool
         var isAugmenting: Bool
-        var image: UIImage?
+        var images: [UIImage]
+        var selected: Int
         var orientation: String
         var aspectratio: String
         var horizontals: [String]
@@ -21,9 +21,10 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         firstLaunch: true, // replace with Bool on whether device has launched the app before!
-        isPresented: false,
         isImporting: false,
         isAugmenting: false,
+        images: [UIImage(imageLiteralResourceName: "photo"), UIImage(imageLiteralResourceName: "photo2")],
+        selected: 0,
         orientation: "vertical",
         aspectratio: "50x70",
         horizontals: ["18x13", "20x15", "30x21", "40x30", "45x30", "50x40", "60x45", "70x50", "80x60", "90x60", "100x70"],
@@ -37,18 +38,13 @@ final class Data: NSObject, ObservableObject {
         return vc
     }
     
+    func removeImage(item: UIImage) {
+        data.images.removeAll{$0 == item}
+    }
+    
     func getBundleDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0]
-    }
-    
-    func writeToBundle() {
-        if let image = data.image {
-            if let data = image.pngData() {
-                let filename = getBundleDirectory().appendingPathComponent("photo.png")
-                try? data.write(to: filename)
-            }
-        }
     }
     
 }
@@ -65,14 +61,15 @@ extension Data: VNDocumentCameraViewControllerDelegate {
     
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
         for i in 0..<scan.pageCount {
-            data.image = scan.imageOfPage(at:i)
+            data.images.append(scan.imageOfPage(at:i))
         }
-        writeToBundle()
         controller.dismiss(animated: true, completion: nil)
     }
 }
 
 struct ImagePicker: UIViewControllerRepresentable {
+    
+    // source: https://www.hackingwithswift.com/books/ios-swiftui/importing-an-image-into-swiftui-using-uiimagepickercontroller
     
     @ObservedObject var model: Data
     @Environment(\.presentationMode) var presentationMode
@@ -88,13 +85,11 @@ struct ImagePicker: UIViewControllerRepresentable {
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-            if let uiImage = info[.originalImage] as? UIImage {
-                model.data.image = uiImage
-                model.writeToBundle()
-            }
-
-            self.presentationMode.wrappedValue.dismiss()
+        if let uiImage = info[.originalImage] as? UIImage {
+            model.data.images.append(uiImage)
         }
+        self.presentationMode.wrappedValue.dismiss()
+    }
 
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
 
@@ -102,7 +97,6 @@ struct ImagePicker: UIViewControllerRepresentable {
     
     class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         let parent: ImagePicker
-
         init(_ parent: ImagePicker) {
             self.parent = parent
         }
