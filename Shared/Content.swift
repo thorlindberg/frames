@@ -6,30 +6,16 @@ struct Content: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
-                if model.data.image == nil {
-                    Image(systemName: "photo")
-                        .font(.system(size: 150))
-                        .opacity(0.1)
-                } else {
-                    Spacer()
-                    Image(uiImage: model.data.image!)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding(.horizontal, 30)
-                    Spacer()
-                    TabView(selection: $model.data.orientation) {
-                        Adjust(model: model)
-                            .tabItem { Label("Vertical", systemImage: "rectangle.portrait") }
-                            .tag("vertical")
-                        Adjust(model: model)
-                            .tabItem { Label("Horizontal", systemImage: "rectangle") }
-                            .tag("horizontal")
-                        Adjust(model: model)
-                            .tabItem { Label("Quadrant", systemImage: "square") }
-                            .tag("quadrant")
-                    }
-                }
+            TabView(selection: $model.data.orientation) {
+                Adjust(model: model)
+                    .tabItem { Label("Vertical", systemImage: "rectangle.portrait") }
+                    .tag("vertical")
+                Adjust(model: model)
+                    .tabItem { Label("Horizontal", systemImage: "rectangle") }
+                    .tag("horizontal")
+                Adjust(model: model)
+                    .tabItem { Label("Quadrant", systemImage: "square") }
+                    .tag("quadrant")
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -90,7 +76,7 @@ struct Content: View {
                     Spacer()
                 }
                 .padding()
-                ARQuickLookView(name: "photo")
+                ARQuickLookView()
             }
         }
     }

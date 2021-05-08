@@ -114,7 +114,6 @@ struct ARQuickLookView: UIViewControllerRepresentable {
     
     // source: https://developer.apple.com/forums/thread/126377
     
-    var name: String
     var allowScaling: Bool = true
     
     func makeCoordinator() -> ARQuickLookView.Coordinator {
@@ -133,7 +132,7 @@ struct ARQuickLookView: UIViewControllerRepresentable {
     class Coordinator: NSObject, QLPreviewControllerDataSource {
         
         let parent: ARQuickLookView
-        private lazy var fileURL: URL = Bundle.main.url(forResource: parent.name, withExtension: "reality")!
+        private lazy var fileURL: URL = Bundle.main.url(forResource: "photo", withExtension: "reality")!
         
         init(_ parent: ARQuickLookView) {
             self.parent = parent
@@ -148,8 +147,8 @@ struct ARQuickLookView: UIViewControllerRepresentable {
             _ controller: QLPreviewController,
             previewItemAt index: Int
         ) -> QLPreviewItem {
-            guard let fileURL = Bundle.main.url(forResource: parent.name, withExtension: "gltf") else {
-                fatalError("Unable to load \(parent.name).reality from main bundle")
+            guard let fileURL = Bundle.main.url(forResource: "frame", withExtension: "gltf") else {
+                fatalError("Unable to load \("photo").reality from main bundle")
             }
             
             let item = ARQuickLookPreviewItem(fileAt: fileURL)
