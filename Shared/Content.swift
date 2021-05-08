@@ -62,7 +62,7 @@ struct Content: View {
                         Button(action: {
                             model.data.isAugmenting.toggle()
                         }) {
-                            Text("View in AR")
+                            Text("AR")
                         }
                     }
                 }
