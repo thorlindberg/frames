@@ -39,6 +39,11 @@ final class Data: NSObject, ObservableObject {
     }
     
     func removeImage(item: UIImage) {
+        if data.images.count - 1 == 1 {
+            data.selected = 0
+        } else {
+            data.selected = data.selected - 1
+        }
         data.images.removeAll{$0 == item}
     }
     

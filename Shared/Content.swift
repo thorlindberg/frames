@@ -18,9 +18,10 @@ struct Content: View {
                     .tag("quadrant")
             }
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Frames")
             .toolbar {
                 ToolbarItemGroup(placement: .cancellationAction) {
-                    Menu("Add image") {
+                    Menu("Add") {
                         Button(action: {
                             model.data.isImporting.toggle()
                         }) {
@@ -45,7 +46,7 @@ struct Content: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     if model.data.images.count != 1 {
-                        Menu("View in AR") {
+                        Menu("AR") {
                             Button(action: {
                                 model.data.isAugmenting.toggle()
                             }) {

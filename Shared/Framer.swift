@@ -22,16 +22,18 @@ struct Framer: View {
                         }
                         .disabled(model.data.images.count == 1)
                     }
-                VStack(spacing: 0) {
-                    Spacer()
-                    HStack(spacing: 10) {
-                        ForEach((1...model.data.images.count), id: \.self) { select in
-                            Circle()
-                                .opacity(select == model.data.selected + 1 ? 0.3 : 0.15)
-                                .frame(width: 8, height: 8)
+                if model.data.images.count != 1 {
+                    VStack(spacing: 0) {
+                        Spacer()
+                        HStack(spacing: 10) {
+                            ForEach((1...model.data.images.count), id: \.self) { select in
+                                Circle()
+                                    .opacity(select == model.data.selected + 1 ? 0.3 : 0.15)
+                                    .frame(width: 8, height: 8)
+                            }
                         }
+                        .frame(height: 35)
                     }
-                    .frame(height: 35)
                 }
             }
             .gesture(DragGesture().onChanged { value in
