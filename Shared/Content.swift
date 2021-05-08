@@ -6,67 +6,60 @@ struct Content: View {
     
     var body: some View {
         NavigationView {
-            TabView(selection: $model.data.orientation) {
-                Framer(model: model)
-                    .tabItem { Image(systemName: "rectangle.portrait") }
-                    .tag("vertical")
-                Framer(model: model)
-                    .tabItem { Image(systemName: "rectangle") }
-                    .tag("horizontal")
-                Framer(model: model)
-                    .tabItem { Image(systemName: "square") }
-                    .tag("quadrant")
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Frames")
-            .toolbar {
-                ToolbarItemGroup(placement: .cancellationAction) {
-                    Menu("Add") {
-                        Button(action: {
-                            model.data.isImporting.toggle()
-                        }) {
-                            Label("Import from Photos", systemImage: "photo")
-                        }
-                        Button(action: {
-                            UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                .first?
-                                .rootViewController?
-                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                        }) {
-                            Label("Scan with Camera", systemImage: "viewfinder")
+            Adjust(model: model)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle("Frames")
+                .toolbar {
+                    ToolbarItemGroup(placement: .cancellationAction) {
+                        Menu("Image") {
+                            Button(action: {
+                                model.data.isImporting.toggle()
+                            }) {
+                                Label("Import from Photos", systemImage: "photo")
+                            }
+                            Button(action: {
+                                UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                    .first?
+                                    .rootViewController?
+                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                            }) {
+                                Label("Scan with Camera", systemImage: "viewfinder")
+                            }
                         }
                     }
-                    /*
-                    Button(action: {
-                        // collage editor
-                    }) {
-                        Image(systemName: "square.grid.3x2")
-                    }
-                    */
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    if model.data.images.count != 1 {
-                        Menu("AR") {
+                    ToolbarItem(placement: .confirmationAction) {
+                        if model.data.images.count != 1 {
+                            Menu("AR") {
+                                Button(action: {
+                                    model.data.isAugmenting.toggle()
+                                }) {
+                                    Label("View photo collage", systemImage: "square.grid.3x2")
+                                }
+                                Button(action: {
+                                    model.data.isAugmenting.toggle()
+                                }) {
+                                    Label("View single photo", systemImage: "square")
+                                }
+                            }
+                        } else {
                             Button(action: {
                                 model.data.isAugmenting.toggle()
                             }) {
-                                Label("View photo collage", systemImage: "square.grid.3x2")
+                                Text("AR")
                             }
-                            Button(action: {
-                                model.data.isAugmenting.toggle()
-                            }) {
-                                Label("View single photo", systemImage: "square")
-                            }
-                        }
-                    } else {
-                        Button(action: {
-                            model.data.isAugmenting.toggle()
-                        }) {
-                            Text("AR")
                         }
                     }
-                }
             }
+        }
+        .actionSheet(isPresented: $model.data.isAdjusting) {
+            ActionSheet(title: Text("Aspect ratio"), buttons: [
+                .default(Text("10 x 70 cm")) { model.data.frameWidth = 10 ; model.data.frameHeight = 70 },
+                .default(Text("20 x 70 cm")) { model.data.frameWidth = 20 ; model.data.frameHeight = 70 },
+                .default(Text("30 x 70 cm")) { model.data.frameWidth = 30 ; model.data.frameHeight = 70 },
+                .default(Text("40 x 70 cm")) { model.data.frameWidth = 40 ; model.data.frameHeight = 70 },
+                .default(Text("50 x 70 cm")) { model.data.frameWidth = 50 ; model.data.frameHeight = 70 },
+                .cancel()
+            ])
         }
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model)

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct Framer: View {
+struct Adjust: View {
     
     @ObservedObject var model: Data
     @Environment(\.colorScheme) var colorScheme
@@ -13,7 +13,7 @@ struct Framer: View {
                 Image(uiImage: model.data.images[model.data.selected])
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .padding(35)
+                    .padding(30)
                     .contextMenu {
                         Button(action: {
                             model.removeImage(item: model.data.images[model.data.selected])
@@ -22,6 +22,7 @@ struct Framer: View {
                         }
                         .disabled(model.data.images.count == 1)
                     }
+                /*
                 if model.data.images.count != 1 {
                     VStack(spacing: 0) {
                         Spacer()
@@ -32,9 +33,10 @@ struct Framer: View {
                                     .frame(width: 8, height: 8)
                             }
                         }
-                        .frame(height: 35)
+                        .frame(height: 30)
                     }
                 }
+                */
             }
             .gesture(DragGesture().onChanged { value in
                 if value.translation.width > 0 {
@@ -50,15 +52,13 @@ struct Framer: View {
             ZStack {
                 Rectangle()
                     .opacity(colorScheme == .dark ? 0.05 : 0)
-                Picker(selection: $model.data.aspectratio, label: Text("")) {
-                    switch model.data.orientation {
-                        case "vertical": ForEach(model.data.verticals, id: \.self) { Text("\($0) cm").tag($0) }
-                        case "horizontal": ForEach(model.data.horizontals, id: \.self) { Text("\($0) cm").tag($0) }
-                        default: ForEach(model.data.quadrants, id: \.self) { Text("\($0) cm").tag($0) }
-                    }
+                Button(action: {
+                    model.data.isAdjusting.toggle()
+                }) {
+                    Text("\(model.data.frameWidth) x \(model.data.frameHeight) cm")
                 }
             }
-            .frame(height: 220)
+            .frame(height: 50)
         }
     }
     
