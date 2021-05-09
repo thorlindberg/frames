@@ -10,6 +10,7 @@ final class Data: NSObject, ObservableObject {
         var isImporting: Bool
         var isAugmenting: Bool
         var isAdjusting: Bool
+        var isFiltering: Bool
         var frames: [Frame]
         var selected: Int
         var errorMessage: String?
@@ -17,8 +18,8 @@ final class Data: NSObject, ObservableObject {
     
     struct Frame: Hashable {
         var image: UIImage
-        var width: Int
-        var height: Int
+        var width: CGFloat
+        var height: CGFloat
     }
     
     @Published var data: Format = Format(
@@ -26,6 +27,7 @@ final class Data: NSObject, ObservableObject {
         isImporting: false,
         isAugmenting: false,
         isAdjusting: false,
+        isFiltering: false,
         frames: [Frame(image: UIImage(imageLiteralResourceName: "placeholder"), width: 50, height: 70)],
         selected: 0
     )
@@ -129,7 +131,7 @@ struct ARQuickLookView: UIViewControllerRepresentable {
     class Coordinator: NSObject, QLPreviewControllerDataSource {
         
         let parent: ARQuickLookView
-        private lazy var fileURL: URL = Bundle.main.url(forResource: "photo", withExtension: "reality")!
+        private lazy var fileURL: URL = Bundle.main.url(forResource: "frame", withExtension: "gltf")!
         
         init(_ parent: ARQuickLookView) {
             self.parent = parent
@@ -145,7 +147,7 @@ struct ARQuickLookView: UIViewControllerRepresentable {
             previewItemAt index: Int
         ) -> QLPreviewItem {
             guard let fileURL = Bundle.main.url(forResource: "frame", withExtension: "gltf") else {
-                fatalError("Unable to load \("photo").reality from main bundle")
+                fatalError("Unable to load gLTF from main bundle")
             }
             
             let item = ARQuickLookPreviewItem(fileAt: fileURL)

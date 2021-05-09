@@ -6,21 +6,84 @@ struct Content: View {
     
     var body: some View {
         NavigationView {
-            Adjust(model: model)
+            Frame(model: model)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle("Frames")
+                .toolbar {
+                    ToolbarItemGroup(placement: .cancellationAction) {
+                        Menu {
+                            Button(action: {
+                                model.data.isImporting.toggle()
+                            }) {
+                                Label("Import from Photos", systemImage: "photo")
+                            }
+                            Button(action: {
+                                UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                    .first?
+                                    .rootViewController?
+                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                            }) {
+                                Label("Scan with Camera", systemImage: "viewfinder")
+                            }
+                        } label: {
+                            Image(systemName: "camera")
+                        }
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(action: {
+                            model.data.isAugmenting.toggle()
+                        }) {
+                            Text("AR")
+                        }
+                    }
+                    ToolbarItemGroup(placement: .bottomBar) {
+                        if !model.data.frames.isEmpty {
+                            Button(action: {
+                                withAnimation {
+                                    model.data.isFiltering.toggle()
+                                }
+                            }) {
+                                Image(systemName: "camera.filters")
+                            }
+                            Spacer()
+                            Button(action: {
+                                //
+                            }) {
+                                Image(systemName: "wand.and.stars.inverse")
+                            }
+                            Spacer()
+                            Button(action: {
+                                model.data.isAdjusting.toggle()
+                            }) {
+                                if model.data.frames[model.data.selected].width == 0 {
+                                    Text("None")
+                                } else {
+                                    Text("\(Int(model.data.frames[model.data.selected].width)) x \(Int(model.data.frames[model.data.selected].height))")
+                                }
+                            }
+                            Spacer()
+                            Button(action: {
+                                //
+                            }) {
+                                Image(systemName: "aspectratio")
+                            }
+                            Spacer()
+                            Button(action: {
+                                //
+                            }) {
+                                Image(systemName: "slider.horizontal.below.square.fill.and.square")
+                            }
+                        }
+                    }
+                }
         }
         .actionSheet(isPresented: $model.data.isAdjusting) {
             ActionSheet(title: Text("Aspect ratio"), buttons: [
-                .default(Text("13 x 18 cm")) { model.data.frames[model.data.selected].width = 13 ; model.data.frames[model.data.selected].height = 18 },
-                .default(Text("15 x 20 cm")) { model.data.frames[model.data.selected].width = 15 ; model.data.frames[model.data.selected].height = 20 },
-                .default(Text("21 x 30 cm")) { model.data.frames[model.data.selected].width = 21 ; model.data.frames[model.data.selected].height = 30 },
-                .default(Text("30 x 40 cm")) { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 40 },
-                .default(Text("30 x 45 cm")) { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 45 },
-                .default(Text("40 x 50 cm")) { model.data.frames[model.data.selected].width = 40 ; model.data.frames[model.data.selected].height = 50 },
-                .default(Text("45 x 60 cm")) { model.data.frames[model.data.selected].width = 45 ; model.data.frames[model.data.selected].height = 60 },
-                .default(Text("50 x 70 cm")) { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 70 },
-                .default(Text("60 x 80 cm")) { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 80 },
-                .default(Text("60 x 90 cm")) { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 90 },
-                .default(Text("70 x 100 cm")) { model.data.frames[model.data.selected].width = 70 ; model.data.frames[model.data.selected].height = 100 },
+                .default(Text("70 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 70 ; model.data.frames[model.data.selected].height = 50 } },
+                .default(Text("50 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 50 } },
+                .default(Text("50 x 70 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 70 } },
+                .default(Text("400 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 400 ; model.data.frames[model.data.selected].height = 50 } },
+                .default(Text("No frame")) { withAnimation { model.data.frames[model.data.selected].width = 0 ; model.data.frames[model.data.selected].height = 0 } },
                 .cancel()
             ])
         }
@@ -62,4 +125,14 @@ struct Content: View {
         }
     }
     
+}
+
+struct Content_Previews: PreviewProvider {
+    static var previews: some View {
+        ForEach(ColorScheme.allCases, id: \.self) {
+             Content(model: Data())
+                .preferredColorScheme($0)
+        }
+        .previewDevice("iPhone 12 mini")
+    }
 }
