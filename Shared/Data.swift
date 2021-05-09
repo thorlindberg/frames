@@ -22,7 +22,7 @@ final class Data: NSObject, ObservableObject {
         isImporting: false,
         isAugmenting: false,
         isAdjusting: false,
-        images: [UIImage(imageLiteralResourceName: "photo")],
+        images: [UIImage(imageLiteralResourceName: "placeholder")],
         selected: 0,
         frameWidth: 50,
         frameHeight: 70

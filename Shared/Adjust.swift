@@ -21,6 +21,14 @@ struct Adjust: View {
                         .padding(30)
                         .contextMenu {
                             Button(action: {
+                                UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                    .first?
+                                    .rootViewController?
+                                    .present(UIActivityViewController(activityItems: [model.data.images[model.data.selected]], applicationActivities: nil), animated: true)
+                            }) {
+                                Label("Share", systemImage: "square.and.arrow.up")
+                            }
+                            Button(action: {
                                 model.removeImage(item: model.data.images[model.data.selected])
                             }) {
                                 Label("Delete", systemImage: "delete.left")
