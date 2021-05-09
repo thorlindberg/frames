@@ -18,11 +18,11 @@ final class Data: NSObject, ObservableObject {
     }
     
     @Published var data: Format = Format(
-        firstLaunch: true, // replace with Bool on whether device has launched the app before!
+        firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
         isImporting: false,
         isAugmenting: false,
         isAdjusting: false,
-        images: [UIImage(imageLiteralResourceName: "photo"), UIImage(imageLiteralResourceName: "photo2")],
+        images: [UIImage(imageLiteralResourceName: "photo")],
         selected: 0,
         frameWidth: 50,
         frameHeight: 70
@@ -62,7 +62,7 @@ extension Data: VNDocumentCameraViewControllerDelegate {
     
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
         for i in 0..<scan.pageCount {
-            data.images.append(scan.imageOfPage(at:i))
+            data.images.insert(scan.imageOfPage(at:i), at: 0)
         }
         controller.dismiss(animated: true, completion: nil)
     }
@@ -87,7 +87,7 @@ struct ImagePicker: UIViewControllerRepresentable {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let uiImage = info[.originalImage] as? UIImage {
-            model.data.images.append(uiImage)
+            model.data.images.insert(uiImage, at: 0)
         }
         self.presentationMode.wrappedValue.dismiss()
     }

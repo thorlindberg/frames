@@ -10,29 +10,34 @@ struct Adjust: View {
             ZStack {
                 Rectangle()
                     .opacity(colorScheme == .dark ? 0 : 0.05)
-                Image(uiImage: model.data.images[model.data.selected])
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .padding(30)
-                    .contextMenu {
-                        Button(action: {
-                            model.removeImage(item: model.data.images[model.data.selected])
-                        }) {
-                            Label("Delete", systemImage: "delete.left")
-                        }
-                        .disabled(model.data.images.count == 1)
-                    }
-                if model.data.images.count != 1 {
-                    VStack(spacing: 0) {
-                        Spacer()
-                        HStack(spacing: 10) {
-                            ForEach((1...model.data.images.count), id: \.self) { select in
-                                Circle()
-                                    .opacity(select == model.data.selected + 1 ? 0.3 : 0.15)
-                                    .frame(width: 8, height: 8)
+                if model.data.images.isEmpty {
+                    Image(systemName: "photo")
+                        .opacity(0.15)
+                        .font(.system(size: 150))
+                } else {
+                    Image(uiImage: model.data.images[model.data.selected])
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding(30)
+                        .contextMenu {
+                            Button(action: {
+                                model.removeImage(item: model.data.images[model.data.selected])
+                            }) {
+                                Label("Delete", systemImage: "delete.left")
                             }
                         }
-                        .frame(height: 30)
+                    if model.data.images.count != 1 {
+                        VStack(spacing: 0) {
+                            Spacer()
+                            HStack(spacing: 10) {
+                                ForEach((1...model.data.images.count), id: \.self) { select in
+                                    Circle()
+                                        .opacity(select == model.data.selected + 1 ? 0.3 : 0.15)
+                                        .frame(width: 8, height: 8)
+                                }
+                            }
+                            .frame(height: 30)
+                        }
                     }
                 }
             }
@@ -46,17 +51,49 @@ struct Adjust: View {
                     model.data.selected = 0
                 }
             })
-            Divider()
-            ZStack {
-                Rectangle()
-                    .opacity(colorScheme == .dark ? 0.05 : 0)
-                Button(action: {
-                    model.data.isAdjusting.toggle()
-                }) {
-                    Text("\(model.data.frameWidth) x \(model.data.frameHeight) cm")
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Frames")
+        .toolbar {
+            ToolbarItemGroup(placement: .cancellationAction) {
+                Menu {
+                    Button(action: {
+                        model.data.isImporting.toggle()
+                    }) {
+                        Label("Import from Photos", systemImage: "photo")
+                    }
+                    Button(action: {
+                        UIApplication.shared.windows.filter({$0.isKeyWindow})
+                            .first?
+                            .rootViewController?
+                            .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                    }) {
+                        Label("Scan with Camera", systemImage: "viewfinder")
+                    }
+                } label: {
+                    Image(systemName: "camera")
                 }
             }
-            .frame(height: 50)
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    model.data.isAugmenting.toggle()
+                }) {
+                    Text("AR")
+                }
+            }
+            ToolbarItem(placement: .bottomBar) {
+                if !model.data.images.isEmpty {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            model.data.isAdjusting.toggle()
+                        }) {
+                            Text("\(model.data.frameWidth) x \(model.data.frameHeight) cm")
+                        }
+                        Spacer()
+                    }
+                }
+            }
         }
     }
     
