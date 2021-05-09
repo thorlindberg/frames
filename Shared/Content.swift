@@ -10,17 +10,17 @@ struct Content: View {
         }
         .actionSheet(isPresented: $model.data.isAdjusting) {
             ActionSheet(title: Text("Aspect ratio"), buttons: [
-                .default(Text("13 x 18 cm")) { model.data.frameWidth = 13 ; model.data.frameHeight = 18 },
-                .default(Text("15 x 20 cm")) { model.data.frameWidth = 15 ; model.data.frameHeight = 20 },
-                .default(Text("21 x 30 cm")) { model.data.frameWidth = 21 ; model.data.frameHeight = 30 },
-                .default(Text("30 x 40 cm")) { model.data.frameWidth = 30 ; model.data.frameHeight = 40 },
-                .default(Text("30 x 45 cm")) { model.data.frameWidth = 30 ; model.data.frameHeight = 45 },
-                .default(Text("40 x 50 cm")) { model.data.frameWidth = 40 ; model.data.frameHeight = 50 },
-                .default(Text("45 x 60 cm")) { model.data.frameWidth = 45 ; model.data.frameHeight = 60 },
-                .default(Text("50 x 70 cm")) { model.data.frameWidth = 50 ; model.data.frameHeight = 70 },
-                .default(Text("60 x 80 cm")) { model.data.frameWidth = 60 ; model.data.frameHeight = 90 },
-                .default(Text("60 x 90 cm")) { model.data.frameWidth = 60 ; model.data.frameHeight = 90 },
-                .default(Text("70 x 100 cm")) { model.data.frameWidth = 70 ; model.data.frameHeight = 100 },
+                .default(Text("13 x 18 cm")) { model.data.frames[model.data.selected].width = 13 ; model.data.frames[model.data.selected].height = 18 },
+                .default(Text("15 x 20 cm")) { model.data.frames[model.data.selected].width = 15 ; model.data.frames[model.data.selected].height = 20 },
+                .default(Text("21 x 30 cm")) { model.data.frames[model.data.selected].width = 21 ; model.data.frames[model.data.selected].height = 30 },
+                .default(Text("30 x 40 cm")) { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 40 },
+                .default(Text("30 x 45 cm")) { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 45 },
+                .default(Text("40 x 50 cm")) { model.data.frames[model.data.selected].width = 40 ; model.data.frames[model.data.selected].height = 50 },
+                .default(Text("45 x 60 cm")) { model.data.frames[model.data.selected].width = 45 ; model.data.frames[model.data.selected].height = 60 },
+                .default(Text("50 x 70 cm")) { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 70 },
+                .default(Text("60 x 80 cm")) { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 80 },
+                .default(Text("60 x 90 cm")) { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 90 },
+                .default(Text("70 x 100 cm")) { model.data.frames[model.data.selected].width = 70 ; model.data.frames[model.data.selected].height = 100 },
                 .cancel()
             ])
         }

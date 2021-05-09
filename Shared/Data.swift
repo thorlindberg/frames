@@ -10,11 +10,15 @@ final class Data: NSObject, ObservableObject {
         var isImporting: Bool
         var isAugmenting: Bool
         var isAdjusting: Bool
-        var images: [UIImage]
+        var frames: [Frame]
         var selected: Int
-        var frameWidth: Int
-        var frameHeight: Int
         var errorMessage: String?
+    }
+    
+    struct Frame: Hashable {
+        var image: UIImage
+        var width: Int
+        var height: Int
     }
     
     @Published var data: Format = Format(
@@ -22,10 +26,8 @@ final class Data: NSObject, ObservableObject {
         isImporting: false,
         isAugmenting: false,
         isAdjusting: false,
-        images: [UIImage(imageLiteralResourceName: "placeholder")],
-        selected: 0,
-        frameWidth: 50,
-        frameHeight: 70
+        frames: [Frame(image: UIImage(imageLiteralResourceName: "placeholder"), width: 50, height: 70)],
+        selected: 0
     )
     
     func getDocumentCameraViewController() -> VNDocumentCameraViewController {
@@ -35,12 +37,12 @@ final class Data: NSObject, ObservableObject {
     }
     
     func removeImage(item: UIImage) {
-        if data.images.count - 1 == 1 {
+        if data.frames.count - 1 == 1 {
             data.selected = 0
         } else {
             data.selected = data.selected - 1
         }
-        data.images.removeAll{$0 == item}
+        data.frames.removeAll{$0.image == item}
     }
     
     func getBundleDirectory() -> URL {
@@ -62,7 +64,7 @@ extension Data: VNDocumentCameraViewControllerDelegate {
     
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
         for i in 0..<scan.pageCount {
-            data.images.insert(scan.imageOfPage(at:i), at: 0)
+            data.frames.insert(Frame(image: scan.imageOfPage(at:i), width: 50, height: 70), at: 0)
         }
         controller.dismiss(animated: true, completion: nil)
     }
@@ -87,7 +89,7 @@ struct ImagePicker: UIViewControllerRepresentable {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let uiImage = info[.originalImage] as? UIImage {
-            model.data.images.insert(uiImage, at: 0)
+            model.data.frames.insert(Data.Frame(image: uiImage, width: 50, height: 70), at: 0)
         }
         self.presentationMode.wrappedValue.dismiss()
     }

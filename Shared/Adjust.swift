@@ -10,12 +10,12 @@ struct Adjust: View {
             ZStack {
                 Rectangle()
                     .opacity(colorScheme == .dark ? 0 : 0.05)
-                if model.data.images.isEmpty {
+                if model.data.frames.isEmpty {
                     Image(systemName: "photo")
                         .opacity(0.15)
                         .font(.system(size: 150))
                 } else {
-                    Image(uiImage: model.data.images[model.data.selected])
+                    Image(uiImage: model.data.frames[model.data.selected].image)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .padding(30)
@@ -24,21 +24,21 @@ struct Adjust: View {
                                 UIApplication.shared.windows.filter({$0.isKeyWindow})
                                     .first?
                                     .rootViewController?
-                                    .present(UIActivityViewController(activityItems: [model.data.images[model.data.selected]], applicationActivities: nil), animated: true)
+                                    .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected]], applicationActivities: nil), animated: true)
                             }) {
                                 Label("Share", systemImage: "square.and.arrow.up")
                             }
                             Button(action: {
-                                model.removeImage(item: model.data.images[model.data.selected])
+                                model.removeImage(item: model.data.frames[model.data.selected].image)
                             }) {
                                 Label("Delete", systemImage: "delete.left")
                             }
                         }
-                    if model.data.images.count != 1 {
+                    if model.data.frames.count != 1 {
                         VStack(spacing: 0) {
                             Spacer()
                             HStack(spacing: 10) {
-                                ForEach((1...model.data.images.count), id: \.self) { select in
+                                ForEach((1...model.data.frames.count), id: \.self) { select in
                                     Circle()
                                         .opacity(select == model.data.selected + 1 ? 0.3 : 0.15)
                                         .frame(width: 8, height: 8)
@@ -52,7 +52,7 @@ struct Adjust: View {
             .gesture(DragGesture().onChanged { value in
                 if value.translation.width > 0 {
                     model.data.selected = model.data.selected - 1
-                } else if model.data.selected != model.data.images.count - 1 {
+                } else if model.data.selected != model.data.frames.count - 1 {
                     model.data.selected = model.data.selected + 1
                 }
                 if model.data.selected < 0 {
@@ -90,13 +90,13 @@ struct Adjust: View {
                 }
             }
             ToolbarItem(placement: .bottomBar) {
-                if !model.data.images.isEmpty {
+                if !model.data.frames.isEmpty {
                     HStack {
                         Spacer()
                         Button(action: {
                             model.data.isAdjusting.toggle()
                         }) {
-                            Text("\(model.data.frameWidth) x \(model.data.frameHeight) cm")
+                            Text("\(model.data.frames[model.data.selected].width) x \(model.data.frames[model.data.selected].height) cm")
                         }
                         Spacer()
                     }
