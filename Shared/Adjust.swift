@@ -18,6 +18,8 @@ struct Adjust: View {
                     Image(uiImage: model.data.frames[model.data.selected].image)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .border(Color.white, width: 5)
+                        .shadow(color: Color.black.opacity(0.15), radius: 20)
                         .padding(30)
                         .contextMenu {
                             Button(action: {
