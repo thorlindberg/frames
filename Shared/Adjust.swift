@@ -22,7 +22,6 @@ struct Adjust: View {
                         }
                         .disabled(model.data.images.count == 1)
                     }
-                /*
                 if model.data.images.count != 1 {
                     VStack(spacing: 0) {
                         Spacer()
@@ -36,7 +35,6 @@ struct Adjust: View {
                         .frame(height: 30)
                     }
                 }
-                */
             }
             .gesture(DragGesture().onChanged { value in
                 if value.translation.width > 0 {
