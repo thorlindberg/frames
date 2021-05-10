@@ -27,7 +27,10 @@ struct Frame: View {
                             Image(uiImage: model.data.frames[model.data.selected].image)
                                 .resizable()
                                 .aspectRatio(contentMode: model.data.frames[model.data.selected].filled ? .fill : .fit)
+                                .saturation(model.data.frames[model.data.selected].colored ? 1 : 0)
+                                .rotationEffect(.degrees(Double(model.data.frames[model.data.selected].rotated)))
                                 .padding(model.data.frames[model.data.selected].bordered ? 40 : 30)
+                                .frame(height: [Double(90), Double(270)].contains(abs(model.data.frames[model.data.selected].rotated)) ? geometry.size.width : nil)
                                 .contextMenu {
                                     Button(action: {
                                         UIApplication.shared.windows.filter({$0.isKeyWindow})

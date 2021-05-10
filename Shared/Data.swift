@@ -1,7 +1,10 @@
 import SwiftUI
 import VisionKit
 import QuickLook
+import SceneKit
 import ARKit
+import CoreImage
+import CoreImage.CIFilterBuiltins
 
 final class Data: NSObject, ObservableObject {
     
@@ -12,6 +15,7 @@ final class Data: NSObject, ObservableObject {
         var isAdjusting: Bool
         var frames: [Frame]
         var selected: Int
+        var scene: URL?
         var errorMessage: String?
     }
     
@@ -21,6 +25,8 @@ final class Data: NSObject, ObservableObject {
         var height: CGFloat
         var bordered: Bool
         var filled: Bool
+        var colored: Bool
+        var rotated: Double
     }
     
     @Published var data: Format = Format(
@@ -28,8 +34,22 @@ final class Data: NSObject, ObservableObject {
         isImporting: false,
         isAugmenting: false,
         isAdjusting: false,
-        frames: [Frame(image: UIImage(imageLiteralResourceName: "placeholder"), width: 50, height: 50, bordered: true, filled: false)],
+        frames: [
+            Frame(
+                image: UIImage(imageLiteralResourceName: "placeholder"),
+                width: 50, height: 50, bordered: true, filled: false, colored: true, rotated: 0
+            ),
+            Frame(
+                image: UIImage(imageLiteralResourceName: "sample1"),
+                width: 50, height: 50, bordered: true, filled: false, colored: true, rotated: 0
+            ),
+            Frame(
+                image: UIImage(imageLiteralResourceName: "sample2"),
+                width: 50, height: 50, bordered: true, filled: false, colored: true, rotated: 0
+            )
+        ],
         selected: 0
+        // scene: Bundle.main.url(forResource: "frame", withExtension: "gltf")!
     )
     
     func getDocumentCameraViewController() -> VNDocumentCameraViewController {
@@ -45,6 +65,22 @@ final class Data: NSObject, ObservableObject {
             data.selected = data.selected - 1
         }
         data.frames.removeAll{$0.image == item}
+    }
+    
+    func enhanceImage() {
+        
+        // source: https://www.hackingwithswift.com/books/ios-swiftui/integrating-core-image-with-swiftui
+        
+        
+        
+    }
+    
+    func desaturateImage() {
+        
+        // source: https://www.hackingwithswift.com/books/ios-swiftui/integrating-core-image-with-swiftui
+        
+        
+        
     }
     
     func getBundleDirectory() -> URL {
@@ -66,7 +102,7 @@ extension Data: VNDocumentCameraViewControllerDelegate {
     
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
         for i in 0..<scan.pageCount {
-            data.frames.insert(Frame(image: scan.imageOfPage(at:i), width: 50, height: 50, bordered: true, filled: false), at: 0)
+            data.frames.insert(Frame(image: scan.imageOfPage(at:i), width: 50, height: 50, bordered: true, filled: false, colored: true, rotated: 0), at: 0)
         }
         controller.dismiss(animated: true, completion: nil)
     }
@@ -91,7 +127,7 @@ struct ImagePicker: UIViewControllerRepresentable {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let uiImage = info[.originalImage] as? UIImage {
-            model.data.frames.insert(Data.Frame(image: uiImage, width: 50, height: 50, bordered: true, filled: false), at: 0)
+            model.data.frames.insert(Data.Frame(image: uiImage, width: 50, height: 50, bordered: true, filled: false, colored: true, rotated: 0), at: 0)
         }
         self.presentationMode.wrappedValue.dismiss()
     }
@@ -110,6 +146,13 @@ struct ImagePicker: UIViewControllerRepresentable {
 }
 
 struct ARQuickLookView: UIViewControllerRepresentable {
+    
+    @ObservedObject var model: Data
+    
+    // reference: https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit?language=objc
+    // source: https://stackoverflow.com/questions/49353131/how-to-add-an-image-to-an-arscnscene-in-swift
+    
+    // let scene = SCNNode(geometry: SCNPlane(width: model.data.frames[model.data.selected].width, height: model.data.frames[model.data.selected].height)).geometry?.firstMaterial?.diffuse.contents = model.data.frames[model.data.selected].image
     
     // source: https://developer.apple.com/forums/thread/126377
     
@@ -131,7 +174,6 @@ struct ARQuickLookView: UIViewControllerRepresentable {
     class Coordinator: NSObject, QLPreviewControllerDataSource {
         
         let parent: ARQuickLookView
-        private lazy var fileURL: URL = Bundle.main.url(forResource: "frame", withExtension: "gltf")!
         
         init(_ parent: ARQuickLookView) {
             self.parent = parent
@@ -146,11 +188,7 @@ struct ARQuickLookView: UIViewControllerRepresentable {
             _ controller: QLPreviewController,
             previewItemAt index: Int
         ) -> QLPreviewItem {
-            guard let fileURL = Bundle.main.url(forResource: "frame", withExtension: "gltf") else {
-                fatalError("Unable to load gLTF from main bundle")
-            }
-            
-            let item = ARQuickLookPreviewItem(fileAt: fileURL)
+            let item = ARQuickLookPreviewItem(fileAt: parent.model.data.scene!)
             item.allowsContentScaling = parent.allowScaling
             return item
         }

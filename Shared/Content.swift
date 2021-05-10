@@ -39,26 +39,27 @@ struct Content: View {
                     ToolbarItemGroup(placement: .bottomBar) {
                         if !model.data.frames.isEmpty {
                             Button(action: {
-                                //
+                                withAnimation {
+                                    model.data.frames[model.data.selected].filled.toggle()
+                                    if model.data.frames[model.data.selected].width != model.data.frames[model.data.selected].height && !model.data.frames[model.data.selected].filled {
+                                        model.data.frames[model.data.selected].bordered = true
+                                    }
+                                }
                             }) {
-                                Image(systemName: "circle")
+                                if model.data.frames[model.data.selected].filled {
+                                    Image(systemName: "rectangle.compress.vertical")
+                                } else {
+                                    Image(systemName: "rectangle.expand.vertical")
+                                }
                             }
-                            Spacer()
-                            Button(action: {
-                                //
-                            }) {
-                                Image(systemName: "wand.and.stars.inverse")
-                            }
-                            Spacer()
-                            Button(action: {
-                                model.data.isAdjusting.toggle()
-                            }) {
-                                Text("\(Int(model.data.frames[model.data.selected].width)) x \(Int(model.data.frames[model.data.selected].height))")
-                            }
+                            .disabled(model.data.frames[model.data.selected].width == model.data.frames[model.data.selected].height)
                             Spacer()
                             Button(action: {
                                 withAnimation {
                                     model.data.frames[model.data.selected].bordered.toggle()
+                                    if model.data.frames[model.data.selected].width != model.data.frames[model.data.selected].height && !model.data.frames[model.data.selected].bordered {
+                                        model.data.frames[model.data.selected].filled = true
+                                    }
                                 }
                             }) {
                                 if model.data.frames[model.data.selected].bordered {
@@ -69,35 +70,54 @@ struct Content: View {
                             }
                             Spacer()
                             Button(action: {
+                                model.data.isAdjusting.toggle()
+                            }) {
+                                Text("\(Int(model.data.frames[model.data.selected].width)) x \(Int(model.data.frames[model.data.selected].height))")
+                            }
+                            Spacer()
+                            Menu {
+                                Button(action: {
+                                    model.data.frames[model.data.selected].colored.toggle()
+                                }) {
+                                    if model.data.frames[model.data.selected].colored {
+                                        Label("De-color", systemImage: "circle.lefthalf.fill")
+                                    } else {
+                                        Label("Color", systemImage: "circle.righthalf.fill")
+                                    }
+                                }
+                                Text("Filters")
+                            } label: {
+                                Image(systemName: "camera.filters")
+                            }
+                            Spacer()
+                            Button(action: {
                                 withAnimation {
-                                    model.data.frames[model.data.selected].filled.toggle()
+                                    model.data.frames[model.data.selected].rotated = model.data.frames[model.data.selected].rotated - 90
+                                }
+                                if model.data.frames[model.data.selected].rotated == -360 {
+                                    model.data.frames[model.data.selected].rotated = 0
                                 }
                             }) {
-                                if model.data.frames[model.data.selected].filled {
-                                    Image(systemName: "rectangle.compress.vertical")
-                                } else {
-                                    Image(systemName: "rectangle.expand.vertical")
-                                }
+                                Image(systemName: "rotate.left")
                             }
-                            .disabled(model.data.frames[model.data.selected].width == model.data.frames[model.data.selected].height)
                         }
                     }
                 }
         }
         .actionSheet(isPresented: $model.data.isAdjusting) {
             ActionSheet(title: Text("Aspect ratio"), buttons: [
-                .default(Text("13 x 18 cm")) { withAnimation { model.data.frames[model.data.selected].width = 13 ; model.data.frames[model.data.selected].height = 18 } },
-                .default(Text("15 x 20 cm")) { withAnimation { model.data.frames[model.data.selected].width = 15 ; model.data.frames[model.data.selected].height = 20 } },
-                .default(Text("21 x 30 cm")) { withAnimation { model.data.frames[model.data.selected].width = 21 ; model.data.frames[model.data.selected].height = 30 } },
-                .default(Text("30 x 40 cm")) { withAnimation { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 40 } },
-                .default(Text("30 x 45 cm")) { withAnimation { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 45 } },
-                .default(Text("40 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 40 ; model.data.frames[model.data.selected].height = 50 } },
-                .default(Text("45 x 60 cm")) { withAnimation { model.data.frames[model.data.selected].width = 45 ; model.data.frames[model.data.selected].height = 60 } },
-                .default(Text("50 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 50 } },
-                .default(Text("50 x 70 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 70 } },
-                .default(Text("60 x 80 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 80 } },
-                .default(Text("60 x 90 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 90 } },
-                .default(Text("70 x 100 cm")) { withAnimation { model.data.frames[model.data.selected].width = 70 ; model.data.frames[model.data.selected].height = 100 } },
+                .default(Text("13 x 18 cm")) { withAnimation { model.data.frames[model.data.selected].width = 13 ; model.data.frames[model.data.selected].height = 18 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("15 x 20 cm")) { withAnimation { model.data.frames[model.data.selected].width = 15 ; model.data.frames[model.data.selected].height = 20 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("21 x 30 cm")) { withAnimation { model.data.frames[model.data.selected].width = 21 ; model.data.frames[model.data.selected].height = 30 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("30 x 40 cm")) { withAnimation { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 40 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("30 x 45 cm")) { withAnimation { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 45 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("40 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 40 ; model.data.frames[model.data.selected].height = 50 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("45 x 60 cm")) { withAnimation { model.data.frames[model.data.selected].width = 45 ; model.data.frames[model.data.selected].height = 60 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("50 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 50 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("50 x 70 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 70 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("60 x 80 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 80 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("60 x 90 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 90 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("70 x 100 cm")) { withAnimation { model.data.frames[model.data.selected].width = 70 ; model.data.frames[model.data.selected].height = 100 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
                 .cancel()
             ])
         }
@@ -134,7 +154,7 @@ struct Content: View {
                     Spacer()
                 }
                 .padding()
-                ARQuickLookView()
+                ARQuickLookView(model: model)
             }
         }
     }
