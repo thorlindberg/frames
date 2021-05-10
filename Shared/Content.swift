@@ -39,11 +39,9 @@ struct Content: View {
                     ToolbarItemGroup(placement: .bottomBar) {
                         if !model.data.frames.isEmpty {
                             Button(action: {
-                                withAnimation {
-                                    model.data.isFiltering.toggle()
-                                }
+                                //
                             }) {
-                                Image(systemName: "camera.filters")
+                                Image(systemName: "circle")
                             }
                             Spacer()
                             Button(action: {
@@ -55,35 +53,51 @@ struct Content: View {
                             Button(action: {
                                 model.data.isAdjusting.toggle()
                             }) {
-                                if model.data.frames[model.data.selected].width == 0 {
-                                    Text("None")
+                                Text("\(Int(model.data.frames[model.data.selected].width)) x \(Int(model.data.frames[model.data.selected].height))")
+                            }
+                            Spacer()
+                            Button(action: {
+                                withAnimation {
+                                    model.data.frames[model.data.selected].bordered.toggle()
+                                }
+                            }) {
+                                if model.data.frames[model.data.selected].bordered {
+                                    Image(systemName: "square.on.square.dashed")
                                 } else {
-                                    Text("\(Int(model.data.frames[model.data.selected].width)) x \(Int(model.data.frames[model.data.selected].height))")
+                                    Image(systemName: "square.dashed")
                                 }
                             }
                             Spacer()
                             Button(action: {
-                                //
+                                withAnimation {
+                                    model.data.frames[model.data.selected].filled.toggle()
+                                }
                             }) {
-                                Image(systemName: "aspectratio")
+                                if model.data.frames[model.data.selected].filled {
+                                    Image(systemName: "rectangle.compress.vertical")
+                                } else {
+                                    Image(systemName: "rectangle.expand.vertical")
+                                }
                             }
-                            Spacer()
-                            Button(action: {
-                                //
-                            }) {
-                                Image(systemName: "slider.horizontal.below.square.fill.and.square")
-                            }
+                            .disabled(model.data.frames[model.data.selected].width == model.data.frames[model.data.selected].height)
                         }
                     }
                 }
         }
         .actionSheet(isPresented: $model.data.isAdjusting) {
             ActionSheet(title: Text("Aspect ratio"), buttons: [
-                .default(Text("70 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 70 ; model.data.frames[model.data.selected].height = 50 } },
+                .default(Text("13 x 18 cm")) { withAnimation { model.data.frames[model.data.selected].width = 13 ; model.data.frames[model.data.selected].height = 18 } },
+                .default(Text("15 x 20 cm")) { withAnimation { model.data.frames[model.data.selected].width = 15 ; model.data.frames[model.data.selected].height = 20 } },
+                .default(Text("21 x 30 cm")) { withAnimation { model.data.frames[model.data.selected].width = 21 ; model.data.frames[model.data.selected].height = 30 } },
+                .default(Text("30 x 40 cm")) { withAnimation { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 40 } },
+                .default(Text("30 x 45 cm")) { withAnimation { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 45 } },
+                .default(Text("40 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 40 ; model.data.frames[model.data.selected].height = 50 } },
+                .default(Text("45 x 60 cm")) { withAnimation { model.data.frames[model.data.selected].width = 45 ; model.data.frames[model.data.selected].height = 60 } },
                 .default(Text("50 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 50 } },
                 .default(Text("50 x 70 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 70 } },
-                .default(Text("400 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 400 ; model.data.frames[model.data.selected].height = 50 } },
-                .default(Text("No frame")) { withAnimation { model.data.frames[model.data.selected].width = 0 ; model.data.frames[model.data.selected].height = 0 } },
+                .default(Text("60 x 80 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 80 } },
+                .default(Text("60 x 90 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 90 } },
+                .default(Text("70 x 100 cm")) { withAnimation { model.data.frames[model.data.selected].width = 70 ; model.data.frames[model.data.selected].height = 100 } },
                 .cancel()
             ])
         }

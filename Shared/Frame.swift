@@ -18,7 +18,7 @@ struct Frame: View {
                     VStack {
                         Spacer()
                         ZStack {
-                            if model.data.frames[model.data.selected].width != 0 {
+                            if model.data.frames[model.data.selected].bordered {
                                 Rectangle()
                                     .foregroundColor(.white)
                                     .shadow(color: Color.black.opacity(0.15), radius: 30)
@@ -26,8 +26,8 @@ struct Frame: View {
                             }
                             Image(uiImage: model.data.frames[model.data.selected].image)
                                 .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .padding(model.data.frames[model.data.selected].width == 0 ? 30 : 40)
+                                .aspectRatio(contentMode: model.data.frames[model.data.selected].filled ? .fill : .fit)
+                                .padding(model.data.frames[model.data.selected].bordered ? 40 : 30)
                                 .contextMenu {
                                     Button(action: {
                                         UIApplication.shared.windows.filter({$0.isKeyWindow})
@@ -44,45 +44,8 @@ struct Frame: View {
                                     }
                                 }
                         }
-                        .frame(width: model.data.frames[model.data.selected].height >= model.data.frames[model.data.selected].width ? model.data.frames[model.data.selected].width / model.data.frames[model.data.selected].height * geometry.size.width : nil, height: model.data.frames[model.data.selected].height >= model.data.frames[model.data.selected].width ? model.data.frames[model.data.selected].height / model.data.frames[model.data.selected].width * geometry.size.width : nil)
+                        .frame(width: geometry.size.width, height: model.data.frames[model.data.selected].height >= model.data.frames[model.data.selected].width ? model.data.frames[model.data.selected].height / model.data.frames[model.data.selected].width * geometry.size.width : nil)
                         Spacer()
-                        if model.data.isFiltering {
-                            ZStack {
-                                HStack(spacing: 15) {
-                                    Image(uiImage: model.data.frames[model.data.selected].image)
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                        .aspectRatio(contentMode: .fill)
-                                        .opacity(0.25)
-                                    Image(uiImage: model.data.frames[model.data.selected].image)
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                        .aspectRatio(contentMode: .fill)
-                                        .opacity(0.5)
-                                    Image(uiImage: model.data.frames[model.data.selected].image)
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                        .aspectRatio(contentMode: .fill)
-                                        .saturation(0)
-                                    Image(uiImage: model.data.frames[model.data.selected].image)
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                        .aspectRatio(contentMode: .fill)
-                                        .opacity(0.5)
-                                    Image(uiImage: model.data.frames[model.data.selected].image)
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                        .aspectRatio(contentMode: .fill)
-                                        .opacity(0.25)
-                                }
-                                Rectangle()
-                                    .opacity(0)
-                                    .frame(width: 60, height: 60)
-                                    .border(Color.white, width: 5)
-                                    .cornerRadius(5)
-                            }
-                            Spacer()
-                        }
                     }
                     if model.data.frames.count != 1 {
                         VStack(spacing: 0) {

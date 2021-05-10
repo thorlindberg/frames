@@ -10,7 +10,6 @@ final class Data: NSObject, ObservableObject {
         var isImporting: Bool
         var isAugmenting: Bool
         var isAdjusting: Bool
-        var isFiltering: Bool
         var frames: [Frame]
         var selected: Int
         var errorMessage: String?
@@ -20,6 +19,8 @@ final class Data: NSObject, ObservableObject {
         var image: UIImage
         var width: CGFloat
         var height: CGFloat
+        var bordered: Bool
+        var filled: Bool
     }
     
     @Published var data: Format = Format(
@@ -27,8 +28,7 @@ final class Data: NSObject, ObservableObject {
         isImporting: false,
         isAugmenting: false,
         isAdjusting: false,
-        isFiltering: false,
-        frames: [Frame(image: UIImage(imageLiteralResourceName: "placeholder"), width: 50, height: 70)],
+        frames: [Frame(image: UIImage(imageLiteralResourceName: "placeholder"), width: 50, height: 50, bordered: true, filled: false)],
         selected: 0
     )
     
@@ -66,7 +66,7 @@ extension Data: VNDocumentCameraViewControllerDelegate {
     
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
         for i in 0..<scan.pageCount {
-            data.frames.insert(Frame(image: scan.imageOfPage(at:i), width: 50, height: 70), at: 0)
+            data.frames.insert(Frame(image: scan.imageOfPage(at:i), width: 50, height: 50, bordered: true, filled: false), at: 0)
         }
         controller.dismiss(animated: true, completion: nil)
     }
@@ -91,7 +91,7 @@ struct ImagePicker: UIViewControllerRepresentable {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let uiImage = info[.originalImage] as? UIImage {
-            model.data.frames.insert(Data.Frame(image: uiImage, width: 50, height: 70), at: 0)
+            model.data.frames.insert(Data.Frame(image: uiImage, width: 50, height: 50, bordered: true, filled: false), at: 0)
         }
         self.presentationMode.wrappedValue.dismiss()
     }
