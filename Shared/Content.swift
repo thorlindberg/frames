@@ -1,4 +1,5 @@
 import SwiftUI
+import SceneKit
 
 struct Content: View {
     
@@ -63,7 +64,7 @@ struct Content: View {
                                 }
                             }) {
                                 if model.data.frames[model.data.selected].bordered {
-                                    Image(systemName: "square.on.square.dashed")
+                                    Image(systemName: "square")
                                 } else {
                                     Image(systemName: "square.dashed")
                                 }
@@ -75,21 +76,6 @@ struct Content: View {
                                 Text("\(Int(model.data.frames[model.data.selected].width)) x \(Int(model.data.frames[model.data.selected].height))")
                             }
                             Spacer()
-                            Menu {
-                                Button(action: {
-                                    model.data.frames[model.data.selected].colored.toggle()
-                                }) {
-                                    if model.data.frames[model.data.selected].colored {
-                                        Label("De-color", systemImage: "circle.lefthalf.fill")
-                                    } else {
-                                        Label("Color", systemImage: "circle.righthalf.fill")
-                                    }
-                                }
-                                Text("Filters")
-                            } label: {
-                                Image(systemName: "camera.filters")
-                            }
-                            Spacer()
                             Button(action: {
                                 withAnimation {
                                     model.data.frames[model.data.selected].rotated = model.data.frames[model.data.selected].rotated - 90
@@ -99,6 +85,45 @@ struct Content: View {
                                 }
                             }) {
                                 Image(systemName: "rotate.left")
+                            }
+                            Spacer()
+                            Menu {
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.frames[model.data.selected].colored.toggle()
+                                    }
+                                }) {
+                                    if model.data.frames[model.data.selected].colored {
+                                        Label("De-color", systemImage: "dial.min")
+                                    } else {
+                                        Label("Color", systemImage: "dial.max")
+                                    }
+                                }
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.frames[model.data.selected].brightened.toggle()
+                                    }
+                                }) {
+                                    if model.data.frames[model.data.selected].brightened {
+                                        Label("Darken", systemImage: "sun.min")
+                                    } else {
+                                        Label("Brighten", systemImage: "sun.max")
+                                    }
+                                }
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.frames[model.data.selected].inverted.toggle()
+                                    }
+                                }) {
+                                    if model.data.frames[model.data.selected].inverted {
+                                        Label("Revert", systemImage: "circle.lefthalf.fill")
+                                    } else {
+                                        Label("Invert", systemImage: "circle.righthalf.fill")
+                                    }
+                                }
+                                Text("Filters")
+                            } label: {
+                                Image(systemName: "camera.filters")
                             }
                         }
                     }
@@ -146,16 +171,7 @@ struct Content: View {
             .padding(.vertical, 100)
         }
         .sheet(isPresented: $model.data.isAugmenting) {
-            VStack {
-                HStack {
-                    Button("Close") {
-                        model.data.isAugmenting.toggle()
-                    }
-                    Spacer()
-                }
-                .padding()
-                ARQuickLookView(model: model)
-            }
+            Augment(model: model) // ARQuickLookView(model: model)
         }
     }
     
@@ -168,5 +184,16 @@ struct Content_Previews: PreviewProvider {
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")
+    }
+}
+
+extension View {
+    // source: https://www.avanderlee.com/swiftui/conditional-view-modifier/
+    @ViewBuilder func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
     }
 }

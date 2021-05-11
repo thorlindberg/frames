@@ -23,14 +23,18 @@ struct Frame: View {
                                     .foregroundColor(.white)
                                     .shadow(color: Color.black.opacity(0.15), radius: 30)
                                     .padding(30)
+                                    .frame(width: model.data.frames[model.data.selected].filled ? geometry.size.width : nil)
                             }
                             Image(uiImage: model.data.frames[model.data.selected].image)
                                 .resizable()
                                 .aspectRatio(contentMode: model.data.frames[model.data.selected].filled ? .fill : .fit)
                                 .saturation(model.data.frames[model.data.selected].colored ? 1 : 0)
+                                .brightness(model.data.frames[model.data.selected].brightened ? 0.1 : 0)
+                                .if(model.data.frames[model.data.selected].inverted) { view in view.colorInvert()}
                                 .rotationEffect(.degrees(Double(model.data.frames[model.data.selected].rotated)))
                                 .padding(model.data.frames[model.data.selected].bordered ? 40 : 30)
                                 .frame(height: [Double(90), Double(270)].contains(abs(model.data.frames[model.data.selected].rotated)) ? geometry.size.width : nil)
+                                .mask(Rectangle().frame(width: model.data.frames[model.data.selected].bordered ? geometry.size.width - 80 : geometry.size.width - 60, height: geometry.size.height))
                                 .contextMenu {
                                     Button(action: {
                                         UIApplication.shared.windows.filter({$0.isKeyWindow})
@@ -41,7 +45,7 @@ struct Frame: View {
                                         Label("Share", systemImage: "square.and.arrow.up")
                                     }
                                     Button(action: {
-                                        model.removeImage(item: model.data.frames[model.data.selected].image)
+                                        model.removeImage()
                                     }) {
                                         Label("Delete", systemImage: "delete.left")
                                     }
@@ -74,6 +78,7 @@ struct Frame: View {
                 if model.data.selected < 0 {
                     model.data.selected = 0
                 }
+                UIImpactFeedbackGenerator(style: .soft).impactOccurred() // source: https://stackoverflow.com/questions/56748539/how-to-create-haptic-feedback-for-a-button-in-swiftui
             })
         }
     }
@@ -83,6 +88,10 @@ struct Frame: View {
 
 struct Frame_Previews: PreviewProvider {
     static var previews: some View {
-        Content(model: Data())
+        ForEach(ColorScheme.allCases, id: \.self) {
+             Content(model: Data())
+                .preferredColorScheme($0)
+        }
+        .previewDevice("iPhone 12 mini")
     }
 }
