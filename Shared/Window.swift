@@ -128,6 +128,7 @@ struct Window: View {
                     }
                 }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .actionSheet(isPresented: $model.data.isAdjusting) {
             ActionSheet(title: Text("Aspect ratio"), buttons: [
                 .default(Text("13 x 18 cm")) { withAnimation { model.data.frames[model.data.selected].width = 13 ; model.data.frames[model.data.selected].height = 18 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
