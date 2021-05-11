@@ -176,7 +176,7 @@ struct Window: View {
     
 }
 
-struct Content_Previews: PreviewProvider {
+struct Window_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
             Window(model: Data())

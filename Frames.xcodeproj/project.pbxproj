@@ -11,7 +11,7 @@
 		7E2CF2DF26444CC0005B7E3C /* FramesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CF2CC26444CBF005B7E3C /* FramesApp.swift */; };
 		7E2CF2E326444CC0005B7E3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E2CF2CE26444CC0005B7E3C /* Assets.xcassets */; };
 		7E2CF2EE26444E0A005B7E3C /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CF2ED26444E0A005B7E3C /* Data.swift */; };
-		7E2CF2F426446F1F005B7E3C /* Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CF2F326446F1F005B7E3C /* Content.swift */; };
+		7E2CF2F426446F1F005B7E3C /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CF2F326446F1F005B7E3C /* Window.swift */; };
 		7EF3C558264A76DB00084E35 /* Augment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EF3C557264A76DB00084E35 /* Augment.swift */; };
 /* End PBXBuildFile section */
 
@@ -22,7 +22,7 @@
 		7E2CF2D326444CC0005B7E3C /* Frames.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Frames.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E2CF2D626444CC0005B7E3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7E2CF2ED26444E0A005B7E3C /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
-		7E2CF2F326446F1F005B7E3C /* Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Content.swift; sourceTree = "<group>"; };
+		7E2CF2F326446F1F005B7E3C /* Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		7EF3C557264A76DB00084E35 /* Augment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Augment.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -50,7 +50,7 @@
 			isa = PBXGroup;
 			children = (
 				7E2CF2CC26444CBF005B7E3C /* FramesApp.swift */,
-				7E2CF2F326446F1F005B7E3C /* Content.swift */,
+				7E2CF2F326446F1F005B7E3C /* Window.swift */,
 				7E20825D2647F4BC00404BC1 /* Frame.swift */,
 				7EF3C557264A76DB00084E35 /* Augment.swift */,
 				7E2CF2ED26444E0A005B7E3C /* Data.swift */,
@@ -146,7 +146,7 @@
 				7E2CF2EE26444E0A005B7E3C /* Data.swift in Sources */,
 				7E20825E2647F4BC00404BC1 /* Frame.swift in Sources */,
 				7EF3C558264A76DB00084E35 /* Augment.swift in Sources */,
-				7E2CF2F426446F1F005B7E3C /* Content.swift in Sources */,
+				7E2CF2F426446F1F005B7E3C /* Window.swift in Sources */,
 				7E2CF2DF26444CC0005B7E3C /* FramesApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

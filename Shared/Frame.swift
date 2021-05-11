@@ -69,7 +69,7 @@ struct Frame: View {
                     }
                 }
             }
-            .gesture(DragGesture().onChanged { value in
+            .gesture(DragGesture(minimumDistance: geometry.size.width/3).onChanged { value in
                 if value.translation.width > 0 {
                     model.data.selected = model.data.selected - 1
                 } else if model.data.selected != model.data.frames.count - 1 {
@@ -95,8 +95,6 @@ extension View {
         }
     }
 }
-
-
 
 struct Frame_Previews: PreviewProvider {
     static var previews: some View {
