@@ -10,7 +10,7 @@ struct Window: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Frames")
                 .toolbar {
-                    ToolbarItemGroup(placement: .cancellationAction) {
+                    ToolbarItem(placement: .cancellationAction) {
                         Menu {
                             Button(action: {
                                 model.data.isImporting.toggle()

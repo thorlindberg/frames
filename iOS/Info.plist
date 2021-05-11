@@ -25,9 +25,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Your camera will be used to scan photos.</string>
+	<string>Access is used to scan objects into photos.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>You are adding an image to your Photos.</string>
+	<string>Access is used to import photos or save screenshots.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -29,20 +29,10 @@ final class Data: NSObject, ObservableObject {
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
         isImporting: false, isModelled: false, isAugmenting: false, isAdjusting: false, selected: 0,
-        frames: [
-            Frame(
-                image: UIImage(imageLiteralResourceName: "placeholder"),
-                width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0
-            ),
-            Frame(
-                image: UIImage(imageLiteralResourceName: "sample1"),
-                width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0
-            ),
-            Frame(
-                image: UIImage(imageLiteralResourceName: "sample2"),
-                width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0
-            )
-        ]
+        frames: [ Frame(
+            image: UIImage(imageLiteralResourceName: "placeholder"),
+            width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0
+        )]
     )
     
     var scene: SCNScene? {

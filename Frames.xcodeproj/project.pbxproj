@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7E20825E2647F4BC00404BC1 /* Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E20825D2647F4BC00404BC1 /* Frame.swift */; };
 		7E20B354264AE54500981E7B /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E20B353264AE54500981E7B /* Object.swift */; };
+		7E20B356264AF19300981E7B /* Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E20B355264AF19300981E7B /* Screenshot.swift */; };
 		7E2CF2DF26444CC0005B7E3C /* FramesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CF2CC26444CBF005B7E3C /* FramesApp.swift */; };
 		7E2CF2E326444CC0005B7E3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E2CF2CE26444CC0005B7E3C /* Assets.xcassets */; };
 		7E2CF2EE26444E0A005B7E3C /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CF2ED26444E0A005B7E3C /* Data.swift */; };
@@ -19,6 +20,7 @@
 /* Begin PBXFileReference section */
 		7E20825D2647F4BC00404BC1 /* Frame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frame.swift; sourceTree = "<group>"; };
 		7E20B353264AE54500981E7B /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
+		7E20B355264AF19300981E7B /* Screenshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screenshot.swift; sourceTree = "<group>"; };
 		7E2CF2CC26444CBF005B7E3C /* FramesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FramesApp.swift; sourceTree = "<group>"; };
 		7E2CF2CE26444CC0005B7E3C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7E2CF2D326444CC0005B7E3C /* Frames.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Frames.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -56,6 +58,7 @@
 				7E20825D2647F4BC00404BC1 /* Frame.swift */,
 				7E20B353264AE54500981E7B /* Object.swift */,
 				7EF3C557264A76DB00084E35 /* Augment.swift */,
+				7E20B355264AF19300981E7B /* Screenshot.swift */,
 				7E2CF2ED26444E0A005B7E3C /* Data.swift */,
 				7E2CF2CE26444CC0005B7E3C /* Assets.xcassets */,
 			);
@@ -150,6 +153,7 @@
 				7E20825E2647F4BC00404BC1 /* Frame.swift in Sources */,
 				7EF3C558264A76DB00084E35 /* Augment.swift in Sources */,
 				7E2CF2F426446F1F005B7E3C /* Window.swift in Sources */,
+				7E20B356264AF19300981E7B /* Screenshot.swift in Sources */,
 				7E20B354264AE54500981E7B /* Object.swift in Sources */,
 				7E2CF2DF26444CC0005B7E3C /* FramesApp.swift in Sources */,
 			);
@@ -275,7 +279,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 23;
 				DEVELOPMENT_TEAM = VX5CR539N9;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -298,7 +302,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 23;
 				DEVELOPMENT_TEAM = VX5CR539N9;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
