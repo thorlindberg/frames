@@ -35,11 +35,13 @@ struct Window: View {
                         }) {
                             Text("3D")
                         }
+                        .disabled(model.data.frames.isEmpty)
                         Button(action: {
                             model.data.isAugmenting.toggle()
                         }) {
                             Text("AR")
                         }
+                        .disabled(model.data.frames.isEmpty)
                     }
                     ToolbarItemGroup(placement: .bottomBar) {
                         if !model.data.frames.isEmpty {

@@ -1,5 +1,7 @@
 import SwiftUI
 
+// source: https://www.hackingwithswift.com/quick-start/swiftui/how-to-convert-a-swiftui-view-to-an-image
+
 extension View {
     func snapshot() -> UIImage {
         let controller = UIHostingController(rootView: self)
