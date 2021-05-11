@@ -1,8 +1,5 @@
 import SwiftUI
 import VisionKit
-import QuickLook
-import SceneKit
-import ARKit
 
 final class Data: NSObject, ObservableObject {
     
@@ -13,7 +10,6 @@ final class Data: NSObject, ObservableObject {
         var isAdjusting: Bool
         var frames: [Frame]
         var selected: Int
-        var augment: Augment?
         var errorMessage: String?
     }
     
@@ -27,11 +23,6 @@ final class Data: NSObject, ObservableObject {
         var brightened: Bool
         var inverted: Bool
         var rotated: Double
-    }
-    
-    struct Augment: Hashable {
-        var scene: SCNScene
-        var node: SCNNode
     }
     
     @Published var data: Format = Format(
@@ -54,7 +45,6 @@ final class Data: NSObject, ObservableObject {
             )
         ],
         selected: 0
-        // augment: Augment(scene: SCNScene(named: "Models.scnassets/Avatar.scn")!, node: SCNNode())
     )
     
     func getDocumentCameraViewController() -> VNDocumentCameraViewController {
@@ -133,57 +123,3 @@ struct ImagePicker: UIViewControllerRepresentable {
     }
     
 }
-
-/*
-struct ARQuickLookView: UIViewControllerRepresentable {
-    
-    @ObservedObject var model: Data
-    
-    // reference: https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit?language=objc
-    // source: https://stackoverflow.com/questions/49353131/how-to-add-an-image-to-an-arscnscene-in-swift
-    
-    // let scene = SCNNode(geometry: SCNPlane(width: model.data.frames[model.data.selected].width, height: model.data.frames[model.data.selected].height)).geometry?.firstMaterial?.diffuse.contents = model.data.frames[model.data.selected].image
-    
-    // source: https://developer.apple.com/forums/thread/126377
-    
-    var allowScaling: Bool = true
-    
-    func makeCoordinator() -> ARQuickLookView.Coordinator {
-        Coordinator(self)
-    }
-    
-    func makeUIViewController(context: Context) -> QLPreviewController {
-        let controller = QLPreviewController()
-        controller.dataSource = context.coordinator
-        return controller
-    }
-    
-    func updateUIViewController(_ controller: QLPreviewController, context: Context) {
-    }
-    
-    class Coordinator: NSObject, QLPreviewControllerDataSource {
-        
-        let parent: ARQuickLookView
-        
-        init(_ parent: ARQuickLookView) {
-            self.parent = parent
-            super.init()
-        }
-        
-        func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
-            return 1
-        }
-        
-        func previewController(
-            _ controller: QLPreviewController,
-            previewItemAt index: Int
-        ) -> QLPreviewItem {
-            let item = ARQuickLookPreviewItem(fileAt: parent.model.data.scene!)
-            item.allowsContentScaling = parent.allowScaling
-            return item
-        }
-        
-    }
-    
-}
-*/

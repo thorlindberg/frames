@@ -1,7 +1,6 @@
 import SwiftUI
-import SceneKit
 
-struct Content: View {
+struct Window: View {
     
     @ObservedObject var model: Data
     
@@ -180,20 +179,9 @@ struct Content: View {
 struct Content_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-             Content(model: Data())
+            Window(model: Data())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")
-    }
-}
-
-extension View {
-    // source: https://www.avanderlee.com/swiftui/conditional-view-modifier/
-    @ViewBuilder func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
-        if condition {
-            transform(self)
-        } else {
-            self
-        }
     }
 }
