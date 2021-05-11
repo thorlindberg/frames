@@ -1,28 +1,18 @@
 import SwiftUI
 import SceneKit
-import QuickLook
-import SceneKit
+import Foundation
 import ARKit
 
 struct Augment: View {
     
     @ObservedObject var model: Data
     
-    var scene: SCNScene? {
-        let myScene = SCNScene()
-        let imageNode = SCNNode(geometry: SCNPlane())
-        imageNode.geometry?.firstMaterial?.diffuse.contents = model.data.frames[model.data.selected].image
-        imageNode.scale = SCNVector3(Float(model.data.frames[model.data.selected].image.size.width), Float(model.data.frames[model.data.selected].image.size.height), 1)
-        myScene.rootNode.addChildNode(imageNode)
-        return myScene
-    }
-    
     var body: some View {
         NavigationView {
-            SceneView(scene: scene, options: [.allowsCameraControl])
+            NavigationIndicator(model: model)
                 .ignoresSafeArea()
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("3D rendered object")
+                .navigationTitle("Augmented Reality")
                 .toolbar {
                     ToolbarItemGroup(placement: .cancellationAction) {
                         Button(action: {
@@ -47,54 +37,87 @@ struct Augment_Previews: PreviewProvider {
     }
 }
 
-/*
-struct ARQuickLookView: UIViewControllerRepresentable {
+// source: https://blog.devgenius.io/implementing-ar-in-swiftui-without-storyboards-ec529ace7ab2
+
+struct NavigationIndicator: UIViewControllerRepresentable {
     
     @ObservedObject var model: Data
     
-    // reference: https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit?language=objc
-    // source: https://stackoverflow.com/questions/49353131/how-to-add-an-image-to-an-arscnscene-in-swift
-    
-    // source: https://developer.apple.com/forums/thread/126377
-    
-    var allowScaling: Bool = true
-    
-    func makeCoordinator() -> ARQuickLookView.Coordinator {
-        Coordinator(self)
+    typealias UIViewControllerType = ARView
+    func makeUIViewController(context: Context) -> ARView {
+        return ARView(model)
     }
-    
-    func makeUIViewController(context: Context) -> QLPreviewController {
-        let controller = QLPreviewController()
-        controller.dataSource = context.coordinator
-        return controller
-    }
-    
-    func updateUIViewController(_ controller: QLPreviewController, context: Context) {
-    }
-    
-    class Coordinator: NSObject, QLPreviewControllerDataSource {
-        
-        let parent: ARQuickLookView
-        
-        init(_ parent: ARQuickLookView) {
-            self.parent = parent
-            super.init()
-        }
-        
-        func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
-            return 1
-        }
-        
-        func previewController(
-            _ controller: QLPreviewController,
-            previewItemAt index: Int
-        ) -> QLPreviewItem {
-            let item = ARQuickLookPreviewItem(fileAt: parent.model.data.scene!)
-            item.allowsContentScaling = parent.allowScaling
-            return item
-        }
-        
-    }
+    func updateUIViewController(_ uiViewController:
+        NavigationIndicator.UIViewControllerType, context:
+        UIViewControllerRepresentableContext<NavigationIndicator>) { }
     
 }
-*/
+
+struct ARViewIndicator: UIViewControllerRepresentable {
+    
+    @ObservedObject var model: Data
+    
+    typealias UIViewControllerType = ARView
+    
+    func makeUIViewController(context: Context) -> ARView {
+        return ARView(model)
+    }
+    func updateUIViewController(_ uiViewController:
+        ARViewIndicator.UIViewControllerType, context:
+        UIViewControllerRepresentableContext<ARViewIndicator>) { }
+    
+}
+
+class ARView: UIViewController, ARSCNViewDelegate {
+    
+    @ObservedObject var model: Data
+
+    init(_ model: Data) {
+        self.model = model
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    var arView: ARSCNView {
+        return self.view as! ARSCNView
+    }
+    
+    override func loadView() {
+        self.view = ARSCNView(frame: .zero)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        arView.delegate = self
+        arView.scene = model.scene!
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let configuration = ARWorldTrackingConfiguration()
+        arView.session.run(configuration)
+        arView.delegate = self
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        arView.session.pause()
+    }
+    
+    func sessionWasInterrupted(_ session: ARSession) {}
+    
+    func sessionInterruptionEnded(_ session: ARSession) {}
+    func session(_ session: ARSession, didFailWithError error: Error)
+    {}
+    func session(_ session: ARSession, cameraDidChangeTrackingState
+                    camera: ARCamera) {}
+    
+}

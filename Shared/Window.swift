@@ -29,7 +29,12 @@ struct Window: View {
                             Image(systemName: "camera")
                         }
                     }
-                    ToolbarItem(placement: .confirmationAction) {
+                    ToolbarItemGroup(placement: .confirmationAction) {
+                        Button(action: {
+                            model.data.isModelled.toggle()
+                        }) {
+                            Text("3D")
+                        }
                         Button(action: {
                             model.data.isAugmenting.toggle()
                         }) {
@@ -170,8 +175,11 @@ struct Window: View {
             }
             .padding(.vertical, 100)
         }
+        .sheet(isPresented: $model.data.isModelled) {
+            Object(model: model)
+        }
         .sheet(isPresented: $model.data.isAugmenting) {
-            Augment(model: model) // ARQuickLookView(model: model)
+            Augment(model: model)
         }
     }
     

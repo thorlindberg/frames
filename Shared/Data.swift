@@ -1,4 +1,5 @@
 import SwiftUI
+import SceneKit
 import VisionKit
 
 final class Data: NSObject, ObservableObject {
@@ -6,11 +7,11 @@ final class Data: NSObject, ObservableObject {
     struct Format: Hashable {
         var firstLaunch: Bool
         var isImporting: Bool
+        var isModelled: Bool
         var isAugmenting: Bool
         var isAdjusting: Bool
-        var frames: [Frame]
         var selected: Int
-        var errorMessage: String?
+        var frames: [Frame]
     }
     
     struct Frame: Hashable {
@@ -27,9 +28,7 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
-        isImporting: false,
-        isAugmenting: false,
-        isAdjusting: false,
+        isImporting: false, isModelled: false, isAugmenting: false, isAdjusting: false, selected: 0,
         frames: [
             Frame(
                 image: UIImage(imageLiteralResourceName: "placeholder"),
@@ -43,9 +42,21 @@ final class Data: NSObject, ObservableObject {
                 image: UIImage(imageLiteralResourceName: "sample2"),
                 width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0
             )
-        ],
-        selected: 0
+        ]
     )
+    
+    var scene: SCNScene? {
+        let myScene = SCNScene()
+        let imageNode = SCNNode(geometry: SCNPlane())
+        imageNode.geometry?.firstMaterial?.diffuse.contents = data.frames[data.selected].image
+        imageNode.scale = SCNVector3(
+            Float(data.frames[data.selected].image.size.width),
+            Float(data.frames[data.selected].image.size.height),
+            1
+        )
+        myScene.rootNode.addChildNode(imageNode)
+        return myScene
+    }
     
     func getDocumentCameraViewController() -> VNDocumentCameraViewController {
         let vc = VNDocumentCameraViewController()
@@ -76,7 +87,7 @@ extension Data: VNDocumentCameraViewControllerDelegate {
     }
     
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
-        data.errorMessage = error.localizedDescription
+        print(error.localizedDescription)
     }
     
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
