@@ -153,6 +153,7 @@ struct Window: View {
         }
         .sheet(isPresented: $model.data.isAugmenting) {
             Augment(model: model)
+                .modifier(DisableModalDismiss(disabled: true))
         }
         .sheet(isPresented: $model.data.firstLaunch, onDismiss: { UserDefaults.standard.set(true, forKey: "hasLaunched") } ) {
             VStack(spacing: 25) {
