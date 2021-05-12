@@ -1,8 +1,9 @@
 import SwiftUI
 
-// source: https://www.hackingwithswift.com/quick-start/swiftui/how-to-convert-a-swiftui-view-to-an-image
-
 extension View {
+    
+    // source: https://www.hackingwithswift.com/quick-start/swiftui/how-to-convert-a-swiftui-view-to-an-image
+    
     func snapshot() -> UIImage {
         let controller = UIHostingController(rootView: self)
         let view = controller.view
@@ -17,4 +18,5 @@ extension View {
             view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
         }
     }
+    
 }

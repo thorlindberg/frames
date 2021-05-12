@@ -1,7 +1,6 @@
 import SwiftUI
-import SceneKit
-import Foundation
 import ARKit
+import QuickLook
 
 struct Augment: View {
     
@@ -9,10 +8,10 @@ struct Augment: View {
     
     var body: some View {
         NavigationView {
-            NavigationIndicator(model: model)
+            PreviewController(model: model)
                 .ignoresSafeArea()
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Augmented Reality")
+                .navigationTitle("Quick Look")
                 .toolbar {
                     ToolbarItemGroup(placement: .cancellationAction) {
                         Button(action: {
@@ -23,7 +22,7 @@ struct Augment: View {
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
-                            UIImageWriteToSavedPhotosAlbum(NavigationIndicator(model: model).snapshot(), nil, nil, nil)
+                            UIImageWriteToSavedPhotosAlbum(PreviewController(model: model).snapshot(), nil, nil, nil)
                         }) {
                             Text("Save")
                         }
@@ -37,94 +36,39 @@ struct Augment: View {
 struct Augment_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Augment(model: Data())
+            Window(model: Data())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")
     }
 }
 
-// source: https://blog.devgenius.io/implementing-ar-in-swiftui-without-storyboards-ec529ace7ab2
-
-struct NavigationIndicator: UIViewControllerRepresentable {
+struct PreviewController: UIViewControllerRepresentable {
+    
+    // resources: https://developer.apple.com/forums/thread/126377
+    // resource: https://lostmoa.com/blog/PreviewFilesWithQuickLookInSwiftUI/
+    // source: https://github.com/LostMoa/SwiftUI-Code-Examples/blob/main/PreviewFilesWithQuickLookInSwiftUI/SwiftUIQuickLook/PreviewController.swift
     
     @ObservedObject var model: Data
     
-    typealias UIViewControllerType = ARView
-    func makeUIViewController(context: Context) -> ARView {
-        return ARView(model)
+    func makeUIViewController(context: Context) -> QLPreviewController {
+        let controller = QLPreviewController()
+        controller.dataSource = context.coordinator
+        return controller
     }
-    func updateUIViewController(_ uiViewController:
-        NavigationIndicator.UIViewControllerType, context:
-        UIViewControllerRepresentableContext<NavigationIndicator>) { }
     
-}
+    func updateUIViewController(_ controller: QLPreviewController, context: Context) { }
 
-struct ARViewIndicator: UIViewControllerRepresentable {
+    func makeCoordinator() -> Coordinator { return Coordinator(parent: self) }
     
-    @ObservedObject var model: Data
-    
-    typealias UIViewControllerType = ARView
-    
-    func makeUIViewController(context: Context) -> ARView {
-        return ARView(model)
+    class Coordinator: NSObject, QLPreviewControllerDataSource {
+        let parent: PreviewController
+        init(parent: PreviewController) { self.parent = parent }
+        func numberOfPreviewItems(in controller: QLPreviewController) -> Int { return 1 }
+        func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
+            let item = ARQuickLookPreviewItem(fileAt: parent.model.objectPath())
+            item.allowsContentScaling = true
+            return item
+        }
     }
-    func updateUIViewController(_ uiViewController:
-        ARViewIndicator.UIViewControllerType, context:
-        UIViewControllerRepresentableContext<ARViewIndicator>) { }
-    
-}
-
-class ARView: UIViewController, ARSCNViewDelegate {
-    
-    @ObservedObject var model: Data
-
-    init(_ model: Data) {
-        self.model = model
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    var arView: ARSCNView {
-        return self.view as! ARSCNView
-    }
-    
-    override func loadView() {
-        self.view = ARSCNView(frame: .zero)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        arView.delegate = self
-        arView.scene = model.scene!
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-    }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        let configuration = ARWorldTrackingConfiguration()
-        arView.session.run(configuration)
-        arView.delegate = self
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        arView.session.pause()
-    }
-    
-    func sessionWasInterrupted(_ session: ARSession) {}
-    
-    func sessionInterruptionEnded(_ session: ARSession) {}
-    func session(_ session: ARSession, didFailWithError error: Error)
-    {}
-    func session(_ session: ARSession, cameraDidChangeTrackingState
-                    camera: ARCamera) {}
-    
 }

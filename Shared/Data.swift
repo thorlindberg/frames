@@ -7,7 +7,6 @@ final class Data: NSObject, ObservableObject {
     struct Format: Hashable {
         var firstLaunch: Bool
         var isImporting: Bool
-        var isModelled: Bool
         var isAugmenting: Bool
         var isAdjusting: Bool
         var selected: Int
@@ -28,7 +27,7 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
-        isImporting: false, isModelled: false, isAugmenting: false, isAdjusting: false, selected: 0,
+        isImporting: false, isAugmenting: false, isAdjusting: false, selected: 0,
         frames: [ Frame(
             image: UIImage(imageLiteralResourceName: "placeholder"),
             width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0
@@ -54,13 +53,13 @@ final class Data: NSObject, ObservableObject {
         return vc
     }
     
-    func objectPath() -> URL? {
+    func objectPath() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0].appendingPathComponent("object.usdz")
     }
     
     func writeObject() {
-        scene?.write(to: objectPath()!, options: [:], delegate: nil, progressHandler: nil)
+        scene?.write(to: objectPath(), options: nil, delegate: nil, progressHandler: nil)
     }
     
     func removeImage() {

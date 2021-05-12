@@ -29,13 +29,7 @@ struct Window: View {
                             Image(systemName: "camera")
                         }
                     }
-                    ToolbarItemGroup(placement: .confirmationAction) {
-                        Button(action: {
-                            model.data.isModelled.toggle()
-                        }) {
-                            Text("3D")
-                        }
-                        .disabled(model.data.frames.isEmpty)
+                    ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
                             model.writeObject()
                             model.data.isAugmenting.toggle()
@@ -157,6 +151,9 @@ struct Window: View {
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model)
         }
+        .sheet(isPresented: $model.data.isAugmenting) {
+            Augment(model: model)
+        }
         .sheet(isPresented: $model.data.firstLaunch, onDismiss: { UserDefaults.standard.set(true, forKey: "hasLaunched") } ) {
             VStack(spacing: 25) {
                 Text("Welcome!")
@@ -177,13 +174,6 @@ struct Window: View {
                 }
             }
             .padding(.vertical, 100)
-        }
-        .sheet(isPresented: $model.data.isModelled) {
-            Object(model: model)
-        }
-        .sheet(isPresented: $model.data.isAugmenting) {
-            // Augment(model: model)
-            Reality(model: model)
         }
     }
     
