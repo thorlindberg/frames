@@ -54,13 +54,13 @@ final class Data: NSObject, ObservableObject {
         return vc
     }
     
-    func objectPath() -> URL {
+    func objectPath() -> URL? {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0].appendingPathComponent("object.usdz")
     }
     
     func writeObject() {
-        scene?.write(to: objectPath(), options: [:], delegate: nil, progressHandler: nil)
+        scene?.write(to: objectPath()!, options: [:], delegate: nil, progressHandler: nil)
     }
     
     func removeImage() {

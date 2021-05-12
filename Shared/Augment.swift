@@ -7,13 +7,9 @@ struct Augment: View {
     
     @ObservedObject var model: Data
     
-    var augmentedView: some View {
-        NavigationIndicator(model: model)
-    }
-    
     var body: some View {
         NavigationView {
-            augmentedView
+            NavigationIndicator(model: model)
                 .ignoresSafeArea()
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Augmented Reality")
@@ -27,7 +23,7 @@ struct Augment: View {
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
-                            UIImageWriteToSavedPhotosAlbum(augmentedView.snapshot(), nil, nil, nil)
+                            UIImageWriteToSavedPhotosAlbum(NavigationIndicator(model: model).snapshot(), nil, nil, nil)
                         }) {
                             Text("Save")
                         }

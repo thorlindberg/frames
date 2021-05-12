@@ -8,13 +8,9 @@ struct Object: View {
     // reference: https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit?language=objc
     // source: https://stackoverflow.com/questions/49353131/how-to-add-an-image-to-an-arscnscene-in-swift
     
-    var objectView: some View {
-        SceneView(scene: model.scene, options: [.allowsCameraControl])
-    }
-    
     var body: some View {
         NavigationView {
-            objectView
+            SceneView(scene: model.scene, options: [.allowsCameraControl])
                 .ignoresSafeArea()
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("3D object")
@@ -28,7 +24,7 @@ struct Object: View {
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
-                            UIImageWriteToSavedPhotosAlbum(objectView.snapshot(), nil, nil, nil)
+                            UIImageWriteToSavedPhotosAlbum(SceneView(scene: model.scene, options: [.allowsCameraControl]).snapshot(), nil, nil, nil)
                         }) {
                             Text("Save")
                         }
