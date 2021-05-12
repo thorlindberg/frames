@@ -7,51 +7,54 @@ struct Frame: View {
     
     var body: some View {
         GeometryReader { geometry in
-            ZStack {
+            VStack {
+                Spacer()
                 if model.data.frames.isEmpty {
-                    Image(systemName: "photo")
-                        .opacity(0.15)
-                        .font(.system(size: 150))
-                } else {
-                    VStack {
+                    HStack {
                         Spacer()
-                        ZStack {
-                            if model.data.frames[model.data.selected].bordered {
-                                Rectangle()
-                                    .foregroundColor(.white)
-                                    .shadow(color: Color.black.opacity(0.15), radius: 30)
-                                    .padding(30)
-                                    .frame(width: model.data.frames[model.data.selected].filled ? geometry.size.width : nil)
-                            }
-                            Image(uiImage: model.data.frames[model.data.selected].image)
-                                .resizable()
-                                .aspectRatio(contentMode: model.data.frames[model.data.selected].filled ? .fill : .fit)
-                                .saturation(model.data.frames[model.data.selected].colored ? 1 : 0)
-                                .brightness(model.data.frames[model.data.selected].brightened ? 0.1 : 0)
-                                .if(model.data.frames[model.data.selected].inverted) { view in view.colorInvert()}
-                                .rotationEffect(.degrees(Double(model.data.frames[model.data.selected].rotated)))
-                                .padding(model.data.frames[model.data.selected].bordered ? 40 : 30)
-                                .frame(height: [Double(90), Double(270)].contains(abs(model.data.frames[model.data.selected].rotated)) ? geometry.size.width : nil)
-                                .mask(Rectangle().frame(width: model.data.frames[model.data.selected].bordered ? geometry.size.width - 80 : geometry.size.width - 60, height: geometry.size.height))
-                                .contextMenu {
-                                    Button(action: {
-                                        UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                            .first?
-                                            .rootViewController?
-                                            .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected]], applicationActivities: nil), animated: true)
-                                    }) {
-                                        Label("Share", systemImage: "square.and.arrow.up")
-                                    }
-                                    Button(action: {
-                                        model.removeImage()
-                                    }) {
-                                        Label("Delete", systemImage: "delete.left")
-                                    }
-                                }
-                        }
-                        .frame(width: geometry.size.width, height: model.data.frames[model.data.selected].height >= model.data.frames[model.data.selected].width ? model.data.frames[model.data.selected].height / model.data.frames[model.data.selected].width * geometry.size.width : nil)
+                        Image(systemName: "photo")
+                            .opacity(0.15)
+                            .font(.system(size: 150))
                         Spacer()
                     }
+                    Spacer()
+                } else {
+                    ZStack {
+                        if model.data.frames[model.data.selected].bordered {
+                            Rectangle()
+                                .foregroundColor(.white)
+                                .shadow(color: Color.black.opacity(0.15), radius: 30)
+                                .padding(30)
+                                .frame(width: model.data.frames[model.data.selected].filled ? geometry.size.width : nil)
+                        }
+                        Image(uiImage: model.data.frames[model.data.selected].image)
+                            .resizable()
+                            .aspectRatio(contentMode: model.data.frames[model.data.selected].filled ? .fill : .fit)
+                            .saturation(model.data.frames[model.data.selected].colored ? 1 : 0)
+                            .brightness(model.data.frames[model.data.selected].brightened ? 0.1 : 0)
+                            .if(model.data.frames[model.data.selected].inverted) { view in view.colorInvert()}
+                            .rotationEffect(.degrees(Double(model.data.frames[model.data.selected].rotated)))
+                            .padding(model.data.frames[model.data.selected].bordered ? 40 : 30)
+                            .frame(height: [Double(90), Double(270)].contains(abs(model.data.frames[model.data.selected].rotated)) ? geometry.size.width : nil)
+                            .mask(Rectangle().frame(width: model.data.frames[model.data.selected].bordered ? geometry.size.width - 80 : geometry.size.width - 60, height: geometry.size.height))
+                            .contextMenu {
+                                Button(action: {
+                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                        .first?
+                                        .rootViewController?
+                                        .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected]], applicationActivities: nil), animated: true)
+                                }) {
+                                    Label("Share", systemImage: "square.and.arrow.up")
+                                }
+                                Button(action: {
+                                    model.removeImage()
+                                }) {
+                                    Label("Delete", systemImage: "delete.left")
+                                }
+                            }
+                    }
+                    .frame(width: geometry.size.width, height: model.data.frames[model.data.selected].height >= model.data.frames[model.data.selected].width ? model.data.frames[model.data.selected].height / model.data.frames[model.data.selected].width * geometry.size.width : nil)
+                    Spacer()
                     if model.data.frames.count != 1 {
                         VStack(spacing: 0) {
                             Spacer()
