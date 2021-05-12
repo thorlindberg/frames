@@ -54,8 +54,8 @@
 				7E2CF2CC26444CBF005B7E3C /* FramesApp.swift */,
 				7E2CF2F326446F1F005B7E3C /* Window.swift */,
 				7E20825D2647F4BC00404BC1 /* Frame.swift */,
-				7E2296DC264C3D2E001F05CB /* Augment.swift */,
 				7E2296DF264C58FF001F05CB /* Snapshot.swift */,
+				7E2296DC264C3D2E001F05CB /* Augment.swift */,
 				7E2CF2ED26444E0A005B7E3C /* Data.swift */,
 				7E2CF2CE26444CC0005B7E3C /* Assets.xcassets */,
 			);

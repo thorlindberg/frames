@@ -59,6 +59,7 @@ final class Data: NSObject, ObservableObject {
     }
     
     func writeObject() {
+        // reference: https://stackoverflow.com/questions/64037121/how-to-programmatically-export-3d-mesh-as-usdz-using-modelio
         scene?.write(to: objectPath(), options: nil, delegate: nil, progressHandler: nil)
     }
     

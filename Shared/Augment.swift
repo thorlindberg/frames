@@ -11,7 +11,7 @@ struct Augment: View {
             PreviewController(model: model)
                 .ignoresSafeArea()
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Quick Look")
+                .navigationTitle("Augmented Reality")
                 .toolbar {
                     ToolbarItemGroup(placement: .cancellationAction) {
                         Button(action: {
