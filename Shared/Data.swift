@@ -37,7 +37,7 @@ final class Data: NSObject, ObservableObject {
     
     var scene: SCNScene? {
         let myScene = SCNScene()
-        let imageNode = SCNNode(geometry: SCNPlane(width: data.frames[data.selected].width, height: data.frames[data.selected].height))
+        let imageNode = SCNNode(geometry: SCNPlane())
         imageNode.geometry?.firstMaterial?.diffuse.contents = data.frames[data.selected].image
         imageNode.scale = SCNVector3(
             Float(data.frames[data.selected].image.size.width),
@@ -52,6 +52,15 @@ final class Data: NSObject, ObservableObject {
         let vc = VNDocumentCameraViewController()
         vc.delegate = self
         return vc
+    }
+    
+    func objectPath() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0].appendingPathComponent("object.usdz")
+    }
+    
+    func writeObject() {
+        scene?.write(to: objectPath(), options: [:], delegate: nil, progressHandler: nil)
     }
     
     func removeImage() {

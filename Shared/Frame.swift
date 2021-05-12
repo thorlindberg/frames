@@ -8,8 +8,6 @@ struct Frame: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Rectangle()
-                    .opacity(colorScheme == .dark ? 0 : 0.05)
                 if model.data.frames.isEmpty {
                     Image(systemName: "photo")
                         .opacity(0.15)
@@ -68,6 +66,7 @@ struct Frame: View {
                         }
                     }
                 }
+                
             }
             .gesture(DragGesture(minimumDistance: geometry.size.width/2).onChanged { value in
                 if value.translation.width > 0 {

@@ -37,6 +37,7 @@ struct Window: View {
                         }
                         .disabled(model.data.frames.isEmpty)
                         Button(action: {
+                            model.writeObject()
                             model.data.isAugmenting.toggle()
                         }) {
                             Text("AR")
@@ -181,7 +182,8 @@ struct Window: View {
             Object(model: model)
         }
         .sheet(isPresented: $model.data.isAugmenting) {
-            Augment(model: model)
+            // Augment(model: model)
+            Reality(model: model)
         }
     }
     
