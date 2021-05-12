@@ -24,7 +24,7 @@ struct Augment: View {
                         Button(action: {
                             UIImageWriteToSavedPhotosAlbum(PreviewController(model: model).snapshot(), nil, nil, nil)
                         }) {
-                            Text("Save")
+                            Image(systemName: "camera")
                         }
                     }
                 }

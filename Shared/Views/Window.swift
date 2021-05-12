@@ -26,7 +26,7 @@ struct Window: View {
                                 Label("Scan with Camera", systemImage: "viewfinder")
                             }
                         } label: {
-                            Image(systemName: "camera")
+                            Image(systemName: "photo")
                         }
                     }
                     ToolbarItem(placement: .confirmationAction) {
