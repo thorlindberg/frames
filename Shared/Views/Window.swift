@@ -10,28 +10,32 @@ struct Window: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Frames")
                 .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Menu("Add") {
-                            Button(action: {
-                                model.data.isImporting.toggle()
-                            }) {
-                                Label("Import from Photos", systemImage: "photo")
-                            }
-                            Button(action: {
-                                UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                    .first?
-                                    .rootViewController?
-                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                            }) {
-                                Label("Scan with Camera", systemImage: "viewfinder")
-                            }
+                    ToolbarItemGroup(placement: .cancellationAction) {
+                        Button(action: {
+                            model.data.isImporting.toggle()
+                        }) {
+                            Image(systemName: "plus")
+                        }
+                        Button(action: {
+                            UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                .first?
+                                .rootViewController?
+                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                        }) {
+                            Image(systemName: "viewfinder")
                         }
                     }
-                    ToolbarItem(placement: .confirmationAction) {
+                    ToolbarItemGroup(placement: .confirmationAction) {
+                        Button(action: {
+                            model.data.isModeling.toggle()
+                        }) {
+                            Text("3D")
+                        }
+                        .disabled(model.data.frames.isEmpty)
                         Button(action: {
                             model.data.isAugmenting.toggle()
                         }) {
-                            Image(systemName: "pyramid")
+                            Text("AR")
                         }
                         .disabled(model.data.frames.isEmpty)
                     }
@@ -160,8 +164,13 @@ struct Window: View {
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model)
         }
+        .sheet(isPresented: $model.data.isModeling) {
+            Object(model: model)
+                .modifier(DisableModalDismiss(disabled: true))
+        }
         .sheet(isPresented: $model.data.isAugmenting) {
             Augment(model: model)
+            // QuickLook(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
         }
         .sheet(isPresented: $model.data.firstLaunch) {

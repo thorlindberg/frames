@@ -14,6 +14,8 @@
 		7E2CF2EE26444E0A005B7E3C /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CF2ED26444E0A005B7E3C /* Data.swift */; };
 		7E2CF2F426446F1F005B7E3C /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CF2F326446F1F005B7E3C /* Window.swift */; };
 		7E326871264D361B00A9CBB3 /* Augment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E326870264D361B00A9CBB3 /* Augment.swift */; };
+		7E326873264D437600A9CBB3 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E326872264D437600A9CBB3 /* Object.swift */; };
+		7E326875264D442B00A9CBB3 /* QuickLook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E326874264D442B00A9CBB3 /* QuickLook.swift */; };
 		7EECEF2C264C742C00B5149B /* Modal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EECEF2B264C742C00B5149B /* Modal.swift */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +29,8 @@
 		7E2CF2ED26444E0A005B7E3C /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		7E2CF2F326446F1F005B7E3C /* Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		7E326870264D361B00A9CBB3 /* Augment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Augment.swift; sourceTree = "<group>"; };
+		7E326872264D437600A9CBB3 /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
+		7E326874264D442B00A9CBB3 /* QuickLook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLook.swift; sourceTree = "<group>"; };
 		7EECEF2B264C742C00B5149B /* Modal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Modal.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -92,6 +96,8 @@
 			children = (
 				7E2CF2F326446F1F005B7E3C /* Window.swift */,
 				7E20825D2647F4BC00404BC1 /* Frame.swift */,
+				7E326872264D437600A9CBB3 /* Object.swift */,
+				7E326874264D442B00A9CBB3 /* QuickLook.swift */,
 				7E326870264D361B00A9CBB3 /* Augment.swift */,
 			);
 			path = Views;
@@ -166,11 +172,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E2CF2EE26444E0A005B7E3C /* Data.swift in Sources */,
+				7E326875264D442B00A9CBB3 /* QuickLook.swift in Sources */,
 				7E2296E0264C58FF001F05CB /* Snapshot.swift in Sources */,
 				7E20825E2647F4BC00404BC1 /* Frame.swift in Sources */,
 				7EECEF2C264C742C00B5149B /* Modal.swift in Sources */,
 				7E326871264D361B00A9CBB3 /* Augment.swift in Sources */,
 				7E2CF2F426446F1F005B7E3C /* Window.swift in Sources */,
+				7E326873264D437600A9CBB3 /* Object.swift in Sources */,
 				7E2CF2DF26444CC0005B7E3C /* FramesApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
