@@ -63,18 +63,16 @@ final class Data: NSObject, ObservableObject {
         scene?.write(to: objectPath(), options: nil, delegate: nil, progressHandler: nil)
     }
     
-    func removeImage() {
-        if data.frames.count - 1 == 1 {
-            data.selected = 0
-        } else {
-            data.selected = data.selected - 1
-        }
-        data.frames.remove(at: data.selected + 1)
+    func addImage(image: UIImage) {
+        data.frames.insert(
+            Frame(image: image, width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0),
+            at: 0
+        )
+        data.selected = 0
     }
     
-    func getBundleDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
+    func removeImage() {
+        data.frames.remove(at: data.selected)
     }
     
 }
@@ -91,7 +89,7 @@ extension Data: VNDocumentCameraViewControllerDelegate {
     
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
         for i in 0..<scan.pageCount {
-            data.frames.insert(Frame(image: scan.imageOfPage(at:i), width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0), at: 0)
+            addImage(image: scan.imageOfPage(at:i))
         }
         controller.dismiss(animated: true, completion: nil)
     }
@@ -120,7 +118,7 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
             if let uiImage = info[.originalImage] as? UIImage {
-                parent.model.data.frames.insert(Data.Frame(image: uiImage, width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0), at: 0)
+                parent.model.addImage(image: uiImage)
             }
             parent.presentationMode.wrappedValue.dismiss()
         }

@@ -8,25 +8,20 @@ struct Window: View {
         NavigationView {
             Frame(model: model)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Frames")
                 .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Menu {
-                            Button(action: {
-                                model.data.isImporting.toggle()
-                            }) {
-                                Label("Import from Photos", systemImage: "photo")
-                            }
-                            Button(action: {
-                                UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                    .first?
-                                    .rootViewController?
-                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                            }) {
-                                Label("Scan with Camera", systemImage: "viewfinder")
-                            }
-                        } label: {
+                    ToolbarItemGroup(placement: .cancellationAction) {
+                        Button(action: {
+                            model.data.isImporting.toggle()
+                        }) {
                             Image(systemName: "photo")
+                        }
+                        Button(action: {
+                            UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                .first?
+                                .rootViewController?
+                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                        }) {
+                            Image(systemName: "camera")
                         }
                     }
                     ToolbarItem(placement: .confirmationAction) {
@@ -54,7 +49,6 @@ struct Window: View {
                                     Image(systemName: "rectangle.expand.vertical")
                                 }
                             }
-                            .disabled(model.data.frames[model.data.selected].width == model.data.frames[model.data.selected].height)
                             Spacer()
                             Button(action: {
                                 withAnimation {
@@ -88,6 +82,18 @@ struct Window: View {
                                 Image(systemName: "rotate.left")
                             }
                             Spacer()
+                            Button(action: {
+                                withAnimation {
+                                    model.data.frames[model.data.selected].colored.toggle()
+                                }
+                            }) {
+                                if model.data.frames[model.data.selected].colored {
+                                    Image(systemName: "dial.max")
+                                } else {
+                                    Image(systemName: "dial.min")
+                                }
+                            }
+                            /*
                             Menu {
                                 Button(action: {
                                     withAnimation {
@@ -126,6 +132,7 @@ struct Window: View {
                             } label: {
                                 Image(systemName: "camera.filters")
                             }
+                            */
                         }
                     }
                 }

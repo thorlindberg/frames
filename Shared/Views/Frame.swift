@@ -57,7 +57,6 @@ struct Frame: View {
                     Spacer()
                     if model.data.frames.count != 1 {
                         VStack(spacing: 0) {
-                            Spacer()
                             HStack(spacing: 10) {
                                 ForEach((1...model.data.frames.count), id: \.self) { select in
                                     Circle()
