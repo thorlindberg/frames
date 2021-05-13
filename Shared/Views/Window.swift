@@ -155,7 +155,7 @@ struct Window: View {
             Augment(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
         }
-        .sheet(isPresented: $model.data.firstLaunch, onDismiss: { UserDefaults.standard.set(true, forKey: "hasLaunched") } ) {
+        .sheet(isPresented: $model.data.firstLaunch) {
             VStack(spacing: 25) {
                 Text("Welcome!")
                     .font(.system(size: 40))
@@ -175,6 +175,7 @@ struct Window: View {
                 }
             }
             .padding(.vertical, 100)
+            .modifier(DisableModalDismiss(disabled: true))
         }
     }
     

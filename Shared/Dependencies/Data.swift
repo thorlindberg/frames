@@ -110,25 +110,19 @@ struct ImagePicker: UIViewControllerRepresentable {
         return picker
     }
     
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        if let uiImage = info[.originalImage] as? UIImage {
-            model.data.frames.insert(Data.Frame(image: uiImage, width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0), at: 0)
-        }
-        self.presentationMode.wrappedValue.dismiss()
-    }
-
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
-
-    }
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) { }
     
     class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         let parent: ImagePicker
         init(_ parent: ImagePicker) {
             self.parent = parent
+        }
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+            if let uiImage = info[.originalImage] as? UIImage {
+                parent.model.data.frames.insert(Data.Frame(image: uiImage, width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0), at: 0)
+            }
+            parent.presentationMode.wrappedValue.dismiss()
         }
     }
     
