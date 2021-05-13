@@ -36,7 +36,7 @@ struct Window: View {
                             model.writeObject()
                             model.data.isAugmenting.toggle()
                         }) {
-                            Image(systemName: "eye")
+                            Text("AR")
                         }
                         .disabled(model.data.frames.isEmpty)
                     }

@@ -36,16 +36,19 @@ final class Data: NSObject, ObservableObject {
     )
     
     var scene: SCNScene? {
-        let myScene = SCNScene()
-        let imageNode = SCNNode(geometry: SCNPlane())
-        imageNode.geometry?.firstMaterial?.diffuse.contents = data.frames[data.selected].image
-        imageNode.scale = SCNVector3(
+        let scene = SCNScene(named: "object.scn")
+        let node = SCNNode(geometry: SCNPlane())
+        node.geometry = SCNPlane(width: 1, height: 1)
+        node.geometry?.firstMaterial?.diffuse.contents = data.frames[data.selected].image
+        node.geometry?.firstMaterial?.roughness.contents = NSNumber(value: 0.0)
+        node.geometry?.firstMaterial?.lightingModel = .physicallyBased
+        node.scale = SCNVector3(
             Float(data.frames[data.selected].image.size.width),
             Float(data.frames[data.selected].image.size.height),
             1
         )
-        myScene.rootNode.addChildNode(imageNode)
-        return myScene
+        scene?.rootNode.addChildNode(node)
+        return scene
     }
     
     func getDocumentCameraViewController() -> VNDocumentCameraViewController {
@@ -55,13 +58,17 @@ final class Data: NSObject, ObservableObject {
     }
     
     func objectPath() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0].appendingPathComponent("object.usdz")
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("object.usdz")
     }
     
     func writeObject() {
+        
         // reference: https://stackoverflow.com/questions/64037121/how-to-programmatically-export-3d-mesh-as-usdz-using-modelio
-        scene?.write(to: objectPath(), options: nil, delegate: nil, progressHandler: nil)
+        // reference: https://stackoverflow.com/questions/61452732/usdz-export-from-scenekit-results-in-dull-models
+        
+        scene?.write(to: objectPath(), delegate: nil)
+        print("Object written to \(objectPath())")
+        
     }
     
     func addImage(image: UIImage) {

@@ -15,6 +15,7 @@
 		7E2CF2E326444CC0005B7E3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E2CF2CE26444CC0005B7E3C /* Assets.xcassets */; };
 		7E2CF2EE26444E0A005B7E3C /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CF2ED26444E0A005B7E3C /* Data.swift */; };
 		7E2CF2F426446F1F005B7E3C /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CF2F326446F1F005B7E3C /* Window.swift */; };
+		7E32686F264D2E6400A9CBB3 /* object.scn in Resources */ = {isa = PBXBuildFile; fileRef = 7E32686E264D2E6400A9CBB3 /* object.scn */; };
 		7EECEF2C264C742C00B5149B /* Modal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EECEF2B264C742C00B5149B /* Modal.swift */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +30,7 @@
 		7E2CF2D626444CC0005B7E3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7E2CF2ED26444E0A005B7E3C /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		7E2CF2F326446F1F005B7E3C /* Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
+		7E32686E264D2E6400A9CBB3 /* object.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = object.scn; sourceTree = "<group>"; };
 		7EECEF2B264C742C00B5149B /* Modal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Modal.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,6 +61,7 @@
 				7EECEF2D264C751F00B5149B /* Views */,
 				7EECEF2A264C741100B5149B /* Dependencies */,
 				7E2CF2CE26444CC0005B7E3C /* Assets.xcassets */,
+				7E32686E264D2E6400A9CBB3 /* object.scn */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -158,6 +161,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E2CF2E326444CC0005B7E3C /* Assets.xcassets in Resources */,
+				7E32686F264D2E6400A9CBB3 /* object.scn in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,7 +303,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 31;
 				DEVELOPMENT_TEAM = VX5CR539N9;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -322,7 +326,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 31;
 				DEVELOPMENT_TEAM = VX5CR539N9;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
