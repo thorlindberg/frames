@@ -20,7 +20,6 @@ struct Augment: View {
                             Text("Cancel")
                         }
                     }
-                    /*
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
                             UIImageWriteToSavedPhotosAlbum(PreviewController(model: model).snapshot(), nil, nil, nil)
@@ -28,7 +27,6 @@ struct Augment: View {
                             Image(systemName: "camera")
                         }
                     }
-                    */
                 }
         }
     }

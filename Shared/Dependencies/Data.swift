@@ -7,6 +7,7 @@ final class Data: NSObject, ObservableObject {
     struct Format: Hashable {
         var firstLaunch: Bool
         var isImporting: Bool
+        var isModelled: Bool
         var isAugmenting: Bool
         var isAdjusting: Bool
         var selected: Int
@@ -27,7 +28,7 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
-        isImporting: false, isAugmenting: false, isAdjusting: false, selected: 0,
+        isImporting: false, isModelled: false, isAugmenting: false, isAdjusting: false, selected: 0,
         frames: [ Frame(
             image: UIImage(imageLiteralResourceName: "placeholder"),
             width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0

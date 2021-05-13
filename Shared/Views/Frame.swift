@@ -79,7 +79,6 @@ struct Frame: View {
                 if model.data.selected < 0 {
                     model.data.selected = 0
                 }
-                UIImpactFeedbackGenerator(style: .soft).impactOccurred() // source: https://stackoverflow.com/questions/56748539/how-to-create-haptic-feedback-for-a-button-in-swiftui
             })
         }
     }

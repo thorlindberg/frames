@@ -8,6 +8,7 @@ struct Window: View {
         NavigationView {
             Frame(model: model)
                 .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle("Frames")
                 .toolbar {
                     ToolbarItemGroup(placement: .cancellationAction) {
                         Button(action: {
@@ -21,15 +22,21 @@ struct Window: View {
                                 .rootViewController?
                                 .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
                         }) {
-                            Image(systemName: "camera")
+                            Image(systemName: "viewfinder")
                         }
                     }
-                    ToolbarItem(placement: .confirmationAction) {
+                    ToolbarItemGroup(placement: .confirmationAction) {
+                        Button(action: {
+                            model.data.isModelled.toggle()
+                        }) {
+                            Image(systemName: "pyramid")
+                        }
+                        .disabled(model.data.frames.isEmpty)
                         Button(action: {
                             model.writeObject()
                             model.data.isAugmenting.toggle()
                         }) {
-                            Text("AR")
+                            Image(systemName: "eye")
                         }
                         .disabled(model.data.frames.isEmpty)
                     }
@@ -157,6 +164,10 @@ struct Window: View {
         }
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model)
+        }
+        .sheet(isPresented: $model.data.isModelled) {
+            Object(model: model)
+                .modifier(DisableModalDismiss(disabled: true))
         }
         .sheet(isPresented: $model.data.isAugmenting) {
             Augment(model: model)

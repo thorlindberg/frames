@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E0BEEC9264D159C0048D099 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0BEEC8264D159C0048D099 /* Object.swift */; };
 		7E20825E2647F4BC00404BC1 /* Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E20825D2647F4BC00404BC1 /* Frame.swift */; };
 		7E2296DD264C3D2E001F05CB /* Augment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2296DC264C3D2E001F05CB /* Augment.swift */; };
 		7E2296E0264C58FF001F05CB /* Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2296DF264C58FF001F05CB /* Snapshot.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7E0BEEC8264D159C0048D099 /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		7E20825D2647F4BC00404BC1 /* Frame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frame.swift; sourceTree = "<group>"; };
 		7E2296DC264C3D2E001F05CB /* Augment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Augment.swift; sourceTree = "<group>"; };
 		7E2296DF264C58FF001F05CB /* Snapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snapshot.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 			children = (
 				7E2CF2F326446F1F005B7E3C /* Window.swift */,
 				7E20825D2647F4BC00404BC1 /* Frame.swift */,
+				7E0BEEC8264D159C0048D099 /* Object.swift */,
 				7E2296DC264C3D2E001F05CB /* Augment.swift */,
 			);
 			path = Views;
@@ -172,6 +175,7 @@
 				7EECEF2C264C742C00B5149B /* Modal.swift in Sources */,
 				7E2CF2F426446F1F005B7E3C /* Window.swift in Sources */,
 				7E2CF2DF26444CC0005B7E3C /* FramesApp.swift in Sources */,
+				7E0BEEC9264D159C0048D099 /* Object.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
