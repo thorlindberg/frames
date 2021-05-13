@@ -36,7 +36,7 @@ struct Frame: View {
                             .rotationEffect(.degrees(Double(model.data.frames[model.data.selected].rotated)))
                             .padding(model.data.frames[model.data.selected].bordered ? 40 : 30)
                             .frame(height: [Double(90), Double(270)].contains(abs(model.data.frames[model.data.selected].rotated)) ? geometry.size.width : nil)
-                            .mask(Rectangle().frame(width: model.data.frames[model.data.selected].bordered ? geometry.size.width - 80 : geometry.size.width - 60, height: geometry.size.height))
+                            // .mask(Rectangle().frame(width: model.data.frames[model.data.selected].bordered ? geometry.size.width - 80 : geometry.size.width - 60, height: geometry.size.height))
                             .contextMenu {
                                 Button(action: {
                                     UIApplication.shared.windows.filter({$0.isKeyWindow})
