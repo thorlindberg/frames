@@ -11,11 +11,11 @@ struct QuickLook: View {
             PreviewController(model: model)
                 .ignoresSafeArea()
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Augmented Reality")
+                .navigationTitle("Quick Look")
                 .toolbar {
                     ToolbarItemGroup(placement: .cancellationAction) {
                         Button(action: {
-                            model.data.isAugmenting.toggle()
+                            model.data.isQuickLooking.toggle()
                         }) {
                             Text("Cancel")
                         }

@@ -37,7 +37,7 @@ struct Augment: View {
 struct Augment_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Data())
+            Augment(model: Data())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")
@@ -128,23 +128,16 @@ class ARView: UIViewController, ARSCNViewDelegate {
         
         // source: https://stackoverflow.com/a/51905229/15072454
 
-        //1. Check We Have Detected An ARPlaneAnchor
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
 
-        //2. Get The Size Of The ARPlaneAnchor
-        let width = CGFloat(planeAnchor.extent.x)
-        let height = CGFloat(planeAnchor.extent.z)
-
-        //3. Create An SCNPlane Which Matches The Size Of The ARPlaneAnchor
-        let imageHolder = SCNNode(geometry: SCNPlane(width: width, height: height))
-
-        //4. Rotate It
+        let imageHolder = SCNNode(geometry: SCNPlane(width: 1, height: 1))
+        imageHolder.scale = SCNVector3(
+            Float(model.data.frames[model.data.selected].image.size.width/1000),
+            Float(model.data.frames[model.data.selected].image.size.height/1000),
+            1
+        )
         imageHolder.eulerAngles.x = -.pi/2
-
-        //5. Set It's Colour To Red
         imageHolder.geometry?.firstMaterial?.diffuse.contents = model.data.frames[model.data.selected].image
-
-        //4. Add It To Our Node & Thus The Hiearchy
         node.addChildNode(imageHolder)
 
     }

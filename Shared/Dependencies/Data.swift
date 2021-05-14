@@ -9,6 +9,7 @@ final class Data: NSObject, ObservableObject {
         var isImporting: Bool
         var isModeling: Bool
         var isAugmenting: Bool
+        var isQuickLooking: Bool
         var isAdjusting: Bool
         var selected: Int
         var frames: [Frame]
@@ -28,7 +29,7 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
-        isImporting: false, isModeling: false, isAugmenting: false, isAdjusting: false, selected: 0,
+        isImporting: false, isModeling: false, isAugmenting: false, isQuickLooking: false, isAdjusting: false, selected: 0,
         frames: [ Frame(
             image: UIImage(imageLiteralResourceName: "placeholder"),
             width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0

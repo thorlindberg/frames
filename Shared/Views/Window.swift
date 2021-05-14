@@ -14,7 +14,7 @@ struct Window: View {
                         Button(action: {
                             model.data.isImporting.toggle()
                         }) {
-                            Image(systemName: "plus")
+                            Image(systemName: "photo")
                         }
                         Button(action: {
                             UIApplication.shared.windows.filter({$0.isKeyWindow})
@@ -33,9 +33,17 @@ struct Window: View {
                         }
                         .disabled(model.data.frames.isEmpty)
                         Button(action: {
+                            model.writeObject()
                             model.data.isAugmenting.toggle()
                         }) {
                             Text("AR")
+                        }
+                        .disabled(model.data.frames.isEmpty)
+                        Button(action: {
+                            model.writeObject()
+                            model.data.isQuickLooking.toggle()
+                        }) {
+                            Text("QL")
                         }
                         .disabled(model.data.frames.isEmpty)
                     }
@@ -170,7 +178,10 @@ struct Window: View {
         }
         .sheet(isPresented: $model.data.isAugmenting) {
             Augment(model: model)
-            // QuickLook(model: model)
+                .modifier(DisableModalDismiss(disabled: true))
+        }
+        .sheet(isPresented: $model.data.isQuickLooking) {
+            QuickLook(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
         }
         .sheet(isPresented: $model.data.firstLaunch) {
