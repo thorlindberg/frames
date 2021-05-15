@@ -17,8 +17,6 @@
 		7E326873264D437600A9CBB3 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E326872264D437600A9CBB3 /* Object.swift */; };
 		7E326875264D442B00A9CBB3 /* QuickLook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E326874264D442B00A9CBB3 /* QuickLook.swift */; };
 		7ED8E22F264F042C0061DCF2 /* object.reality in Resources */ = {isa = PBXBuildFile; fileRef = 7ED8E22E264F042C0061DCF2 /* object.reality */; };
-		7ED8E231264FE1D60061DCF2 /* object.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 7ED8E230264FE1D60061DCF2 /* object.usdz */; };
-		7ED8E233264FE2720061DCF2 /* object.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7ED8E232264FE2720061DCF2 /* object.txt */; };
 		7EECEF2C264C742C00B5149B /* Modal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EECEF2B264C742C00B5149B /* Modal.swift */; };
 /* End PBXBuildFile section */
 
@@ -35,8 +33,6 @@
 		7E326872264D437600A9CBB3 /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		7E326874264D442B00A9CBB3 /* QuickLook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLook.swift; sourceTree = "<group>"; };
 		7ED8E22E264F042C0061DCF2 /* object.reality */ = {isa = PBXFileReference; lastKnownFileType = file; path = object.reality; sourceTree = "<group>"; };
-		7ED8E230264FE1D60061DCF2 /* object.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = object.usdz; sourceTree = "<group>"; };
-		7ED8E232264FE2720061DCF2 /* object.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = object.txt; sourceTree = "<group>"; };
 		7EECEF2B264C742C00B5149B /* Modal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Modal.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,8 +50,6 @@
 		7E2CF2C626444CBF005B7E3C = {
 			isa = PBXGroup;
 			children = (
-				7ED8E232264FE2720061DCF2 /* object.txt */,
-				7ED8E230264FE1D60061DCF2 /* object.usdz */,
 				7ED8E22E264F042C0061DCF2 /* object.reality */,
 				7E2CF2CB26444CBF005B7E3C /* Shared */,
 				7E2CF2D526444CC0005B7E3C /* iOS */,
@@ -171,8 +165,6 @@
 			files = (
 				7E2CF2E326444CC0005B7E3C /* Assets.xcassets in Resources */,
 				7ED8E22F264F042C0061DCF2 /* object.reality in Resources */,
-				7ED8E231264FE1D60061DCF2 /* object.usdz in Resources */,
-				7ED8E233264FE2720061DCF2 /* object.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

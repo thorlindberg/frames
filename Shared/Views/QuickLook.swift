@@ -39,16 +39,14 @@ struct QuickLook: View {
                     }) {
                         Image(systemName: "arrow.counterclockwise")
                     }
-                }
-                /*
-                ToolbarItem(placement: .confirmationAction) {
+                    /*
                     Button(action: {
-                        UIImageWriteToSavedPhotosAlbum(PreviewController(model: model).snapshot(), nil, nil, nil)
+                        UIImageWriteToSavedPhotosAlbum(SceneView(scene: model.scene, options: [.allowsCameraControl]).snapshot(), nil, nil, nil)
                     }) {
                         Image(systemName: "camera")
                     }
+                    */
                 }
-                */
             }
         }
     }
@@ -90,7 +88,7 @@ struct PreviewController: UIViewControllerRepresentable {
         func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
             let item = ARQuickLookPreviewItem(fileAt: Bundle.main.url(forResource: "object", withExtension: "reality")!) // parent.model.objectPath()
             item.allowsContentScaling = true
-            return Bundle.main.url(forResource: "object", withExtension: "txt")! as QLPreviewItem // item
+            return item
         }
     }
 }

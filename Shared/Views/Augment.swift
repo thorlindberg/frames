@@ -45,16 +45,14 @@ struct Augment: View {
                     }) {
                         Image(systemName: "arrow.counterclockwise")
                     }
-                }
-                /*
-                ToolbarItem(placement: .confirmationAction) {
+                    /*
                     Button(action: {
-                        UIImageWriteToSavedPhotosAlbum(NavigationIndicator(model: model).snapshot(), nil, nil, nil)
+                        UIImageWriteToSavedPhotosAlbum(SceneView(scene: model.scene, options: [.allowsCameraControl]).snapshot(), nil, nil, nil)
                     }) {
                         Image(systemName: "camera")
                     }
+                    */
                 }
-                */
             }
         }
     }
@@ -124,7 +122,6 @@ class ARView: UIViewController, ARSCNViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         arView.delegate = self
-        // arView.scene = model.scene!
     }
     
     override func viewDidAppear(_ animated: Bool) {

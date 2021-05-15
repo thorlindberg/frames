@@ -35,16 +35,14 @@ struct Object: View {
                     }) {
                         Image(systemName: "arrow.counterclockwise")
                     }
-                }
-                /*
-                ToolbarItem(placement: .confirmationAction) {
+                    /*
                     Button(action: {
                         UIImageWriteToSavedPhotosAlbum(SceneView(scene: model.scene, options: [.allowsCameraControl]).snapshot(), nil, nil, nil)
                     }) {
                         Image(systemName: "camera")
                     }
+                    */
                 }
-                */
             }
         }
     }
