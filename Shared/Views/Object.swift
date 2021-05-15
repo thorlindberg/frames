@@ -4,12 +4,12 @@ import SceneKit
 struct Object: View {
     
     @ObservedObject var model: Data
-    @State var refresh: Bool = false
+    @State var reload: Bool = false
     
     var body: some View {
         NavigationView {
             ZStack {
-                if !refresh {
+                if !reload {
                     SceneView(scene: model.scene, options: [.allowsCameraControl])
                 }
             }
@@ -26,14 +26,14 @@ struct Object: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        refresh.toggle()
+                        reload.toggle()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             withAnimation {
-                                refresh.toggle()
+                                reload.toggle()
                             }
                         }
                     }) {
-                        Image(systemName: "arrow.counterclockwise")
+                        Text("Reload")
                     }
                     /*
                     Button(action: {
