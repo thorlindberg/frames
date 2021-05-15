@@ -6,9 +6,11 @@ final class Data: NSObject, ObservableObject {
     
     struct Format: Hashable {
         var firstLaunch: Bool
+        var isAction: Bool
         var isImporting: Bool
         var isModeling: Bool
         var isAugmenting: Bool
+        var isAugmented: Bool
         var isQuickLooking: Bool
         var isAdjusting: Bool
         var selected: Int
@@ -29,7 +31,7 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
-        isImporting: false, isModeling: false, isAugmenting: false, isQuickLooking: false, isAdjusting: false, selected: 0,
+        isAction: false, isImporting: false, isModeling: false, isAugmenting: false, isAugmented: false, isQuickLooking: false, isAdjusting: false, selected: 0,
         frames: [ Frame(
             image: UIImage(imageLiteralResourceName: "placeholder"),
             width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0
@@ -56,7 +58,7 @@ final class Data: NSObject, ObservableObject {
     }
     
     func objectPath() -> URL {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("object.usdz")
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("object.scn")
     }
     
     func writeObject() {

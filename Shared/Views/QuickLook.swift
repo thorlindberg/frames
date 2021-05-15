@@ -5,29 +5,51 @@ import QuickLook
 struct QuickLook: View {
     
     @ObservedObject var model: Data
+    @State var refresh: Bool = false
     
     var body: some View {
         NavigationView {
-            PreviewController(model: model)
-                .ignoresSafeArea()
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Quick Look")
-                .toolbar {
-                    ToolbarItemGroup(placement: .cancellationAction) {
-                        Button(action: {
-                            model.data.isQuickLooking.toggle()
-                        }) {
-                            Text("Cancel")
+            ZStack {
+                if !refresh {
+                    PreviewController(model: model)
+                        .ignoresSafeArea()
+                        .navigationBarTitleDisplayMode(.inline)
+                        .navigationTitle("Quick Look")
+                        .onAppear {
+                            model.writeObject()
                         }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            UIImageWriteToSavedPhotosAlbum(PreviewController(model: model).snapshot(), nil, nil, nil)
-                        }) {
-                            Image(systemName: "camera")
-                        }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        model.data.isQuickLooking.toggle()
+                    }) {
+                        Text("Cancel")
                     }
                 }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        refresh.toggle()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            withAnimation {
+                                refresh.toggle()
+                            }
+                        }
+                    }) {
+                        Image(systemName: "arrow.counterclockwise")
+                    }
+                }
+                /*
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        UIImageWriteToSavedPhotosAlbum(PreviewController(model: model).snapshot(), nil, nil, nil)
+                    }) {
+                        Image(systemName: "camera")
+                    }
+                }
+                */
+            }
         }
     }
     
@@ -45,7 +67,7 @@ struct QuickLook_Previews: PreviewProvider {
 
 struct PreviewController: UIViewControllerRepresentable {
     
-    // resources: https://developer.apple.com/forums/thread/126377
+    // resource: https://developer.apple.com/forums/thread/126377
     // resource: https://lostmoa.com/blog/PreviewFilesWithQuickLookInSwiftUI/
     // source: https://github.com/LostMoa/SwiftUI-Code-Examples/blob/main/PreviewFilesWithQuickLookInSwiftUI/SwiftUIQuickLook/PreviewController.swift
     
@@ -66,9 +88,9 @@ struct PreviewController: UIViewControllerRepresentable {
         init(parent: PreviewController) { self.parent = parent }
         func numberOfPreviewItems(in controller: QLPreviewController) -> Int { return 1 }
         func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
-            let item = ARQuickLookPreviewItem(fileAt: parent.model.objectPath())
+            let item = ARQuickLookPreviewItem(fileAt: Bundle.main.url(forResource: "object", withExtension: "reality")!) // parent.model.objectPath()
             item.allowsContentScaling = true
-            return item
+            return Bundle.main.url(forResource: "object", withExtension: "txt")! as QLPreviewItem // item
         }
     }
 }

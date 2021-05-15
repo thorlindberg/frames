@@ -6,29 +6,56 @@ import ARKit
 struct Augment: View {
     
     @ObservedObject var model: Data
+    @State var refresh: Bool = false
     
     var body: some View {
         NavigationView {
-            NavigationIndicator(model: model)
-                .ignoresSafeArea()
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Augmented Reality")
-                .toolbar {
-                    ToolbarItemGroup(placement: .cancellationAction) {
-                        Button(action: {
-                            model.data.isAugmenting.toggle()
-                        }) {
-                            Text("Cancel")
+            ZStack {
+                if !refresh {
+                    NavigationIndicator(model: model)
+                    Image(uiImage: model.data.frames[model.data.selected].image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding(model.data.isAugmented ? 70 : 50)
+                        .opacity(model.data.isAugmented ? 0 : 0.5)
+                        .onAppear {
+                            model.data.isAugmented = false
                         }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            UIImageWriteToSavedPhotosAlbum(NavigationIndicator(model: model).snapshot(), nil, nil, nil)
-                        }) {
-                            Image(systemName: "camera")
-                        }
+                }
+            }
+            .ignoresSafeArea()
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Augmented Reality")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        model.data.isAugmenting.toggle()
+                    }) {
+                        Text("Cancel")
                     }
                 }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        refresh.toggle()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            withAnimation {
+                                refresh.toggle()
+                            }
+                        }
+                    }) {
+                        Image(systemName: "arrow.counterclockwise")
+                    }
+                }
+                /*
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        UIImageWriteToSavedPhotosAlbum(NavigationIndicator(model: model).snapshot(), nil, nil, nil)
+                    }) {
+                        Image(systemName: "camera")
+                    }
+                }
+                */
+            }
         }
     }
     
@@ -37,7 +64,7 @@ struct Augment: View {
 struct Augment_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Augment(model: Data())
+            Window(model: Data())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")
@@ -97,7 +124,7 @@ class ARView: UIViewController, ARSCNViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         arView.delegate = self
-        arView.scene = model.scene!
+        // arView.scene = model.scene!
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -127,18 +154,29 @@ class ARView: UIViewController, ARSCNViewDelegate {
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         
         // source: https://stackoverflow.com/a/51905229/15072454
+        
+        if !model.data.isAugmented {
+            
+            guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
 
-        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-
-        let imageHolder = SCNNode(geometry: SCNPlane(width: 1, height: 1))
-        imageHolder.scale = SCNVector3(
-            Float(model.data.frames[model.data.selected].image.size.width/1000),
-            Float(model.data.frames[model.data.selected].image.size.height/1000),
-            1
-        )
-        imageHolder.eulerAngles.x = -.pi/2
-        imageHolder.geometry?.firstMaterial?.diffuse.contents = model.data.frames[model.data.selected].image
-        node.addChildNode(imageHolder)
+            let width = CGFloat(planeAnchor.extent.x)
+            let height = CGFloat(planeAnchor.extent.z)
+            
+            if width < model.data.frames[model.data.selected].image.size.width/1000 || height < model.data.frames[model.data.selected].image.size.height/1000 { return }
+            
+            let imageHolder = SCNNode(geometry: SCNPlane(width: 1, height: 1))
+            imageHolder.scale = SCNVector3(
+                Float(model.data.frames[model.data.selected].image.size.width/1000),
+                Float(model.data.frames[model.data.selected].image.size.height/1000),
+                1
+            )
+            imageHolder.eulerAngles.x = -.pi/2
+            imageHolder.geometry?.firstMaterial?.diffuse.contents = model.data.frames[model.data.selected].image
+            
+            node.addChildNode(imageHolder)
+            withAnimation { model.data.isAugmented = true }
+            
+        }
 
     }
     

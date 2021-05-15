@@ -1,0 +1,72 @@
+int trigPin = 1;
+int echoPin = 0;
+int led = 14;
+int list[] = {1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000};
+
+#include <SD.h>
+#include <SPI.h>
+#include <AudioZero.h>
+
+void setup() {
+  Serial.begin(9600); 
+  pinMode(led, OUTPUT);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+  Serial.begin(115200);
+  AudioZero.begin(44100); // Hertz value of target file
+  SD.begin();
+}
+
+void loop() {
+  long duration, distance;
+  digitalWrite(trigPin,HIGH);
+  delayMicroseconds(1000);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2;
+  
+  list[0] = list[1];
+  list[1] = list[2];
+  list[2] = list[3];
+  list[3] = list[4];
+  list[4] = list[5];
+  list[5] = list[6];
+  list[6] = list[7];
+  list[7] = list[8];
+  list[8] = list[9];
+  list[9] = list[10];
+  list[10] = list[11];
+  list[11] = list[12];
+  list[12] = list[13];
+  list[13] = list[14];
+  list[14] = list[15];
+  list[15] = list[16];
+  list[16] = list[17];
+  list[17] = list[18];
+  list[18] = list[19];
+  list[19] = distance;
+  
+  Serial.print(distance);
+  Serial.println(" cm");
+  delay(10);
+ 
+  int sum = 0;
+  for (int i = 0; i < 20; i++) { // not sure if iterating to right maximum; 19 or 20?
+    sum += list[i];
+  }
+
+  int average = sum / 20;
+ 
+  int delimiter = 50;
+  if((average <= delimiter)) {
+    digitalWrite(led, HIGH);
+    File myFile = SD.open("Kort.wav");
+    AudioZero.play(myFile);
+    int list[] = {1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000};
+  }
+  if((average > delimiter)) {
+    digitalWrite(led, LOW);
+  }
+  delay(0);
+}

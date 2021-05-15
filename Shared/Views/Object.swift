@@ -4,29 +4,48 @@ import SceneKit
 struct Object: View {
     
     @ObservedObject var model: Data
+    @State var refresh: Bool = false
     
     var body: some View {
         NavigationView {
-            SceneView(scene: model.scene, options: [.allowsCameraControl])
-                .ignoresSafeArea()
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("3D object")
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            model.data.isModeling.toggle()
-                        }) {
-                            Text("Cancel")
-                        }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            UIImageWriteToSavedPhotosAlbum(SceneView(scene: model.scene, options: [.allowsCameraControl]).snapshot(), nil, nil, nil)
-                        }) {
-                            Image(systemName: "camera")
-                        }
+            ZStack {
+                if !refresh {
+                    SceneView(scene: model.scene, options: [.allowsCameraControl])
+                }
+            }
+            .ignoresSafeArea()
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("3D object")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        model.data.isModeling.toggle()
+                    }) {
+                        Text("Cancel")
                     }
                 }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        refresh.toggle()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            withAnimation {
+                                refresh.toggle()
+                            }
+                        }
+                    }) {
+                        Image(systemName: "arrow.counterclockwise")
+                    }
+                }
+                /*
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        UIImageWriteToSavedPhotosAlbum(SceneView(scene: model.scene, options: [.allowsCameraControl]).snapshot(), nil, nil, nil)
+                    }) {
+                        Image(systemName: "camera")
+                    }
+                }
+                */
+            }
         }
     }
     

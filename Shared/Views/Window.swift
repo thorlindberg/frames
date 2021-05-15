@@ -10,19 +10,12 @@ struct Window: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Frames")
                 .toolbar {
-                    ToolbarItemGroup(placement: .cancellationAction) {
+                    ToolbarItem(placement: .cancellationAction) {
                         Button(action: {
-                            model.data.isImporting.toggle()
+                            model.data.isAdjusting = false
+                            model.data.isAction.toggle()
                         }) {
-                            Image(systemName: "photo")
-                        }
-                        Button(action: {
-                            UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                .first?
-                                .rootViewController?
-                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                        }) {
-                            Image(systemName: "viewfinder")
+                            Image(systemName: "camera")
                         }
                     }
                     ToolbarItemGroup(placement: .confirmationAction) {
@@ -33,17 +26,15 @@ struct Window: View {
                         }
                         .disabled(model.data.frames.isEmpty)
                         Button(action: {
-                            model.writeObject()
                             model.data.isAugmenting.toggle()
                         }) {
                             Text("AR")
                         }
                         .disabled(model.data.frames.isEmpty)
                         Button(action: {
-                            model.writeObject()
                             model.data.isQuickLooking.toggle()
                         }) {
-                            Text("QL")
+                            Image(systemName: "loupe")
                         }
                         .disabled(model.data.frames.isEmpty)
                     }
@@ -80,7 +71,8 @@ struct Window: View {
                             }
                             Spacer()
                             Button(action: {
-                                model.data.isAdjusting.toggle()
+                                model.data.isAdjusting = true
+                                model.data.isAction.toggle()
                             }) {
                                 Text("\(Int(model.data.frames[model.data.selected].width)) x \(Int(model.data.frames[model.data.selected].height))")
                             }
@@ -152,8 +144,8 @@ struct Window: View {
                 }
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        .actionSheet(isPresented: $model.data.isAdjusting) {
-            ActionSheet(title: Text("Aspect ratio"), buttons: [
+        .actionSheet(isPresented: $model.data.isAction) {
+            ActionSheet(title: Text(""), buttons: model.data.isAdjusting ? [
                 .default(Text("13 x 18 cm")) { withAnimation { model.data.frames[model.data.selected].width = 13 ; model.data.frames[model.data.selected].height = 18 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
                 .default(Text("15 x 20 cm")) { withAnimation { model.data.frames[model.data.selected].width = 15 ; model.data.frames[model.data.selected].height = 20 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
                 .default(Text("21 x 30 cm")) { withAnimation { model.data.frames[model.data.selected].width = 21 ; model.data.frames[model.data.selected].height = 30 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
@@ -166,6 +158,15 @@ struct Window: View {
                 .default(Text("60 x 80 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 80 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
                 .default(Text("60 x 90 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 90 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
                 .default(Text("70 x 100 cm")) { withAnimation { model.data.frames[model.data.selected].width = 70 ; model.data.frames[model.data.selected].height = 100 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .cancel()
+            ] : [
+                .default(Text("Import from Photos")) { model.data.isImporting.toggle() },
+                .default(Text("Scan with Camera")) {
+                    UIApplication.shared.windows.filter({$0.isKeyWindow})
+                    .first?
+                    .rootViewController?
+                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                },
                 .cancel()
             ])
         }
