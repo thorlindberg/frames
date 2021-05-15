@@ -45,13 +45,6 @@ struct Augment: View {
                     }) {
                         Text("Reload")
                     }
-                    /*
-                    Button(action: {
-                        UIImageWriteToSavedPhotosAlbum(SceneView(scene: model.scene, options: [.allowsCameraControl]).snapshot(), nil, nil, nil)
-                    }) {
-                        Image(systemName: "camera")
-                    }
-                    */
                 }
             }
         }
@@ -159,7 +152,7 @@ class ARView: UIViewController, ARSCNViewDelegate {
             let width = CGFloat(planeAnchor.extent.x)
             let height = CGFloat(planeAnchor.extent.z)
             
-            if width < model.data.frames[model.data.selected].image.size.width/1000 || height < model.data.frames[model.data.selected].image.size.height/1000 { return }
+            // if width < model.data.frames[model.data.selected].image.size.width/1000 || height < model.data.frames[model.data.selected].image.size.height/1000 { return }
             
             let imageHolder = SCNNode(geometry: SCNPlane(width: 1, height: 1))
             imageHolder.scale = SCNVector3(

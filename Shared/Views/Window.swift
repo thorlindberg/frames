@@ -8,33 +8,21 @@ struct Window: View {
         NavigationView {
             Frame(model: model)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Frames")
+                .navigationTitle("Augmented Frames")
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(action: {
                             model.data.isAdjusting = false
                             model.data.isAction.toggle()
                         }) {
-                            Image(systemName: "camera")
+                            Image(systemName: "plus")
                         }
                     }
-                    ToolbarItemGroup(placement: .confirmationAction) {
-                        Button(action: {
-                            model.data.isModeling.toggle()
-                        }) {
-                            Text("3D")
-                        }
-                        .disabled(model.data.frames.isEmpty)
+                    ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
                             model.data.isAugmenting.toggle()
                         }) {
                             Text("AR")
-                        }
-                        .disabled(model.data.frames.isEmpty)
-                        Button(action: {
-                            model.data.isQuickLooking.toggle()
-                        }) {
-                            Image(systemName: "loupe")
                         }
                         .disabled(model.data.frames.isEmpty)
                     }
@@ -173,16 +161,8 @@ struct Window: View {
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model)
         }
-        .sheet(isPresented: $model.data.isModeling) {
-            Object(model: model)
-                .modifier(DisableModalDismiss(disabled: true))
-        }
         .sheet(isPresented: $model.data.isAugmenting) {
             Augment(model: model)
-                .modifier(DisableModalDismiss(disabled: true))
-        }
-        .sheet(isPresented: $model.data.isQuickLooking) {
-            QuickLook(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
         }
         .sheet(isPresented: $model.data.firstLaunch) {

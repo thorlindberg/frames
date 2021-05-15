@@ -19,7 +19,7 @@ struct Object: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(action: {
-                        model.data.isModeling.toggle()
+                        model.data.isAugmenting.toggle()
                     }) {
                         Text("Cancel")
                     }
@@ -35,13 +35,6 @@ struct Object: View {
                     }) {
                         Text("Reload")
                     }
-                    /*
-                    Button(action: {
-                        UIImageWriteToSavedPhotosAlbum(SceneView(scene: model.scene, options: [.allowsCameraControl]).snapshot(), nil, nil, nil)
-                    }) {
-                        Image(systemName: "camera")
-                    }
-                    */
                 }
             }
         }

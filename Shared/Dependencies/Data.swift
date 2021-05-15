@@ -1,5 +1,6 @@
 import SwiftUI
 import SceneKit
+import SceneKit.ModelIO
 import VisionKit
 
 final class Data: NSObject, ObservableObject {
@@ -8,10 +9,8 @@ final class Data: NSObject, ObservableObject {
         var firstLaunch: Bool
         var isAction: Bool
         var isImporting: Bool
-        var isModeling: Bool
         var isAugmenting: Bool
         var isAugmented: Bool
-        var isQuickLooking: Bool
         var isAdjusting: Bool
         var selected: Int
         var frames: [Frame]
@@ -31,7 +30,7 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
-        isAction: false, isImporting: false, isModeling: false, isAugmenting: false, isAugmented: false, isQuickLooking: false, isAdjusting: false, selected: 0,
+        isAction: false, isImporting: false, isAugmenting: false, isAugmented: false, isAdjusting: false, selected: 0,
         frames: [ Frame(
             image: UIImage(imageLiteralResourceName: "placeholder"),
             width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0
@@ -65,9 +64,17 @@ final class Data: NSObject, ObservableObject {
         
         // reference: https://stackoverflow.com/questions/64037121/how-to-programmatically-export-3d-mesh-as-usdz-using-modelio
         // reference: https://stackoverflow.com/questions/61452732/usdz-export-from-scenekit-results-in-dull-models
+        // source: https://stackoverflow.com/questions/66473004/export-scnscene-as-obj-in-scenekit
         
+        /*
+        do {
+            try MDLAsset(scnScene: scene!).export(to: objectPath())
+        } catch {
+            return
+        }
+        */
+ 
         scene?.write(to: objectPath(), delegate: nil)
-        print("Object written to \(objectPath())")
         
     }
     

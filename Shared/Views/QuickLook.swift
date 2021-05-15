@@ -23,7 +23,7 @@ struct QuickLook: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(action: {
-                        model.data.isQuickLooking.toggle()
+                        model.data.isAugmenting.toggle()
                     }) {
                         Text("Cancel")
                     }
@@ -39,13 +39,6 @@ struct QuickLook: View {
                     }) {
                         Text("Reload")
                     }
-                    /*
-                    Button(action: {
-                        UIImageWriteToSavedPhotosAlbum(SceneView(scene: model.scene, options: [.allowsCameraControl]).snapshot(), nil, nil, nil)
-                    }) {
-                        Image(systemName: "camera")
-                    }
-                    */
                 }
             }
         }
@@ -86,7 +79,7 @@ struct PreviewController: UIViewControllerRepresentable {
         init(parent: PreviewController) { self.parent = parent }
         func numberOfPreviewItems(in controller: QLPreviewController) -> Int { return 1 }
         func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
-            let item = ARQuickLookPreviewItem(fileAt: Bundle.main.url(forResource: "object", withExtension: "reality")!) // parent.model.objectPath()
+            let item = ARQuickLookPreviewItem(fileAt: Bundle.main.url(forResource: "object", withExtension: "usdz")!) // parent.model.objectPath()
             item.allowsContentScaling = true
             return item
         }
