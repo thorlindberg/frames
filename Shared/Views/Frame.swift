@@ -23,15 +23,13 @@ struct Frame: View {
                         Rectangle()
                             .foregroundColor(.white)
                             .shadow(color: Color.black.opacity(0.15), radius: 30)
-                            .padding(30)
                             .frame(
-                                width: geometry.size.width,
-                                height: geometry.size.width*(model.data.frames[model.data.selected].height/model.data.frames[model.data.selected].width)
+                                width: geometry.size.width-60,
+                                height: (geometry.size.width-60)*(model.data.frames[model.data.selected].height/model.data.frames[model.data.selected].width)
                             )
                         Image(uiImage: model.data.frames[model.data.selected].transform)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .padding(30)
                             .contextMenu {
                                 Button(action: {
                                     UIApplication.shared.windows.filter({$0.isKeyWindow})
@@ -48,6 +46,7 @@ struct Frame: View {
                                 }
                             }
                     }
+                    .padding(30)
                     Spacer()
                     if model.data.frames.count != 1 {
                         VStack(spacing: 0) {

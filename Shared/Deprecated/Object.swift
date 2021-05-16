@@ -1,3 +1,4 @@
+/*
 import SwiftUI
 import SceneKit
 
@@ -51,3 +52,4 @@ struct Object_Previews: PreviewProvider {
         .previewDevice("iPhone 12 mini")
     }
 }
+*/

@@ -16,6 +16,7 @@ struct Augment: View {
                         .ignoresSafeArea()
                         .onAppear { model.data.isAugmented = false }
                     if !model.data.isAugmented {
+                        /*
                         Rectangle()
                             .ignoresSafeArea()
                             .opacity(model.data.isAugmented ? 0 : 0.5)
@@ -40,6 +41,7 @@ struct Augment: View {
                         }
                         .foregroundColor(.white)
                         .padding(30)
+                        */
                     }
                     Image(uiImage: model.data.frames[model.data.selected].transform)
                         .resizable()
@@ -181,8 +183,8 @@ class ARView: UIViewController, ARSCNViewDelegate {
             
             let imageHolder = SCNNode(geometry: SCNPlane(width: 1, height: 1))
             imageHolder.scale = SCNVector3(
-                Float(model.data.frames[model.data.selected].transform.size.width/1000),
-                Float(model.data.frames[model.data.selected].transform.size.height/1000),
+                model.data.frames[model.data.selected].width/100,
+                model.data.frames[model.data.selected].height/100,
                 1
             )
             imageHolder.eulerAngles.x = -.pi/2

@@ -36,6 +36,7 @@ final class Data: NSObject, ObservableObject {
         )]
     )
     
+    /*
     var scene: SCNScene? {
         let scene = SCNScene()
         let node = SCNNode(geometry: SCNPlane(width: 1, height: 1))
@@ -48,6 +49,7 @@ final class Data: NSObject, ObservableObject {
         scene.rootNode.addChildNode(node)
         return scene
     }
+    */
     
     func getDocumentCameraViewController() -> VNDocumentCameraViewController {
         let vc = VNDocumentCameraViewController()
@@ -104,16 +106,18 @@ final class Data: NSObject, ObservableObject {
         // reset transformed image
         data.frames[data.selected].transform = data.frames[data.selected].image
         
-        // set frame size and aspect ratio
-        let imageSize = CGSize(
-            width: data.frames[data.selected].transform.size.width,
-            height: data.frames[data.selected].transform.size.width*(data.frames[data.selected].height/data.frames[data.selected].width)
-        )
-        
-        var aspectRatio = CGSize(
+        // set frame size
+        var imageSize = CGSize(
             width: data.frames[data.selected].transform.size.width,
             height: data.frames[data.selected].transform.size.height
         )
+        
+        if data.frames[data.selected].filled {
+            imageSize = CGSize(
+                width: data.frames[data.selected].transform.size.width,
+                height: data.frames[data.selected].transform.size.width*(data.frames[data.selected].height/data.frames[data.selected].width)
+            )
+        }
         
         // begin transformation
         UIGraphicsBeginImageContextWithOptions(imageSize, false, CGFloat(0))
@@ -126,10 +130,6 @@ final class Data: NSObject, ObservableObject {
                 width: imageSize.width,
                 height: imageSize.height
             ))
-        }
-        
-        if data.frames[data.selected].filled {
-            aspectRatio = imageSize
         }
         
         if data.frames[data.selected].rotation != 0 {
@@ -150,12 +150,12 @@ final class Data: NSObject, ObservableObject {
             
         }
         
-        data.frames[data.selected].transform.draw(in: AVMakeRect(aspectRatio: aspectRatio, insideRect: CGRect(
-            x: data.frames[data.selected].bordered ? imageSize.width/20 : 0,
-            y: data.frames[data.selected].bordered ? imageSize.width/20 : 0,
-            width: data.frames[data.selected].bordered ? imageSize.width-imageSize.width/10 : imageSize.width,
-            height: data.frames[data.selected].bordered ? imageSize.height-imageSize.width/10 : imageSize.height
-        )))
+        data.frames[data.selected].transform.draw(in: CGRect(
+            x: data.frames[data.selected].bordered ? imageSize.width/30 : 0,
+            y: data.frames[data.selected].bordered ? imageSize.width/30 : 0,
+            width: data.frames[data.selected].bordered ? imageSize.width-imageSize.width/15 : imageSize.width,
+            height: data.frames[data.selected].bordered ? imageSize.height-imageSize.width/15 : imageSize.height
+        ))
         
         // end transformation
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
@@ -215,4 +215,14 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
     }
     
+}
+
+struct Data_Previews: PreviewProvider {
+    static var previews: some View {
+        ForEach(ColorScheme.allCases, id: \.self) {
+             Window(model: Data())
+                .preferredColorScheme($0)
+        }
+        .previewDevice("iPhone 12 mini")
+    }
 }
