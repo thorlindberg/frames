@@ -73,6 +73,7 @@ struct Window: View {
                             }) {
                                 Image(systemName: "rotate.left")
                             }
+                            .disabled(true)
                             Spacer()
                             Button(action: {
                                 //
@@ -80,6 +81,7 @@ struct Window: View {
                             }) {
                                 Image(systemName: "circle")
                             }
+                            .disabled(true)
                         }
                     }
                 }

@@ -32,7 +32,7 @@ final class Data: NSObject, ObservableObject {
         isAction: false, isImporting: false, isAugmenting: false, isAugmented: false, isAdjusting: false, selected: 0,
         frames: [ Frame(
             image: UIImage(imageLiteralResourceName: "placeholder"), transform: UIImage(imageLiteralResourceName: "placeholder"),
-            width: 50, height: 50, bordered: true, filled: false, rotation: 0
+            width: 50, height: 70, bordered: true, filled: false, rotation: 0
         )]
     )
     
@@ -83,7 +83,7 @@ final class Data: NSObject, ObservableObject {
         data.frames.insert(
             Frame(
                 image: image, transform: image,
-                width: 50, height: 50,
+                width: 50, height: 70,
                 bordered: true, filled: false,
                 rotation: 0
             ),

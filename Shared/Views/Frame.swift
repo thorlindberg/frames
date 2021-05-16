@@ -19,26 +19,35 @@ struct Frame: View {
                     }
                     Spacer()
                 } else {
-                    Image(uiImage: model.data.frames[model.data.selected].transform)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .shadow(color: Color.black.opacity(0.15), radius: 30)
-                        .padding(30)
-                        .contextMenu {
-                            Button(action: {
-                                UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                    .first?
-                                    .rootViewController?
-                                    .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected]], applicationActivities: nil), animated: true)
-                            }) {
-                                Label("Share", systemImage: "square.and.arrow.up")
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.white)
+                            .shadow(color: Color.black.opacity(0.15), radius: 30)
+                            .padding(30)
+                            .frame(
+                                width: geometry.size.width,
+                                height: geometry.size.width*(model.data.frames[model.data.selected].height/model.data.frames[model.data.selected].width)
+                            )
+                        Image(uiImage: model.data.frames[model.data.selected].transform)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .padding(30)
+                            .contextMenu {
+                                Button(action: {
+                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                        .first?
+                                        .rootViewController?
+                                        .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected]], applicationActivities: nil), animated: true)
+                                }) {
+                                    Label("Share", systemImage: "square.and.arrow.up")
+                                }
+                                Button(action: {
+                                    model.removeImage()
+                                }) {
+                                    Label("Delete", systemImage: "delete.left")
+                                }
                             }
-                            Button(action: {
-                                model.removeImage()
-                            }) {
-                                Label("Delete", systemImage: "delete.left")
-                            }
-                        }
+                    }
                     Spacer()
                     if model.data.frames.count != 1 {
                         VStack(spacing: 0) {
