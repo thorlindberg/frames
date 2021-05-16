@@ -13,17 +13,41 @@ struct Augment: View {
             ZStack {
                 if !reload {
                     NavigationIndicator(model: model)
-                    Image(uiImage: model.data.frames[model.data.selected].image)
+                        .ignoresSafeArea()
+                        .onAppear { model.data.isAugmented = false }
+                    if !model.data.isAugmented {
+                        Rectangle()
+                            .ignoresSafeArea()
+                            .opacity(model.data.isAugmented ? 0 : 0.5)
+                        VStack {
+                            HStack {
+                                RoundedRectangle(cornerRadius: 100)
+                                    .frame(height: 5)
+                                Text("Top of wall")
+                                    .frame(width: 100)
+                                RoundedRectangle(cornerRadius: 100)
+                                    .frame(height: 5)
+                            }
+                            Spacer()
+                            HStack {
+                                RoundedRectangle(cornerRadius: 100)
+                                    .frame(height: 5)
+                                Text("Bottom of wall")
+                                    .frame(width: 125)
+                                RoundedRectangle(cornerRadius: 100)
+                                    .frame(height: 5)
+                            }
+                        }
+                        .foregroundColor(.white)
+                        .padding(30)
+                    }
+                    Image(uiImage: model.data.frames[model.data.selected].transform)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .padding(model.data.isAugmented ? 70 : 50)
                         .opacity(model.data.isAugmented ? 0 : 0.5)
-                        .onAppear {
-                            model.data.isAugmented = false
-                        }
                 }
             }
-            .ignoresSafeArea()
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("Augmented Reality")
             .toolbar {
@@ -62,6 +86,8 @@ struct Augment_Previews: PreviewProvider {
     }
 }
 
+// resource: https://developer.apple.com/documentation/arkit/content_anchors/tracking_and_visualizing_planes
+// resource: https://ttt.studio/blog/a-workaround-for-the-limitations-of-arkit-2/
 // source: https://blog.devgenius.io/implementing-ar-in-swiftui-without-storyboards-ec529ace7ab2
 
 struct NavigationIndicator: UIViewControllerRepresentable {
@@ -149,19 +175,18 @@ class ARView: UIViewController, ARSCNViewDelegate {
             
             guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
 
-            let width = CGFloat(planeAnchor.extent.x)
-            let height = CGFloat(planeAnchor.extent.z)
-            
-            // if width < model.data.frames[model.data.selected].image.size.width/1000 || height < model.data.frames[model.data.selected].image.size.height/1000 { return }
+            // let width = CGFloat(planeAnchor.extent.x)
+            // let height = CGFloat(planeAnchor.extent.z)
+            // if width < model.data.frames[model.data.selected].transform.size.width/1000 || height < model.data.frames[model.data.selected].transform.size.height/1000 { return }
             
             let imageHolder = SCNNode(geometry: SCNPlane(width: 1, height: 1))
             imageHolder.scale = SCNVector3(
-                Float(model.data.frames[model.data.selected].image.size.width/1000),
-                Float(model.data.frames[model.data.selected].image.size.height/1000),
+                Float(model.data.frames[model.data.selected].transform.size.width/1000),
+                Float(model.data.frames[model.data.selected].transform.size.height/1000),
                 1
             )
             imageHolder.eulerAngles.x = -.pi/2
-            imageHolder.geometry?.firstMaterial?.diffuse.contents = model.data.frames[model.data.selected].image
+            imageHolder.geometry?.firstMaterial?.diffuse.contents = model.data.frames[model.data.selected].transform
             
             node.addChildNode(imageHolder)
             withAnimation { model.data.isAugmented = true }

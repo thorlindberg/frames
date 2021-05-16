@@ -16,7 +16,7 @@ struct QuickLook: View {
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationTitle("Quick Look")
                         .onAppear {
-                            model.writeObject()
+                            // model.writeObject()
                         }
                 }
             }

@@ -61,6 +61,7 @@
 				7E2CF2CC26444CBF005B7E3C /* FramesApp.swift */,
 				7EECEF2D264C751F00B5149B /* Views */,
 				7EECEF2A264C741100B5149B /* Dependencies */,
+				7EF3B1D4265055F500A4123D /* Deprecated */,
 				7E2CF2CE26444CC0005B7E3C /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -96,11 +97,18 @@
 			children = (
 				7E2CF2F326446F1F005B7E3C /* Window.swift */,
 				7E20825D2647F4BC00404BC1 /* Frame.swift */,
-				7E326872264D437600A9CBB3 /* Object.swift */,
 				7E326870264D361B00A9CBB3 /* Augment.swift */,
-				7E326874264D442B00A9CBB3 /* QuickLook.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		7EF3B1D4265055F500A4123D /* Deprecated */ = {
+			isa = PBXGroup;
+			children = (
+				7E326872264D437600A9CBB3 /* Object.swift */,
+				7E326874264D442B00A9CBB3 /* QuickLook.swift */,
+			);
+			path = Deprecated;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

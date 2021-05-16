@@ -2,6 +2,7 @@ import SwiftUI
 import SceneKit
 import SceneKit.ModelIO
 import VisionKit
+import AVFoundation
 
 final class Data: NSObject, ObservableObject {
     
@@ -18,22 +19,20 @@ final class Data: NSObject, ObservableObject {
     
     struct Frame: Hashable {
         var image: UIImage
+        var transform: UIImage
         var width: CGFloat
         var height: CGFloat
         var bordered: Bool
         var filled: Bool
-        var colored: Bool
-        var brightened: Bool
-        var inverted: Bool
-        var rotated: Double
+        var rotation: CGFloat
     }
     
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
         isAction: false, isImporting: false, isAugmenting: false, isAugmented: false, isAdjusting: false, selected: 0,
         frames: [ Frame(
-            image: UIImage(imageLiteralResourceName: "placeholder"),
-            width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0
+            image: UIImage(imageLiteralResourceName: "placeholder"), transform: UIImage(imageLiteralResourceName: "placeholder"),
+            width: 50, height: 50, bordered: true, filled: false, rotation: 0
         )]
     )
     
@@ -56,6 +55,7 @@ final class Data: NSObject, ObservableObject {
         return vc
     }
     
+    /*
     func objectPath() -> URL {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("object.scn")
     }
@@ -77,17 +77,93 @@ final class Data: NSObject, ObservableObject {
         scene?.write(to: objectPath(), delegate: nil)
         
     }
+    */
     
     func addImage(image: UIImage) {
         data.frames.insert(
-            Frame(image: image, width: 50, height: 50, bordered: true, filled: false, colored: true, brightened: false, inverted: false, rotated: 0),
+            Frame(
+                image: image, transform: image,
+                width: 50, height: 50,
+                bordered: true, filled: false,
+                rotation: 0
+            ),
             at: 0
         )
         data.selected = 0
+        transformImage()
     }
     
     func removeImage() {
         data.frames.remove(at: data.selected)
+    }
+    
+    func transformImage() {
+        
+        // resource: https://stackoverflow.com/a/39987845/15072454
+        
+        // reset transformed image
+        data.frames[data.selected].transform = data.frames[data.selected].image
+        
+        // set frame size and aspect ratio
+        let imageSize = CGSize(
+            width: data.frames[data.selected].transform.size.width,
+            height: data.frames[data.selected].transform.size.width*(data.frames[data.selected].height/data.frames[data.selected].width)
+        )
+        
+        var aspectRatio = CGSize(
+            width: data.frames[data.selected].transform.size.width,
+            height: data.frames[data.selected].transform.size.height
+        )
+        
+        // begin transformation
+        UIGraphicsBeginImageContextWithOptions(imageSize, false, CGFloat(0))
+        let context = UIGraphicsGetCurrentContext()!
+        
+        if data.frames[data.selected].bordered {
+            UIColor.white.setFill()
+            UIRectFill(CGRect(
+                x: 0, y: 0,
+                width: imageSize.width,
+                height: imageSize.height
+            ))
+        }
+        
+        if data.frames[data.selected].filled {
+            aspectRatio = imageSize
+        }
+        
+        if data.frames[data.selected].rotation != 0 {
+            
+            // move origin to middle
+            context.translateBy(x: imageSize.width/2, y: imageSize.height/2)
+            
+            // rotate around middle
+            context.rotate(by: data.frames[data.selected].rotation)
+            
+            // draw the image at its center
+            data.frames[data.selected].transform.draw(in: CGRect(
+                x: -imageSize.width/2,
+                y: -imageSize.height/2,
+                width: imageSize.width,
+                height: imageSize.height
+            ))
+            
+        }
+        
+        data.frames[data.selected].transform.draw(in: AVMakeRect(aspectRatio: aspectRatio, insideRect: CGRect(
+            x: data.frames[data.selected].bordered ? imageSize.width/20 : 0,
+            y: data.frames[data.selected].bordered ? imageSize.width/20 : 0,
+            width: data.frames[data.selected].bordered ? imageSize.width-imageSize.width/10 : imageSize.width,
+            height: data.frames[data.selected].bordered ? imageSize.height-imageSize.width/10 : imageSize.height
+        )))
+        
+        // end transformation
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        // update transformed image
+        data.frames[data.selected].transform = newImage!
+        
     }
     
 }

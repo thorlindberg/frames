@@ -9,6 +9,7 @@ struct Window: View {
             Frame(model: model)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Augmented Frames")
+                .onAppear { model.transformImage() }
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(action: {
@@ -29,12 +30,11 @@ struct Window: View {
                     ToolbarItemGroup(placement: .bottomBar) {
                         if !model.data.frames.isEmpty {
                             Button(action: {
-                                withAnimation {
-                                    model.data.frames[model.data.selected].filled.toggle()
-                                    if model.data.frames[model.data.selected].width != model.data.frames[model.data.selected].height && !model.data.frames[model.data.selected].filled {
-                                        model.data.frames[model.data.selected].bordered = true
-                                    }
+                                model.data.frames[model.data.selected].filled.toggle()
+                                if model.data.frames[model.data.selected].width != model.data.frames[model.data.selected].height && !model.data.frames[model.data.selected].filled {
+                                    model.data.frames[model.data.selected].bordered = true
                                 }
+                                model.transformImage()
                             }) {
                                 if model.data.frames[model.data.selected].filled {
                                     Image(systemName: "rectangle.compress.vertical")
@@ -44,12 +44,11 @@ struct Window: View {
                             }
                             Spacer()
                             Button(action: {
-                                withAnimation {
-                                    model.data.frames[model.data.selected].bordered.toggle()
-                                    if model.data.frames[model.data.selected].width != model.data.frames[model.data.selected].height && !model.data.frames[model.data.selected].bordered {
-                                        model.data.frames[model.data.selected].filled = true
-                                    }
+                                model.data.frames[model.data.selected].bordered.toggle()
+                                if model.data.frames[model.data.selected].width != model.data.frames[model.data.selected].height && !model.data.frames[model.data.selected].bordered {
+                                    model.data.frames[model.data.selected].filled = true
                                 }
+                                model.transformImage()
                             }) {
                                 if model.data.frames[model.data.selected].bordered {
                                     Image(systemName: "square")
@@ -66,67 +65,21 @@ struct Window: View {
                             }
                             Spacer()
                             Button(action: {
-                                withAnimation {
-                                    model.data.frames[model.data.selected].rotated = model.data.frames[model.data.selected].rotated - 90
+                                model.data.frames[model.data.selected].rotation = model.data.frames[model.data.selected].rotation - 90
+                                if model.data.frames[model.data.selected].rotation == -360 {
+                                    model.data.frames[model.data.selected].rotation = 0
                                 }
-                                if model.data.frames[model.data.selected].rotated == -360 {
-                                    model.data.frames[model.data.selected].rotated = 0
-                                }
+                                model.transformImage()
                             }) {
                                 Image(systemName: "rotate.left")
                             }
                             Spacer()
                             Button(action: {
-                                withAnimation {
-                                    model.data.frames[model.data.selected].colored.toggle()
-                                }
+                                //
+                                model.transformImage()
                             }) {
-                                if model.data.frames[model.data.selected].colored {
-                                    Image(systemName: "dial.max")
-                                } else {
-                                    Image(systemName: "dial.min")
-                                }
+                                Image(systemName: "circle")
                             }
-                            /*
-                            Menu {
-                                Button(action: {
-                                    withAnimation {
-                                        model.data.frames[model.data.selected].colored.toggle()
-                                    }
-                                }) {
-                                    if model.data.frames[model.data.selected].colored {
-                                        Label("De-color", systemImage: "dial.min")
-                                    } else {
-                                        Label("Color", systemImage: "dial.max")
-                                    }
-                                }
-                                Button(action: {
-                                    withAnimation {
-                                        model.data.frames[model.data.selected].brightened.toggle()
-                                    }
-                                }) {
-                                    if model.data.frames[model.data.selected].brightened {
-                                        Label("Darken", systemImage: "sun.min")
-                                    } else {
-                                        Label("Brighten", systemImage: "sun.max")
-                                    }
-                                }
-                                Button(action: {
-                                    withAnimation {
-                                        model.data.frames[model.data.selected].inverted.toggle()
-                                    }
-                                }) {
-                                    if model.data.frames[model.data.selected].inverted {
-                                        Label("Revert", systemImage: "circle.lefthalf.fill")
-                                    } else {
-                                        Label("Invert", systemImage: "circle.righthalf.fill")
-                                    }
-                                }
-                                Text("Filters")
-                            } label: {
-                                Image(systemName: "camera.filters")
-                            }
-                            */
                         }
                     }
                 }
@@ -134,18 +87,18 @@ struct Window: View {
         .navigationViewStyle(StackNavigationViewStyle())
         .actionSheet(isPresented: $model.data.isAction) {
             ActionSheet(title: Text(""), buttons: model.data.isAdjusting ? [
-                .default(Text("13 x 18 cm")) { withAnimation { model.data.frames[model.data.selected].width = 13 ; model.data.frames[model.data.selected].height = 18 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
-                .default(Text("15 x 20 cm")) { withAnimation { model.data.frames[model.data.selected].width = 15 ; model.data.frames[model.data.selected].height = 20 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
-                .default(Text("21 x 30 cm")) { withAnimation { model.data.frames[model.data.selected].width = 21 ; model.data.frames[model.data.selected].height = 30 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
-                .default(Text("30 x 40 cm")) { withAnimation { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 40 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
-                .default(Text("30 x 45 cm")) { withAnimation { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 45 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
-                .default(Text("40 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 40 ; model.data.frames[model.data.selected].height = 50 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
-                .default(Text("45 x 60 cm")) { withAnimation { model.data.frames[model.data.selected].width = 45 ; model.data.frames[model.data.selected].height = 60 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
-                .default(Text("50 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 50 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
-                .default(Text("50 x 70 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 70 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
-                .default(Text("60 x 80 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 80 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
-                .default(Text("60 x 90 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 90 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
-                .default(Text("70 x 100 cm")) { withAnimation { model.data.frames[model.data.selected].width = 70 ; model.data.frames[model.data.selected].height = 100 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } } },
+                .default(Text("13 x 18 cm")) { withAnimation { model.data.frames[model.data.selected].width = 13 ; model.data.frames[model.data.selected].height = 18 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
+                .default(Text("15 x 20 cm")) { withAnimation { model.data.frames[model.data.selected].width = 15 ; model.data.frames[model.data.selected].height = 20 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
+                .default(Text("21 x 30 cm")) { withAnimation { model.data.frames[model.data.selected].width = 21 ; model.data.frames[model.data.selected].height = 30 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
+                .default(Text("30 x 40 cm")) { withAnimation { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 40 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
+                .default(Text("30 x 45 cm")) { withAnimation { model.data.frames[model.data.selected].width = 30 ; model.data.frames[model.data.selected].height = 45 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
+                .default(Text("40 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 40 ; model.data.frames[model.data.selected].height = 50 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
+                .default(Text("45 x 60 cm")) { withAnimation { model.data.frames[model.data.selected].width = 45 ; model.data.frames[model.data.selected].height = 60 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
+                .default(Text("50 x 50 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 50 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
+                .default(Text("50 x 70 cm")) { withAnimation { model.data.frames[model.data.selected].width = 50 ; model.data.frames[model.data.selected].height = 70 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
+                .default(Text("60 x 80 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 80 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
+                .default(Text("60 x 90 cm")) { withAnimation { model.data.frames[model.data.selected].width = 60 ; model.data.frames[model.data.selected].height = 90 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
+                .default(Text("70 x 100 cm")) { withAnimation { model.data.frames[model.data.selected].width = 70 ; model.data.frames[model.data.selected].height = 100 ; if !model.data.frames[model.data.selected].bordered { model.data.frames[model.data.selected].filled = true } ; model.transformImage() } },
                 .cancel()
             ] : [
                 .default(Text("Import from Photos")) { model.data.isImporting.toggle() },
