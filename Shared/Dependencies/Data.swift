@@ -1,6 +1,5 @@
 import SwiftUI
 import SceneKit
-import SceneKit.ModelIO
 import VisionKit
 import AVFoundation
 
@@ -12,6 +11,8 @@ final class Data: NSObject, ObservableObject {
         var isImporting: Bool
         var isAugmenting: Bool
         var isAugmented: Bool
+        var isBordering: Bool
+        var isFiltering: Bool
         var isAdjusting: Bool
         var selected: Int
         var frames: [Frame]
@@ -22,34 +23,32 @@ final class Data: NSObject, ObservableObject {
         var transform: UIImage
         var width: CGFloat
         var height: CGFloat
+        var border: CGFloat
         var bordered: Bool
-        var filled: Bool
-        var rotation: CGFloat
     }
     
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
-        isAction: false, isImporting: false, isAugmenting: false, isAugmented: false, isAdjusting: false, selected: 0,
+        isAction: false, isImporting: false, isAugmenting: false, isAugmented: false, isBordering: true, isFiltering: false, isAdjusting: false,
+        selected: 0,
         frames: [ Frame(
             image: UIImage(imageLiteralResourceName: "placeholder"), transform: UIImage(imageLiteralResourceName: "placeholder"),
-            width: 50, height: 70, bordered: true, filled: false, rotation: 0
+            width: 50, height: 70, border: 0.05, bordered: true
         )]
     )
     
-    /*
     var scene: SCNScene? {
         let scene = SCNScene()
         let node = SCNNode(geometry: SCNPlane(width: 1, height: 1))
-        node.geometry?.firstMaterial?.diffuse.contents = data.frames[data.selected].image
+        node.geometry?.firstMaterial?.diffuse.contents = data.frames[data.selected].transform
         node.scale = SCNVector3(
-            Float(data.frames[data.selected].image.size.width/1000),
-            Float(data.frames[data.selected].image.size.height/1000),
+            Float(data.frames[data.selected].width/100),
+            Float(data.frames[data.selected].height/100),
             1
         )
         scene.rootNode.addChildNode(node)
         return scene
     }
-    */
     
     func getDocumentCameraViewController() -> VNDocumentCameraViewController {
         let vc = VNDocumentCameraViewController()
@@ -57,37 +56,11 @@ final class Data: NSObject, ObservableObject {
         return vc
     }
     
-    /*
-    func objectPath() -> URL {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("object.scn")
-    }
-    
-    func writeObject() {
-        
-        // reference: https://stackoverflow.com/questions/64037121/how-to-programmatically-export-3d-mesh-as-usdz-using-modelio
-        // reference: https://stackoverflow.com/questions/61452732/usdz-export-from-scenekit-results-in-dull-models
-        // source: https://stackoverflow.com/questions/66473004/export-scnscene-as-obj-in-scenekit
-        
-        /*
-        do {
-            try MDLAsset(scnScene: scene!).export(to: objectPath())
-        } catch {
-            return
-        }
-        */
- 
-        scene?.write(to: objectPath(), delegate: nil)
-        
-    }
-    */
-    
     func addImage(image: UIImage) {
         data.frames.insert(
             Frame(
                 image: image, transform: image,
-                width: 50, height: 70,
-                bordered: true, filled: false,
-                rotation: 0
+                width: 50, height: 70,  border: 0.05, bordered: true
             ),
             at: 0
         )
@@ -105,57 +78,37 @@ final class Data: NSObject, ObservableObject {
         
         // reset transformed image
         data.frames[data.selected].transform = data.frames[data.selected].image
+        let image = data.frames[data.selected].transform
         
         // set frame size
-        var imageSize = CGSize(
-            width: data.frames[data.selected].transform.size.width,
-            height: data.frames[data.selected].transform.size.height
+        let canvas = CGSize(
+            width: image.size.width,
+            height: image.size.width*(data.frames[data.selected].height/data.frames[data.selected].width)
         )
         
-        if data.frames[data.selected].filled {
-            imageSize = CGSize(
-                width: data.frames[data.selected].transform.size.width,
-                height: data.frames[data.selected].transform.size.width*(data.frames[data.selected].height/data.frames[data.selected].width)
-            )
-        }
+        // set image size
+        let border = data.frames[data.selected].bordered ? canvas.width*data.frames[data.selected].border/2 : 0
+        let imageSize = CGRect(
+            x: border,
+            y: (canvas.height - border - image.size.height) / 2,
+            width: canvas.width-canvas.width*data.frames[data.selected].border,
+            height: canvas.width*(image.size.height/image.size.width)-canvas.width*data.frames[data.selected].border
+       )
         
         // begin transformation
-        UIGraphicsBeginImageContextWithOptions(imageSize, false, CGFloat(0))
+        UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
         let context = UIGraphicsGetCurrentContext()!
         
         if data.frames[data.selected].bordered {
             UIColor.white.setFill()
             UIRectFill(CGRect(
                 x: 0, y: 0,
-                width: imageSize.width,
-                height: imageSize.height
+                width: canvas.width,
+                height: canvas.height
             ))
         }
         
-        if data.frames[data.selected].rotation != 0 {
-            
-            // move origin to middle
-            context.translateBy(x: imageSize.width/2, y: imageSize.height/2)
-            
-            // rotate around middle
-            context.rotate(by: data.frames[data.selected].rotation)
-            
-            // draw the image at its center
-            data.frames[data.selected].transform.draw(in: CGRect(
-                x: -imageSize.width/2,
-                y: -imageSize.height/2,
-                width: imageSize.width,
-                height: imageSize.height
-            ))
-            
-        }
-        
-        data.frames[data.selected].transform.draw(in: CGRect(
-            x: data.frames[data.selected].bordered ? imageSize.width/30 : 0,
-            y: data.frames[data.selected].bordered ? imageSize.width/30 : 0,
-            width: data.frames[data.selected].bordered ? imageSize.width-imageSize.width/15 : imageSize.width,
-            height: data.frames[data.selected].bordered ? imageSize.height-imageSize.width/15 : imageSize.height
-        ))
+        image.draw(in: imageSize)
         
         // end transformation
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
@@ -215,14 +168,4 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
     }
     
-}
-
-struct Data_Previews: PreviewProvider {
-    static var previews: some View {
-        ForEach(ColorScheme.allCases, id: \.self) {
-             Window(model: Data())
-                .preferredColorScheme($0)
-        }
-        .previewDevice("iPhone 12 mini")
-    }
 }
