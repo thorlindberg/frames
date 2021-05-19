@@ -78,16 +78,6 @@ struct Augment: View {
     
 }
 
-struct Augment_Previews: PreviewProvider {
-    static var previews: some View {
-        ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Data())
-                .preferredColorScheme($0)
-        }
-        .previewDevice("iPhone 12 mini")
-    }
-}
-
 // resource: https://developer.apple.com/documentation/arkit/content_anchors/tracking_and_visualizing_planes
 // resource: https://ttt.studio/blog/a-workaround-for-the-limitations-of-arkit-2/
 // source: https://blog.devgenius.io/implementing-ar-in-swiftui-without-storyboards-ec529ace7ab2

@@ -25,6 +25,12 @@ final class Data: NSObject, ObservableObject {
         var height: CGFloat
         var border: CGFloat
         var bordered: Bool
+        var material: String
+    }
+    
+    struct Size: Hashable {
+        var width: CGFloat
+        var height: CGFloat
     }
     
     @Published var data: Format = Format(
@@ -33,9 +39,20 @@ final class Data: NSObject, ObservableObject {
         selected: 0,
         frames: [ Frame(
             image: UIImage(imageLiteralResourceName: "placeholder"), transform: UIImage(imageLiteralResourceName: "placeholder"),
-            width: 50, height: 70, border: 0.05, bordered: true
+            width: 50, height: 70, border: 0.05, bordered: true, material: "White"
         )]
     )
+    
+    let materials: [String] = ["White", "Black", "Oak", "Stone", "Marble"]
+    
+    let sizes: [Size] = [
+        Size(width: 15, height: 30),
+        Size(width: 30, height: 45),
+        Size(width: 45, height: 60),
+        Size(width: 50, height: 70),
+        Size(width: 60, height: 90),
+        Size(width: 90, height: 100)
+    ]
     
     var scene: SCNScene? {
         let scene = SCNScene()
@@ -60,7 +77,8 @@ final class Data: NSObject, ObservableObject {
         data.frames.insert(
             Frame(
                 image: image, transform: image,
-                width: 50, height: 70,  border: 0.05, bordered: true
+                width: 50, height: 70,  border: 0.05,
+                bordered: true, material: "White"
             ),
             at: 0
         )
@@ -70,6 +88,12 @@ final class Data: NSObject, ObservableObject {
     
     func removeImage() {
         data.frames.remove(at: data.selected)
+    }
+    
+    func toggleAdjust() {
+        data.isBordering = false
+        data.isStyling = false
+        data.isAdjusting = false
     }
     
     func transformImage() {
@@ -99,15 +123,31 @@ final class Data: NSObject, ObservableObject {
         UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
         let context = UIGraphicsGetCurrentContext()!
         
+        // set frame to black
+        switch data.frames[data.selected].material {
+            case "Black": UIColor.black.setFill()
+            case "Oak": UIColor.brown.setFill()
+            case "Stone": UIColor.gray.setFill()
+            case "Marble": UIColor.blue.setFill()
+            default: UIColor.white.setFill()
+        }
+        UIRectFill(CGRect(
+            x: 0, y: 0,
+            width: canvas.width,
+            height: canvas.height
+        ))
+        
+        // fill with brown, minus border
         if data.frames[data.selected].bordered {
-            UIColor.white.setFill()
+            UIColor.brown.setFill()
             UIRectFill(CGRect(
-                x: 0, y: 0,
-                width: canvas.width,
-                height: canvas.height
+                x: border, y: border,
+                width: canvas.width - border * 2,
+                height: canvas.height - border * 2
             ))
         }
         
+        // draw image on frame
         image.draw(in: imageSize)
         
         // end transformation

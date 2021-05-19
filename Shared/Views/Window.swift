@@ -31,69 +31,7 @@ struct Window: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .actionSheet(isPresented: $model.data.isAction) {
-            ActionSheet(title: Text(""), buttons: model.data.isAdjusting ? [
-                .default(Text("13 x 18 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 13
-                    model.data.frames[model.data.selected].height = 18
-                    model.transformImage()
-                } },
-                .default(Text("15 x 20 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 15
-                    model.data.frames[model.data.selected].height = 20
-                    model.transformImage()
-                } },
-                .default(Text("21 x 30 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 21
-                    model.data.frames[model.data.selected].height = 30
-                    model.transformImage()
-                } },
-                .default(Text("30 x 40 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 30
-                    model.data.frames[model.data.selected].height = 40
-                    model.transformImage()
-                } },
-                .default(Text("30 x 45 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 30
-                    model.data.frames[model.data.selected].height = 45
-                    model.transformImage()
-                } },
-                .default(Text("40 x 50 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 40
-                    model.data.frames[model.data.selected].height = 50
-                    model.transformImage()
-                } },
-                .default(Text("45 x 60 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 45
-                    model.data.frames[model.data.selected].height = 60
-                    model.transformImage()
-                } },
-                .default(Text("50 x 50 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 50
-                    model.data.frames[model.data.selected].height = 50
-                    model.transformImage()
-                } },
-                .default(Text("50 x 70 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 50
-                    model.data.frames[model.data.selected].height = 70
-                    model.transformImage()
-                } },
-                .default(Text("60 x 80 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 60
-                    model.data.frames[model.data.selected].height = 80
-                    model.transformImage()
-                } },
-                .default(Text("60 x 90 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 60
-                    model.data.frames[model.data.selected].height = 90
-                    model.transformImage()
-                } },
-                .default(Text("70 x 100 cm")) { withAnimation {
-                    model.data.frames[model.data.selected].width = 70
-                    model.data.frames[model.data.selected].height = 100
-                    model.transformImage()
-                } },
-                .cancel()
-            ] : [
+            ActionSheet(title: Text(""), buttons: [
                 .default(Text("Import from Photos")) { model.data.isImporting.toggle() },
                 .default(Text("Scan with Camera")) {
                     UIApplication.shared.windows.filter({$0.isKeyWindow})
