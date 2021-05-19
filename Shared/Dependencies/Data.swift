@@ -39,7 +39,7 @@ final class Data: NSObject, ObservableObject {
         selected: 0,
         frames: [ Frame(
             image: UIImage(imageLiteralResourceName: "placeholder"), transform: UIImage(imageLiteralResourceName: "placeholder"),
-            width: 50, height: 70, border: 0.05, bordered: true, material: "White"
+            width: 50, height: 70, border: 0.05, bordered: true, material: "Oak"
         )]
     )
     
@@ -54,17 +54,52 @@ final class Data: NSObject, ObservableObject {
         Size(width: 90, height: 100)
     ]
     
+    var camera: SCNNode? {
+        // define and set pointofview
+        let node = SCNNode()
+        node.camera = SCNCamera()
+        node.position = SCNVector3Make(0, 0, 1)
+        return node
+    }
+    
     var scene: SCNScene? {
+        
+        // resource: https://stackoverflow.com/questions/24710609/swift-setting-scnmaterial-works-for-scnbox-but-not-for-scngeometry-loaded-from
+        // resource: https://stackoverflow.com/questions/27509092/scnbox-different-colour-or-texture-on-each-face
+        // resource: https://stackoverflow.com/questions/28480706/adding-camera-in-scnscene
+        
+        // create scene and box
         let scene = SCNScene()
-        let node = SCNNode(geometry: SCNPlane(width: 1, height: 1))
-        node.geometry?.firstMaterial?.diffuse.contents = data.frames[data.selected].transform
+        let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
+        
+        // define materials
+        let front = SCNMaterial()
+        front.diffuse.contents = data.frames[data.selected].transform
+        
+        let frame = SCNMaterial()
+        switch data.frames[data.selected].material {
+            case "Black": frame.diffuse.contents = UIColor.black
+            case "Oak": frame.diffuse.contents = UIImage(named: "material_oak")
+            case "Stone": frame.diffuse.contents = UIColor.gray
+            case "Marble": frame.diffuse.contents = UIColor.blue
+            default: frame.diffuse.contents = UIColor.white
+        }
+        
+        // add materials to sides
+        node.geometry?.materials = [front, frame, frame, frame, frame, frame]
+        
+        // frame size
         node.scale = SCNVector3(
             Float(data.frames[data.selected].width/100),
             Float(data.frames[data.selected].height/100),
             1
         )
+        
+        // add frame
         scene.rootNode.addChildNode(node)
+        
         return scene
+        
     }
     
     func getDocumentCameraViewController() -> VNDocumentCameraViewController {
@@ -78,7 +113,7 @@ final class Data: NSObject, ObservableObject {
             Frame(
                 image: image, transform: image,
                 width: 50, height: 70,  border: 0.05,
-                bordered: true, material: "White"
+                bordered: true, material: "Oak"
             ),
             at: 0
         )
@@ -123,7 +158,7 @@ final class Data: NSObject, ObservableObject {
         UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
         let context = UIGraphicsGetCurrentContext()!
         
-        // set frame to black
+        // set frame material
         switch data.frames[data.selected].material {
             case "Black": UIColor.black.setFill()
             case "Oak": UIColor.brown.setFill()
@@ -137,9 +172,9 @@ final class Data: NSObject, ObservableObject {
             height: canvas.height
         ))
         
-        // fill with brown, minus border
+        // fill with white, minus border
         if data.frames[data.selected].bordered {
-            UIColor.brown.setFill()
+            UIColor.white.setFill()
             UIRectFill(CGRect(
                 x: border, y: border,
                 width: canvas.width - border * 2,
@@ -208,4 +243,14 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
     }
     
+}
+
+struct Data_Previews: PreviewProvider {
+    static var previews: some View {
+        ForEach(ColorScheme.allCases, id: \.self) {
+             Window(model: Data())
+                .preferredColorScheme($0)
+        }
+        .previewDevice("iPhone 12 mini")
+    }
 }
