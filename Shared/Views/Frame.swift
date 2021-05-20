@@ -19,7 +19,6 @@ struct Frame: View {
                 Spacer()
             } else {
                 SceneView(scene: model.scene, pointOfView: model.camera, options: [.allowsCameraControl])
-                // Divider()
                 Adjustment(model: model)
             }
             
@@ -38,7 +37,7 @@ struct Border: View {
                 get: { model.data.frames[model.data.selected].border },
                 set: { model.data.frames[model.data.selected].border = $0 ; model.transformImage() }
             ),
-            in: 0...1, step: 0.05
+            in: 0.05...0.5, step: 0.05
         )
         .padding(.horizontal)
     }
@@ -125,16 +124,20 @@ struct Adjustment: View {
         ZStack {
             if model.data.isBordering {
                 Border(model: model)
+                    .transition(.move(edge: .leading))
             }
             if model.data.isStyling {
                 Style(model: model)
+                    .transition(model.data.fromLeft ? .move(edge: .trailing) : .move(edge: .leading))
             }
             if model.data.isAdjusting {
                 Crop(model: model)
+                    .transition(.move(edge: .trailing))
             }
         }
-        .frame(height: 60)
+        .frame(height: 80)
         ZStack {
+            /*
             HStack {
                 Button(action: {
                     model.removeImage()
@@ -151,10 +154,12 @@ struct Adjustment: View {
                     Text("Share")
                 }
             }
+            */
             HStack {
                 Spacer()
                 HStack(spacing: 25) {
                     Button(action: {
+                        model.data.fromLeft = true
                         withAnimation {
                             model.toggleAdjust()
                             model.data.isBordering = true
@@ -175,6 +180,7 @@ struct Adjustment: View {
                             .font(.system(size: 22))
                     }
                     Button(action: {
+                        model.data.fromLeft = false
                         withAnimation {
                             model.toggleAdjust()
                             model.data.isAdjusting = true

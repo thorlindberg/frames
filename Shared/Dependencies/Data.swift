@@ -14,6 +14,7 @@ final class Data: NSObject, ObservableObject {
         var isBordering: Bool
         var isStyling: Bool
         var isAdjusting: Bool
+        var fromLeft: Bool
         var selected: Int
         var frames: [Frame]
     }
@@ -35,7 +36,7 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
-        isAction: false, isImporting: false, isAugmenting: false, isAugmented: false, isBordering: true, isStyling: false, isAdjusting: false,
+        isAction: false, isImporting: false, isAugmenting: false, isAugmented: false, isBordering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [ Frame(
             image: UIImage(imageLiteralResourceName: "placeholder"), transform: UIImage(imageLiteralResourceName: "placeholder"),
@@ -43,7 +44,7 @@ final class Data: NSObject, ObservableObject {
         )]
     )
     
-    let materials: [String] = ["White", "Black", "Oak", "Stone", "Marble"]
+    let materials: [String] = ["White", "Black", "Oak", "Steel", "Marble"]
     
     let sizes: [Size] = [
         Size(width: 15, height: 30),
@@ -55,10 +56,9 @@ final class Data: NSObject, ObservableObject {
     ]
     
     var camera: SCNNode? {
-        // define and set pointofview
         let node = SCNNode()
         node.camera = SCNCamera()
-        node.position = SCNVector3Make(0, 0, 1)
+        node.position = SCNVector3Make(0, 0, 2)
         return node
     }
     
@@ -80,10 +80,12 @@ final class Data: NSObject, ObservableObject {
         switch data.frames[data.selected].material {
             case "Black": frame.diffuse.contents = UIColor.black
             case "Oak": frame.diffuse.contents = UIImage(named: "material_oak")
-            case "Stone": frame.diffuse.contents = UIColor.gray
-            case "Marble": frame.diffuse.contents = UIColor.blue
+            case "Steel": frame.diffuse.contents = UIImage(named: "material_steel")
+            case "Marble": frame.diffuse.contents = UIImage(named: "material_marble")
             default: frame.diffuse.contents = UIColor.white
         }
+        frame.diffuse.wrapT = SCNWrapMode.repeat
+        frame.diffuse.wrapS = SCNWrapMode.repeat
         
         // add materials to sides
         node.geometry?.materials = [front, frame, frame, frame, frame, frame]
@@ -95,7 +97,7 @@ final class Data: NSObject, ObservableObject {
             1
         )
         
-        // add frame
+        // add frame to scene
         scene.rootNode.addChildNode(node)
         
         return scene
@@ -159,18 +161,19 @@ final class Data: NSObject, ObservableObject {
         let context = UIGraphicsGetCurrentContext()!
         
         // set frame material
-        switch data.frames[data.selected].material {
-            case "Black": UIColor.black.setFill()
-            case "Oak": UIColor.brown.setFill()
-            case "Stone": UIColor.gray.setFill()
-            case "Marble": UIColor.blue.setFill()
-            default: UIColor.white.setFill()
-        }
-        UIRectFill(CGRect(
+        let front = CGRect(
             x: 0, y: 0,
             width: canvas.width,
             height: canvas.height
-        ))
+        )
+        switch data.frames[data.selected].material {
+            case "Black": UIColor.black.setFill()
+            case "Oak": UIImage(named: "material_oak")?.drawAsPattern(in: front)
+            case "Steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
+            case "Marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)
+            default: UIColor.white.setFill()
+        }
+        UIRectFill(front)
         
         // fill with white, minus border
         if data.frames[data.selected].bordered {

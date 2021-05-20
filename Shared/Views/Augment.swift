@@ -171,16 +171,37 @@ class ARView: UIViewController, ARSCNViewDelegate {
             // let height = CGFloat(planeAnchor.extent.z)
             // if width < model.data.frames[model.data.selected].transform.size.width/1000 || height < model.data.frames[model.data.selected].transform.size.height/1000 { return }
             
-            let imageHolder = SCNNode(geometry: SCNPlane(width: 1, height: 1))
+            let imageHolder = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
+            imageHolder.eulerAngles.x = -.pi/2
+            
+            // define materials
+            let front = SCNMaterial()
+            front.diffuse.contents = model.data.frames[model.data.selected].transform
+            
+            let frame = SCNMaterial()
+            switch model.data.frames[model.data.selected].material {
+                case "Black": frame.diffuse.contents = UIColor.black
+                case "Oak": frame.diffuse.contents = UIImage(named: "material_oak")
+                case "Steel": frame.diffuse.contents = UIImage(named: "material_steel")
+                case "Marble": frame.diffuse.contents = UIImage(named: "material_marble")
+                default: frame.diffuse.contents = UIColor.white
+            }
+            frame.diffuse.wrapT = SCNWrapMode.repeat
+            frame.diffuse.wrapS = SCNWrapMode.repeat
+            
+            // add materials to sides
+            imageHolder.geometry?.materials = [front, frame, frame, frame, frame, frame]
+            
+            // frame size
             imageHolder.scale = SCNVector3(
-                model.data.frames[model.data.selected].width/100,
-                model.data.frames[model.data.selected].height/100,
+                Float(model.data.frames[model.data.selected].width/100),
+                Float(model.data.frames[model.data.selected].height/100),
                 1
             )
-            imageHolder.eulerAngles.x = -.pi/2
-            imageHolder.geometry?.firstMaterial?.diffuse.contents = model.data.frames[model.data.selected].transform
             
+            // add frame to scene
             node.addChildNode(imageHolder)
+
             withAnimation { model.data.isAugmented = true }
             
         }
