@@ -40,7 +40,7 @@ final class Data: NSObject, ObservableObject {
         selected: 0,
         frames: [ Frame(
             image: UIImage(imageLiteralResourceName: "placeholder"), transform: UIImage(imageLiteralResourceName: "placeholder"),
-            width: 50, height: 70, border: 0.05, bordered: true, material: "Oak"
+            width: 50, height: 70, border: 0.1, bordered: true, material: "Oak"
         )]
     )
     
@@ -114,7 +114,7 @@ final class Data: NSObject, ObservableObject {
         data.frames.insert(
             Frame(
                 image: image, transform: image,
-                width: 50, height: 70,  border: 0.05,
+                width: 50, height: 70,  border: 0.1,
                 bordered: true, material: "Oak"
             ),
             at: 0

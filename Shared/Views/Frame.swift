@@ -18,10 +18,31 @@ struct Frame: View {
                 }
                 Spacer()
             } else {
-                SceneView(scene: model.scene, pointOfView: model.camera, options: [.allowsCameraControl])
+                SceneView(scene: model.scene, pointOfView: model.camera, options: model.data.isAdjusting ? [] : [.allowsCameraControl])
                 Adjustment(model: model)
             }
             
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Augmented Frames")
+        .onAppear { model.transformImage() }
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(action: {
+                    model.data.isAdjusting = false
+                    model.data.isAction.toggle()
+                }) {
+                    Image(systemName: "camera")
+                }
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    model.data.isAugmenting.toggle()
+                }) {
+                    Text("AR")
+                }
+                .disabled(model.data.frames.isEmpty)
+            }
         }
     }
     
@@ -33,11 +54,11 @@ struct Border: View {
     
     var body: some View {
         Slider(
-            value: Binding(
-                get: { model.data.frames[model.data.selected].border },
-                set: { model.data.frames[model.data.selected].border = $0 ; model.transformImage() }
-            ),
-            in: 0.05...0.5, step: 0.05
+            value: $model.data.frames[model.data.selected].border,
+            in: 0.05...0.95,
+            onEditingChanged: { _ in
+                model.transformImage()
+            }
         )
         .padding(.horizontal)
     }
@@ -124,15 +145,15 @@ struct Adjustment: View {
         ZStack {
             if model.data.isBordering {
                 Border(model: model)
-                    .transition(.move(edge: .leading))
+                    .transition(.move(edge: .leading).combined(with: .opacity))
             }
             if model.data.isStyling {
                 Style(model: model)
-                    .transition(model.data.fromLeft ? .move(edge: .trailing) : .move(edge: .leading))
+                    .transition(model.data.fromLeft ? .move(edge: .trailing).combined(with: .opacity) : .move(edge: .leading).combined(with: .opacity))
             }
             if model.data.isAdjusting {
                 Crop(model: model)
-                    .transition(.move(edge: .trailing))
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
         .frame(height: 80)

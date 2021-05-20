@@ -7,27 +7,6 @@ struct Window: View {
     var body: some View {
         NavigationView {
             Frame(model: model)
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Augmented Frames")
-                .onAppear { model.transformImage() }
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            model.data.isAdjusting = false
-                            model.data.isAction.toggle()
-                        }) {
-                            Image(systemName: "photo")
-                        }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            model.data.isAugmenting.toggle()
-                        }) {
-                            Text("AR")
-                        }
-                        .disabled(model.data.frames.isEmpty)
-                    }
-                }
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .actionSheet(isPresented: $model.data.isAction) {
