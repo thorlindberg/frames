@@ -3,10 +3,15 @@ import SceneKit
 import VisionKit
 import AVFoundation
 
+func deg2rad(_ number: Double) -> Double {
+    return number * .pi / 180
+}
+
 final class Data: NSObject, ObservableObject {
     
     struct Format: Hashable {
         var firstLaunch: Bool
+        var colorscheme: ColorScheme
         var isAction: Bool
         var isImporting: Bool
         var isAugmenting: Bool
@@ -35,16 +40,18 @@ final class Data: NSObject, ObservableObject {
     }
     
     @Published var data: Format = Format(
-        firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
-        isAction: false, isImporting: false, isAugmenting: false, isAugmented: false, isBordering: false, isStyling: true, isAdjusting: false, fromLeft: false,
+        firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"), colorscheme: .light,
+        isAction: false, isImporting: false, isAugmenting: false, isAugmented: false,
+        isBordering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
-        frames: [ Frame(
-            image: UIImage(imageLiteralResourceName: "placeholder"), transform: UIImage(imageLiteralResourceName: "placeholder"),
+        frames: [Frame(
+            image: UIImage(imageLiteralResourceName: "placeholder"),
+            transform: UIImage(imageLiteralResourceName: "placeholder"),
             width: 50, height: 70, border: 0.1, bordered: true, material: "Oak"
         )]
     )
     
-    let materials: [String] = ["White", "Black", "Oak", "Steel", "Marble"]
+    let materials: [String] = ["Oak", "Steel", "Marble", "Black", "Orange", "Green"]
     
     let sizes: [Size] = [
         Size(width: 15, height: 30),
@@ -72,6 +79,9 @@ final class Data: NSObject, ObservableObject {
         let scene = SCNScene()
         let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
         
+        // set scene background
+        scene.background.contents = data.colorscheme == .dark ? UIColor.black : UIColor.white
+        
         // define materials
         let front = SCNMaterial()
         front.diffuse.contents = data.frames[data.selected].transform
@@ -79,6 +89,8 @@ final class Data: NSObject, ObservableObject {
         let frame = SCNMaterial()
         switch data.frames[data.selected].material {
             case "Black": frame.diffuse.contents = UIColor.black
+            case "Orange": frame.diffuse.contents = UIColor.orange
+            case "Green": frame.diffuse.contents = UIColor.green
             case "Oak": frame.diffuse.contents = UIImage(named: "material_oak")
             case "Steel": frame.diffuse.contents = UIImage(named: "material_steel")
             case "Marble": frame.diffuse.contents = UIImage(named: "material_marble")
@@ -96,6 +108,9 @@ final class Data: NSObject, ObservableObject {
             Float(data.frames[data.selected].height/100),
             1
         )
+        
+        // rotate frame
+        node.rotation = SCNVector4(1, 0, 0, deg2rad(350))
         
         // add frame to scene
         scene.rootNode.addChildNode(node)
@@ -168,6 +183,8 @@ final class Data: NSObject, ObservableObject {
         )
         switch data.frames[data.selected].material {
             case "Black": UIColor.black.setFill()
+            case "Orange": UIColor.orange.setFill()
+            case "Green": UIColor.green.setFill()
             case "Oak": UIImage(named: "material_oak")?.drawAsPattern(in: front)
             case "Steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
             case "Marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)

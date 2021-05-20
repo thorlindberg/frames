@@ -4,6 +4,7 @@ import SceneKit
 struct Frame: View {
     
     @ObservedObject var model: Data
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack(spacing: 0) {
@@ -18,7 +19,22 @@ struct Frame: View {
                 }
                 Spacer()
             } else {
-                SceneView(scene: model.scene, pointOfView: model.camera, options: model.data.isAdjusting ? [] : [.allowsCameraControl])
+                SceneView(
+                    scene: model.scene,
+                    pointOfView: model.camera,
+                    options: model.data.isAdjusting ? [] : [.allowsCameraControl]
+                )
+                .onAppear {
+                    model.data.colorscheme = colorScheme
+                }
+                /*
+                Rectangle()
+                    .opacity(0.2)
+                    .frame(height: 20)
+                    .blur(radius: 15)
+                    .padding(.horizontal, 60)
+                    .padding(.vertical, 30)
+                */
                 Adjustment(model: model)
             }
             
@@ -139,7 +155,6 @@ struct Crop: View {
 struct Adjustment: View {
     
     @ObservedObject var model: Data
-    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         ZStack {
@@ -158,7 +173,6 @@ struct Adjustment: View {
         }
         .frame(height: 80)
         ZStack {
-            /*
             HStack {
                 Button(action: {
                     model.removeImage()
@@ -175,10 +189,9 @@ struct Adjustment: View {
                     Text("Share")
                 }
             }
-            */
             HStack {
                 Spacer()
-                HStack(spacing: 25) {
+                HStack(spacing: 30) {
                     Button(action: {
                         model.data.fromLeft = true
                         withAnimation {
@@ -187,7 +200,7 @@ struct Adjustment: View {
                         }
                     }) {
                         Image(systemName: "square.dashed")
-                            .foregroundColor(model.data.isBordering ? nil : colorScheme == .dark ? .white : .black)
+                            .foregroundColor(model.data.isBordering ? nil : model.data.colorscheme == .dark ? .white : .black)
                             .font(.system(size: 22))
                     }
                     Button(action: {
@@ -197,7 +210,7 @@ struct Adjustment: View {
                         }
                     }) {
                         Image(systemName: "cube")
-                            .foregroundColor(model.data.isStyling ? nil : colorScheme == .dark ? .white : .black)
+                            .foregroundColor(model.data.isStyling ? nil : model.data.colorscheme == .dark ? .white : .black)
                             .font(.system(size: 22))
                     }
                     Button(action: {
@@ -208,7 +221,7 @@ struct Adjustment: View {
                         }
                     }) {
                         Image(systemName: "crop")
-                            .foregroundColor(model.data.isAdjusting ? nil : colorScheme == .dark ? .white : .black)
+                            .foregroundColor(model.data.isAdjusting ? nil : model.data.colorscheme == .dark ? .white : .black)
                             .font(.system(size: 22))
                     }
                 }
