@@ -165,7 +165,7 @@ class ARView: UIViewController, ARSCNViewDelegate {
         
         if !model.data.isAugmented {
             
-            guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+            guard anchor is ARPlaneAnchor else { return }
 
             // let width = CGFloat(planeAnchor.extent.x)
             // let height = CGFloat(planeAnchor.extent.z)

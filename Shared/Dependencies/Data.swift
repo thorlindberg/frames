@@ -47,7 +47,7 @@ final class Data: NSObject, ObservableObject {
         frames: [Frame(
             image: UIImage(imageLiteralResourceName: "sample"),
             transform: UIImage(imageLiteralResourceName: "sample"),
-            width: 50, height: 70, border: 0.1, bordered: true, material: "Oak"
+            width: 60, height: 90, border: 0.1, bordered: true, material: "Oak"
         )]
     )
     
@@ -129,7 +129,7 @@ final class Data: NSObject, ObservableObject {
         data.frames.insert(
             Frame(
                 image: image, transform: image,
-                width: 50, height: 70,  border: 0.1,
+                width: 60, height: 90,  border: 0.1,
                 bordered: true, material: "Oak"
             ),
             at: 0
@@ -156,6 +156,13 @@ final class Data: NSObject, ObservableObject {
         data.frames[data.selected].transform = data.frames[data.selected].image
         let image = data.frames[data.selected].transform
         
+        // convert image to JPEG
+        /*
+        if let jpegData = image.jpegData(compressionQuality: 1.0) {
+            image = UIImage(data: jpegData)!
+        }
+        */
+        
         // set frame size
         let canvas = CGSize(
             width: image.size.width,
@@ -181,7 +188,6 @@ final class Data: NSObject, ObservableObject {
         
         // begin transformation
         UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
-        let context = UIGraphicsGetCurrentContext()!
         
         // set frame material
         let front = CGRect(

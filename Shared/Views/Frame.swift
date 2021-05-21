@@ -4,57 +4,59 @@ import SceneKit
 struct Frame: View {
     
     @ObservedObject var model: Data
-    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack(spacing: 0) {
-            ZStack {
+        GeometryReader { geo in
+            VStack(spacing: 0) {
                 if model.data.isAdjusting {
+                    Spacer()
                     Image(uiImage: model.data.frames[model.data.selected].transform)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .padding(50)
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                        .padding(30)
+                    Spacer()
                 } else {
-                    SceneView(
-                        scene: model.scene,
-                        pointOfView: model.camera,
-                        options: [] // .allowsCameraControl
-                    )
-                    .onAppear {
-                        model.data.colorscheme = colorScheme
+                    ZStack {
+                        SceneView(
+                            scene: model.scene,
+                            pointOfView: model.camera,
+                            options: [] // .allowsCameraControl
+                        )
+                        VStack(spacing: 0) {
+                            Spacer()
+                            Ellipse()
+                                .foregroundColor(model.data.colorscheme == .dark ? .white : .black)
+                                .opacity(0.15)
+                                .frame(height: 40)
+                                .blur(radius: 15)
+                                .padding(.horizontal, 60)
+                                .padding(.vertical, 30)
+                        }
+                    }
+                    .transition(.move(edge: .leading).combined(with: .opacity))
+                }
+                Adjustment(model: model)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Augmented Frames")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        model.data.isAdjusting = false
+                        model.data.isAction.toggle()
+                    }) {
+                        Image(systemName: "camera")
                     }
                 }
-                VStack(spacing: 0) {
-                    Spacer()
-                    Ellipse()
-                        .opacity(0.15)
-                        .frame(height: 40)
-                        .blur(radius: 15)
-                        .padding(.horizontal, 60)
-                        .padding(.vertical, 30)
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        model.data.isAugmenting.toggle()
+                    }) {
+                        Text("AR")
+                    }
+                    .disabled(model.data.frames.isEmpty)
                 }
-            }
-            Adjustment(model: model)
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Augmented Frames")
-        .onAppear { model.transformImage() }
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(action: {
-                    model.data.isAdjusting = false
-                    model.data.isAction.toggle()
-                }) {
-                    Image(systemName: "camera")
-                }
-            }
-            ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
-                    model.data.isAugmenting.toggle()
-                }) {
-                    Text("AR")
-                }
-                .disabled(model.data.frames.isEmpty)
             }
         }
     }
@@ -239,6 +241,6 @@ struct Frame_Previews: PreviewProvider {
              Window(model: Data())
                 .preferredColorScheme($0)
         }
-        .previewDevice("iPhone 12 mini")
+        .previewDevice("iPhone 8")
     }
 }

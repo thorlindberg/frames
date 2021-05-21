@@ -3,10 +3,15 @@ import SwiftUI
 struct Window: View {
     
     @ObservedObject var model: Data
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         NavigationView {
             Frame(model: model)
+                .onAppear {
+                    model.data.colorscheme = colorScheme
+                    model.transformImage()
+                }
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .actionSheet(isPresented: $model.data.isAction) {
