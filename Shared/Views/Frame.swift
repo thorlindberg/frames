@@ -8,36 +8,33 @@ struct Frame: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            if model.data.frames.isEmpty {
-                Spacer()
-                HStack {
+            ZStack {
+                if model.data.isAdjusting {
+                    Image(uiImage: model.data.frames[model.data.selected].transform)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding(50)
+                } else {
+                    SceneView(
+                        scene: model.scene,
+                        pointOfView: model.camera,
+                        options: [.allowsCameraControl]
+                    )
+                    .onAppear {
+                        model.data.colorscheme = colorScheme
+                    }
+                }
+                VStack(spacing: 0) {
                     Spacer()
-                    Image(systemName: "photo")
+                    Ellipse()
                         .opacity(0.15)
-                        .font(.system(size: 150))
-                    Spacer()
+                        .frame(height: 40)
+                        .blur(radius: 15)
+                        .padding(.horizontal, 60)
+                        .padding(.vertical, 30)
                 }
-                Spacer()
-            } else {
-                SceneView(
-                    scene: model.scene,
-                    pointOfView: model.camera,
-                    options: model.data.isAdjusting ? [] : [.allowsCameraControl]
-                )
-                .onAppear {
-                    model.data.colorscheme = colorScheme
-                }
-                /*
-                Rectangle()
-                    .opacity(0.2)
-                    .frame(height: 20)
-                    .blur(radius: 15)
-                    .padding(.horizontal, 60)
-                    .padding(.vertical, 30)
-                */
-                Adjustment(model: model)
             }
-            
+            Adjustment(model: model)
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Augmented Frames")
@@ -173,13 +170,15 @@ struct Adjustment: View {
         }
         .frame(height: 80)
         ZStack {
+            /*
             HStack {
                 Button(action: {
                     model.removeImage()
                 }) {
                     Text("Delete")
-                        .foregroundColor(.red)
+                        .foregroundColor(model.data.frames.count == 1 ? nil : .red)
                 }
+                .disabled(model.data.frames.count == 1)
                 Spacer()
                 Button(action: {
                     UIApplication.shared.windows.filter({$0.isKeyWindow})
@@ -189,6 +188,7 @@ struct Adjustment: View {
                     Text("Share")
                 }
             }
+            */
             HStack {
                 Spacer()
                 HStack(spacing: 30) {

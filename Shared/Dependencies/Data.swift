@@ -65,7 +65,7 @@ final class Data: NSObject, ObservableObject {
     var camera: SCNNode? {
         let node = SCNNode()
         node.camera = SCNCamera()
-        node.position = SCNVector3Make(0, 0, 2)
+        node.position = SCNVector3Make(0, 0, 1.1)
         return node
     }
     
