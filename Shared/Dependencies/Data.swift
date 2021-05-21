@@ -45,8 +45,8 @@ final class Data: NSObject, ObservableObject {
         isBordering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [Frame(
-            image: UIImage(imageLiteralResourceName: "placeholder"),
-            transform: UIImage(imageLiteralResourceName: "placeholder"),
+            image: UIImage(imageLiteralResourceName: "sample"),
+            transform: UIImage(imageLiteralResourceName: "sample"),
             width: 50, height: 70, border: 0.1, bordered: true, material: "Oak"
         )]
     )
@@ -164,12 +164,20 @@ final class Data: NSObject, ObservableObject {
         
         // set image size
         let border = data.frames[data.selected].bordered ? canvas.width*data.frames[data.selected].border/2 : 0
-        let imageSize = CGRect(
+        var imageSize = CGRect(
             x: border,
-            y: (canvas.height - border - image.size.height) / 2,
+            y: border + (canvas.height - canvas.width*(image.size.height/image.size.width)) / 2,
             width: canvas.width-canvas.width*data.frames[data.selected].border,
             height: canvas.width*(image.size.height/image.size.width)-canvas.width*data.frames[data.selected].border
-       )
+        )
+        if image.size.height > canvas.height {
+            imageSize = CGRect(
+                x: border + (canvas.width - canvas.height*(image.size.width/image.size.height)) / 2,
+                y: border,
+                width: canvas.height*(image.size.width/image.size.height)-canvas.width*data.frames[data.selected].border,
+                height: canvas.height-canvas.width*data.frames[data.selected].border
+            )
+        }
         
         // begin transformation
         UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))

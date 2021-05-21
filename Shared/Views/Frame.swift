@@ -18,7 +18,7 @@ struct Frame: View {
                     SceneView(
                         scene: model.scene,
                         pointOfView: model.camera,
-                        options: [.allowsCameraControl]
+                        options: [] // .allowsCameraControl
                     )
                     .onAppear {
                         model.data.colorscheme = colorScheme
