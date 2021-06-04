@@ -31,15 +31,6 @@ struct Frame: View {
                             }
                         }
                     }
-                /*
-                Ellipse()
-                    .foregroundColor(colorscheme == .dark ? .white : .black)
-                    .opacity(0.15)
-                    .frame(height: 40)
-                    .blur(radius: 15)
-                    .padding(.horizontal, 60)
-                */
-                Spacer()
                 Adjustment(model: model)
             }
             .navigationBarTitleDisplayMode(.inline)
