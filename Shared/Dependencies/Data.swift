@@ -11,7 +11,6 @@ final class Data: NSObject, ObservableObject {
     
     struct Format: Hashable {
         var firstLaunch: Bool
-        var colorscheme: ColorScheme
         var isAction: Bool
         var isImporting: Bool
         var isAugmenting: Bool
@@ -30,7 +29,6 @@ final class Data: NSObject, ObservableObject {
         var width: CGFloat
         var height: CGFloat
         var border: CGFloat
-        var bordered: Bool
         var material: String
     }
     
@@ -40,14 +38,14 @@ final class Data: NSObject, ObservableObject {
     }
     
     @Published var data: Format = Format(
-        firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"), colorscheme: .light,
+        firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
         isAction: false, isImporting: false, isAugmenting: false, isAugmented: false,
         isBordering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [Frame(
             image: UIImage(imageLiteralResourceName: "sample"),
             transform: UIImage(imageLiteralResourceName: "sample"),
-            width: 60, height: 90, border: 0.1, bordered: true, material: "Oak"
+            width: 60, height: 90, border: 0.1, material: "Oak"
         )]
     )
     
@@ -79,8 +77,10 @@ final class Data: NSObject, ObservableObject {
         let scene = SCNScene()
         let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
         
+        /*
         // set scene background
         scene.background.contents = data.colorscheme == .dark ? UIColor.black : UIColor.white
+        */
         
         // define materials
         let front = SCNMaterial()
@@ -130,7 +130,7 @@ final class Data: NSObject, ObservableObject {
             Frame(
                 image: image, transform: image,
                 width: 60, height: 90,  border: 0.1,
-                bordered: true, material: "Oak"
+                material: "Oak"
             ),
             at: 0
         )
@@ -170,7 +170,7 @@ final class Data: NSObject, ObservableObject {
         )
         
         // set image size
-        let border = data.frames[data.selected].bordered ? canvas.width*data.frames[data.selected].border/2 : 0
+        let border = canvas.width*data.frames[data.selected].border/2
         var imageSize = CGRect(
             x: border,
             y: border + (canvas.height - canvas.width*(image.size.height/image.size.width)) / 2,
@@ -207,14 +207,12 @@ final class Data: NSObject, ObservableObject {
         UIRectFill(front)
         
         // fill with white, minus border
-        if data.frames[data.selected].bordered {
-            UIColor.white.setFill()
-            UIRectFill(CGRect(
-                x: border, y: border,
-                width: canvas.width - border * 2,
-                height: canvas.height - border * 2
-            ))
-        }
+        UIColor.white.setFill()
+        UIRectFill(CGRect(
+            x: border, y: border,
+            width: canvas.width - border * 2,
+            height: canvas.height - border * 2
+        ))
         
         // draw image on frame
         image.draw(in: imageSize)
