@@ -8,34 +8,27 @@ struct Frame: View {
     var body: some View {
         GeometryReader { geo in
             VStack(spacing: 0) {
-                if model.data.isAdjusting {
-                    Spacer()
-                    Image(uiImage: model.data.frames[model.data.selected].transform)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .transition(.move(edge: .trailing).combined(with: .opacity))
-                        .padding(30)
-                    Spacer()
-                } else {
-                    ZStack {
-                        SceneView(
-                            scene: model.scene,
-                            pointOfView: model.camera,
-                            options: [] // .allowsCameraControl
-                        )
-                        VStack(spacing: 0) {
-                            Spacer()
-                            Ellipse()
-                                .foregroundColor(model.data.colorscheme == .dark ? .white : .black)
-                                .opacity(0.15)
-                                .frame(height: 40)
-                                .blur(radius: 15)
-                                .padding(.horizontal, 60)
-                                .padding(.vertical, 30)
-                        }
-                    }
-                    .transition(.move(edge: .leading).combined(with: .opacity))
-                }
+                Spacer()
+                Image(uiImage: model.data.frames[model.data.selected].transform)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .padding(30)
+                    .contextMenu {
+                         Button(action: {
+                             UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                 .first?
+                                 .rootViewController?
+                                 .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected]], applicationActivities: nil), animated: true)
+                         }) {
+                             Label("Share", systemImage: "square.and.arrow.up")
+                         }
+                         Button(action: {
+                             model.removeImage()
+                         }) {
+                             Label("Delete", systemImage: "delete.left")
+                         }
+                     }
+                Spacer()
                 Adjustment(model: model)
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -241,6 +234,6 @@ struct Frame_Previews: PreviewProvider {
              Window(model: Data())
                 .preferredColorScheme($0)
         }
-        .previewDevice("iPhone 8")
+        .previewDevice("iPhone 12 mini")
     }
 }
