@@ -15,6 +15,7 @@ final class Data: NSObject, ObservableObject {
         var isImporting: Bool
         var isAugmenting: Bool
         var isAugmented: Bool
+        var isSwitching: Bool
         var isBordering: Bool
         var isStyling: Bool
         var isAdjusting: Bool
@@ -40,7 +41,7 @@ final class Data: NSObject, ObservableObject {
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
         isAction: false, isImporting: false, isAugmenting: false, isAugmented: false,
-        isBordering: false, isStyling: true, isAdjusting: false, fromLeft: false,
+        isSwitching: false, isBordering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [Frame(
             image: UIImage(imageLiteralResourceName: "sample"),
@@ -138,11 +139,12 @@ final class Data: NSObject, ObservableObject {
         transformImage()
     }
     
-    func removeImage() {
-        data.frames.remove(at: data.selected)
+    func removeImage(index: Int) {
+        data.frames.remove(at: index)
     }
     
     func toggleAdjust() {
+        data.isSwitching = false
         data.isBordering = false
         data.isStyling = false
         data.isAdjusting = false

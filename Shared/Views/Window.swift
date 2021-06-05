@@ -7,9 +7,6 @@ struct Window: View {
     var body: some View {
         NavigationView {
             Frame(model: model)
-                .onAppear {
-                    model.transformImage()
-                }
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .actionSheet(isPresented: $model.data.isAction) {

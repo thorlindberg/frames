@@ -3,13 +3,56 @@ import SceneKit
 
 struct Frame: View {
     
+    @Namespace private var animation
     @ObservedObject var model: Data
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        GeometryReader { geo in
-            VStack(spacing: 0) {
-                Spacer()
+        VStack(spacing: 0) {
+            if model.data.isSwitching {
+                ScrollView() {
+                    LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 2)) {
+                        ForEach((0...model.data.frames.count-1), id: \.self) { index in
+                            Image(uiImage: model.data.frames[index].transform)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .contextMenu {
+                                    Button(action: {
+                                        UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                            .first?
+                                            .rootViewController?
+                                            .present(UIActivityViewController(activityItems: [model.data.frames[index].transform], applicationActivities: nil), animated: true)
+                                    }) {
+                                        Label("Share", systemImage: "square.and.arrow.up")
+                                    }
+                                    if model.data.frames.count > 1 {
+                                        Button(action: {
+                                            model.removeImage(index: index)
+                                            if model.data.frames.count == 1 {
+                                                model.data.selected = 0
+                                                withAnimation {
+                                                    model.toggleAdjust()
+                                                    model.data.isStyling = true
+                                                }
+                                            }
+                                        }) {
+                                            Label("Delete", systemImage: "delete.left")
+                                        }
+                                    }
+                                }
+                                .matchedGeometryEffect(id: String(index), in: animation)
+                                .onTapGesture {
+                                    model.data.selected = index
+                                    withAnimation {
+                                        model.toggleAdjust()
+                                        model.data.isStyling = true
+                                    }
+                                }
+                        }
+                    }
+                    .padding(30)
+                }
+            } else {
                 Image(uiImage: model.data.frames[model.data.selected].transform)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -25,32 +68,38 @@ struct Frame: View {
                         }
                         if model.data.frames.count > 1 {
                             Button(action: {
-                                model.removeImage()
+                                model.removeImage(index: model.data.selected)
                             }) {
                                 Label("Delete", systemImage: "delete.left")
                             }
                         }
                     }
+                    .matchedGeometryEffect(id: String(model.data.selected), in: animation)
+                    .onAppear {
+                        model.transformImage()
+                    }
+                Spacer()
                 Adjustment(model: model)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Augmented Frames")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        model.data.isAction.toggle()
-                    }) {
-                        Image(systemName: "camera")
-                    }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Augmented Frames")
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(action: {
+                    model.data.isAction.toggle()
+                }) {
+                    Image(systemName: "camera")
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
-                        model.data.isAugmenting.toggle()
-                    }) {
-                        Text("AR")
-                    }
-                    .disabled(model.data.frames.isEmpty)
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    model.data.isAugmenting.toggle()
+                }) {
+                    Text("AR")
                 }
+                .disabled(model.data.frames.isEmpty)
             }
         }
     }
@@ -167,26 +216,20 @@ struct Adjustment: View {
         }
         .frame(height: 80)
         ZStack {
-            /*
             HStack {
-                Button(action: {
-                    model.removeImage()
-                }) {
-                    Text("Delete")
-                        .foregroundColor(model.data.frames.count == 1 ? nil : .red)
+                if model.data.frames.count > 1 {
+                    Button(action: {
+                        withAnimation {
+                            model.data.isSwitching.toggle()
+                        }
+                    }) {
+                        Image(systemName: "square.on.square")
+                            .foregroundColor(model.data.isSwitching ? nil : colorscheme == .dark ? .white : .black)
+                            .font(.system(size: 22))
+                    }
+                    .opacity(0)
+                    .disabled(true)
                 }
-                .disabled(model.data.frames.count == 1)
-                Spacer()
-                Button(action: {
-                    UIApplication.shared.windows.filter({$0.isKeyWindow})
-                        .first?.rootViewController?
-                        .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].transform], applicationActivities: nil), animated: true)
-                }) {
-                    Text("Share")
-                }
-            }
-            */
-            HStack {
                 Spacer()
                 HStack(spacing: 30) {
                     Button(action: {
@@ -223,6 +266,17 @@ struct Adjustment: View {
                     }
                 }
                 Spacer()
+                if model.data.frames.count > 1 {
+                    Button(action: {
+                        withAnimation {
+                            model.data.isSwitching.toggle()
+                        }
+                    }) {
+                        Image(systemName: "square.on.square")
+                            .foregroundColor(model.data.isSwitching ? nil : colorscheme == .dark ? .white : .black)
+                            .font(.system(size: 22))
+                    }
+                }
             }
         }
         .padding()
