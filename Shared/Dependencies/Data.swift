@@ -16,7 +16,7 @@ final class Data: NSObject, ObservableObject {
         var isAugmenting: Bool
         var isAugmented: Bool
         var isSwitching: Bool
-        var isBordering: Bool
+        var isFiltering: Bool
         var isStyling: Bool
         var isAdjusting: Bool
         var fromLeft: Bool
@@ -30,6 +30,7 @@ final class Data: NSObject, ObservableObject {
         var width: CGFloat
         var height: CGFloat
         var border: CGFloat
+        var filter: String
         var material: String
     }
     
@@ -41,15 +42,16 @@ final class Data: NSObject, ObservableObject {
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
         isAction: false, isImporting: false, isAugmenting: false, isAugmented: false,
-        isSwitching: false, isBordering: false, isStyling: true, isAdjusting: false, fromLeft: false,
+        isSwitching: false, isFiltering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [Frame(
             image: UIImage(imageLiteralResourceName: "sample"),
             transform: UIImage(imageLiteralResourceName: "sample"),
-            width: 60, height: 90, border: 0.1, material: "Oak"
+            width: 60, height: 90, border: 0.1, filter: "None", material: "Oak"
         )]
     )
     
+    let filters: [String] = ["None", "Invert", "BW", "Grayscale"]
     let materials: [String] = ["Oak", "Steel", "Marble", "Black", "Orange", "Green"]
     
     let sizes: [Size] = [
@@ -131,7 +133,7 @@ final class Data: NSObject, ObservableObject {
             Frame(
                 image: image, transform: image,
                 width: 60, height: 90,  border: 0.1,
-                material: "Oak"
+                filter: "None", material: "Oak"
             ),
             at: 0
         )
@@ -144,10 +146,10 @@ final class Data: NSObject, ObservableObject {
     }
     
     func toggleAdjust() {
-        data.isSwitching = false
-        data.isBordering = false
+        data.isFiltering = false
         data.isStyling = false
         data.isAdjusting = false
+        data.isSwitching = false
     }
     
     func transformImage() {
@@ -156,14 +158,31 @@ final class Data: NSObject, ObservableObject {
         
         // reset transformed image
         data.frames[data.selected].transform = data.frames[data.selected].image
-        let image = data.frames[data.selected].transform
+        var image = data.frames[data.selected].transform
         
         // convert image to JPEG
-        /*
         if let jpegData = image.jpegData(compressionQuality: 1.0) {
             image = UIImage(data: jpegData)!
         }
-        */
+        
+        // filter image
+        // resource: https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html
+        // source: https://stackoverflow.com/questions/40178846/convert-uiimage-to-grayscale-keeping-image-quality
+        if data.frames[data.selected].filter != "None" {
+            let context = CIContext(options: nil)
+            var currentFilter = CIFilter(name: "CIPhotoEffectNoir")
+            switch data.frames[data.selected].filter {
+                case "Invert": currentFilter = CIFilter(name: "CIColorInvert")
+                case "Grayscale": currentFilter = CIFilter(name: "CIPhotoEffectNoir")
+                case "BW": currentFilter = CIFilter(name: "CIPhotoEffectMono")
+                default: return
+            }
+            currentFilter!.setValue(CIImage(image: image), forKey: kCIInputImageKey)
+            if let output = currentFilter?.outputImage,
+                let cgImage = context.createCGImage(output, from: output.extent) {
+                image = UIImage(cgImage: cgImage)
+            }
+        }
         
         // set frame size
         let canvas = CGSize(

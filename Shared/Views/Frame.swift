@@ -27,10 +27,10 @@ struct Frame: View {
                                     }
                                     if model.data.frames.count > 1 {
                                         Button(action: {
-                                            model.removeImage(index: index)
-                                            if model.data.frames.count == 1 {
-                                                model.data.selected = 0
-                                                withAnimation {
+                                            withAnimation {
+                                                model.removeImage(index: index)
+                                                if model.data.frames.count == 1 {
+                                                    model.data.selected = 0
                                                     model.toggleAdjust()
                                                     model.data.isStyling = true
                                                 }
@@ -53,6 +53,7 @@ struct Frame: View {
                     .padding(30)
                 }
             } else {
+                Spacer()
                 Image(uiImage: model.data.frames[model.data.selected].transform)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -84,7 +85,7 @@ struct Frame: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Augmented Frames")
+        .navigationTitle("Frames")
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(action: {
@@ -106,19 +107,38 @@ struct Frame: View {
     
 }
 
-struct Border: View {
+struct Filter: View {
     
     @ObservedObject var model: Data
+    @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        Slider(
-            value: $model.data.frames[model.data.selected].border,
-            in: 0.05...0.95,
-            onEditingChanged: { _ in
-                model.transformImage()
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack {
+                ForEach(model.filters, id: \.self) { filter in
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(model.data.frames[model.data.selected].filter == filter ? .purple : nil)
+                            .opacity(model.data.frames[model.data.selected].filter == filter ? 1 : colorscheme == .dark ? 0.2 : 0.05)
+                            .cornerRadius(1000)
+                            .frame(height: 30)
+                        Text(filter)
+                            .if (model.data.frames[model.data.selected].filter == filter) { view in
+                                view.colorInvert()
+                            }
+                            .fixedSize(horizontal: true, vertical: false)
+                            .padding()
+                    }
+                    .onTapGesture {
+                        model.data.frames[model.data.selected].filter = filter
+                        withAnimation {
+                            model.transformImage()
+                        }
+                    }
+                }
             }
-        )
-        .padding(.horizontal)
+            .padding(.horizontal)
+        }
     }
     
 }
@@ -126,6 +146,7 @@ struct Border: View {
 struct Style: View {
     
     @ObservedObject var model: Data
+    @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -133,8 +154,8 @@ struct Style: View {
                 ForEach(model.materials, id: \.self) { material in
                     ZStack {
                         Rectangle()
-                            .foregroundColor(material == model.data.frames[model.data.selected].material ? .accentColor : nil)
-                            .opacity(material == model.data.frames[model.data.selected].material ? 1 : 0.05)
+                            .foregroundColor(material == model.data.frames[model.data.selected].material ? .green : nil)
+                            .opacity(material == model.data.frames[model.data.selected].material ? 1 : colorscheme == .dark ? 0.2 : 0.05)
                             .cornerRadius(1000)
                             .frame(height: 30)
                         Text(material)
@@ -161,6 +182,7 @@ struct Style: View {
 struct Crop: View {
     
     @ObservedObject var model: Data
+    @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -168,8 +190,8 @@ struct Crop: View {
                 ForEach(model.sizes, id: \.self) { size in
                     ZStack {
                         Rectangle()
-                            .foregroundColor(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .accentColor : nil)
-                            .opacity(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? 1 : 0.05)
+                            .foregroundColor(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .orange : nil)
+                            .opacity(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? 1 : colorscheme == .dark ? 0.2 : 0.05)
                             .cornerRadius(1000)
                             .frame(height: 30)
                         Text("\(Int(size.width))x\(Int(size.height))")
@@ -201,8 +223,8 @@ struct Adjustment: View {
     
     var body: some View {
         ZStack {
-            if model.data.isBordering {
-                Border(model: model)
+            if model.data.isFiltering {
+                Filter(model: model)
                     .transition(.move(edge: .leading).combined(with: .opacity))
             }
             if model.data.isStyling {
@@ -224,7 +246,7 @@ struct Adjustment: View {
                         }
                     }) {
                         Image(systemName: "square.on.square")
-                            .foregroundColor(model.data.isSwitching ? nil : colorscheme == .dark ? .white : .black)
+                            .foregroundColor(.accentColor)
                             .font(.system(size: 22))
                     }
                     .opacity(0)
@@ -236,11 +258,11 @@ struct Adjustment: View {
                         model.data.fromLeft = true
                         withAnimation {
                             model.toggleAdjust()
-                            model.data.isBordering = true
+                            model.data.isFiltering = true
                         }
                     }) {
-                        Image(systemName: "square.dashed")
-                            .foregroundColor(model.data.isBordering ? nil : colorscheme == .dark ? .white : .black)
+                        Image(systemName: "camera.filters")
+                            .foregroundColor(model.data.isFiltering ? .purple : nil)
                             .font(.system(size: 22))
                     }
                     Button(action: {
@@ -250,7 +272,7 @@ struct Adjustment: View {
                         }
                     }) {
                         Image(systemName: "cube")
-                            .foregroundColor(model.data.isStyling ? nil : colorscheme == .dark ? .white : .black)
+                            .foregroundColor(model.data.isStyling ? .green : nil)
                             .font(.system(size: 22))
                     }
                     Button(action: {
@@ -261,7 +283,7 @@ struct Adjustment: View {
                         }
                     }) {
                         Image(systemName: "crop")
-                            .foregroundColor(model.data.isAdjusting ? nil : colorscheme == .dark ? .white : .black)
+                            .foregroundColor(model.data.isAdjusting ? .orange : nil)
                             .font(.system(size: 22))
                     }
                 }
@@ -273,7 +295,7 @@ struct Adjustment: View {
                         }
                     }) {
                         Image(systemName: "square.on.square")
-                            .foregroundColor(model.data.isSwitching ? nil : colorscheme == .dark ? .white : .black)
+                            .foregroundColor(.accentColor)
                             .font(.system(size: 22))
                     }
                 }
@@ -281,7 +303,6 @@ struct Adjustment: View {
         }
         .padding()
     }
-    
 }
 
 struct Frame_Previews: PreviewProvider {
@@ -290,6 +311,6 @@ struct Frame_Previews: PreviewProvider {
              Window(model: Data())
                 .preferredColorScheme($0)
         }
-        .previewDevice("iPhone 12 mini")
+        .previewDevice("iPhone 12")
     }
 }
