@@ -9,17 +9,6 @@ struct Window: View {
             Frame(model: model)
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        .actionSheet(isPresented: $model.data.isAction) {
-            ActionSheet(title: Text(""), buttons: [
-                .default(Text("Import from Photos")) { model.data.isImporting.toggle() },
-                .default(Text("Scan with Camera")) {
-                    UIApplication.shared.windows.filter({$0.isKeyWindow})
-                        .first?.rootViewController?
-                        .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                },
-                .cancel()
-            ])
-        }
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model)
         }

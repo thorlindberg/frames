@@ -5,7 +5,6 @@ struct Frame: View {
     
     @Namespace private var animation
     @ObservedObject var model: Data
-    @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
         VStack(spacing: 0) {
@@ -52,7 +51,7 @@ struct Frame: View {
                     }
                     .padding(30)
                 }
-            } else {
+            } else if model.data.frames[model.data.selected].transform != model.data.frames[model.data.selected].image {
                 Spacer()
                 Image(uiImage: model.data.frames[model.data.selected].transform)
                     .resizable()
@@ -76,87 +75,104 @@ struct Frame: View {
                         }
                     }
                     .matchedGeometryEffect(id: String(model.data.selected), in: animation)
-                    .onAppear {
-                        model.transformImage()
-                    }
                 Spacer()
                 Adjustment(model: model)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
+        .onAppear {
+            model.transformImage()
+        }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Frames")
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(action: {
-                    model.data.isAction.toggle()
-                }) {
-                    Image(systemName: "camera")
+            ToolbarItemGroup(placement: .cancellationAction) {
+                HStack(spacing: 20) {
+                    if #available(iOS 15.0, *) {
+                        Button(action: {
+                            model.data.isImporting.toggle()
+                        }) {
+                            Image(systemName: "photo")
+                        }
+                        Button(action: {
+                            UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                .first?.rootViewController?
+                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                        }) {
+                            Image(systemName: "viewfinder")
+                        }
+                    } else {
+                        // Fallback on earlier versions
+                    }
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
-                    model.data.isAugmenting.toggle()
-                }) {
-                    Text("AR")
+                if #available(iOS 15.0, *) {
+                    Button(action: {
+                        model.data.isAugmenting.toggle()
+                    }) {
+                        Text("AR")
+                    }
+                } else {
+                    // Fallback on earlier versions
                 }
-                .disabled(model.data.frames.isEmpty)
             }
             ToolbarItemGroup(placement: .bottomBar) {
-                HStack {
-                    if model.data.frames.count > 1 {
-                        Button(action: {
-                            withAnimation {
-                                model.data.isSwitching.toggle()
+                if !model.data.isSwitching {
+                    HStack {
+                        if model.data.frames.count > 1 {
+                            Button(action: {
+                                withAnimation {
+                                    model.data.isSwitching.toggle()
+                                }
+                            }) {
+                                Image(systemName: "square.on.square")
+                                    .foregroundColor(.accentColor)
                             }
-                        }) {
-                            Image(systemName: "square.on.square")
-                                .foregroundColor(.accentColor)
+                            .opacity(0)
+                            .disabled(true)
                         }
-                        .opacity(0)
-                        .disabled(true)
-                    }
-                    Spacer()
-                    HStack(spacing: 30) {
-                        Button(action: {
-                            model.data.fromLeft = true
-                            withAnimation {
-                                model.toggleAdjust()
-                                model.data.isFiltering = true
+                        Spacer()
+                        HStack(spacing: 30) {
+                            Button(action: {
+                                model.data.fromLeft = true
+                                withAnimation {
+                                    model.toggleAdjust()
+                                    model.data.isFiltering = true
+                                }
+                            }) {
+                                Image(systemName: "camera.filters")
+                                    .foregroundColor(model.data.isFiltering ? .purple : nil)
                             }
-                        }) {
-                            Image(systemName: "camera.filters")
-                                .foregroundColor(model.data.isFiltering ? .purple : nil)
+                            Button(action: {
+                                withAnimation {
+                                    model.toggleAdjust()
+                                    model.data.isStyling = true
+                                }
+                            }) {
+                                Image(systemName: "cube")
+                                    .foregroundColor(model.data.isStyling ? .green : nil)
+                            }
+                            Button(action: {
+                                model.data.fromLeft = false
+                                withAnimation {
+                                    model.toggleAdjust()
+                                    model.data.isAdjusting = true
+                                }
+                            }) {
+                                Image(systemName: "crop")
+                                    .foregroundColor(model.data.isAdjusting ? .orange : nil)
+                            }
                         }
-                        Button(action: {
-                            withAnimation {
-                                model.toggleAdjust()
-                                model.data.isStyling = true
+                        Spacer()
+                        if model.data.frames.count > 1 {
+                            Button(action: {
+                                withAnimation {
+                                    model.data.isSwitching.toggle()
+                                }
+                            }) {
+                                Image(systemName: "square.on.square")
+                                    .foregroundColor(.accentColor)
                             }
-                        }) {
-                            Image(systemName: "cube")
-                                .foregroundColor(model.data.isStyling ? .green : nil)
-                        }
-                        Button(action: {
-                            model.data.fromLeft = false
-                            withAnimation {
-                                model.toggleAdjust()
-                                model.data.isAdjusting = true
-                            }
-                        }) {
-                            Image(systemName: "crop")
-                                .foregroundColor(model.data.isAdjusting ? .orange : nil)
-                        }
-                    }
-                    Spacer()
-                    if model.data.frames.count > 1 {
-                        Button(action: {
-                            withAnimation {
-                                model.data.isSwitching.toggle()
-                            }
-                        }) {
-                            Image(systemName: "square.on.square")
-                                .foregroundColor(.accentColor)
                         }
                     }
                 }
@@ -175,24 +191,18 @@ struct Filter: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(model.filters, id: \.self) { filter in
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(model.data.frames[model.data.selected].filter == filter ? .purple : nil)
-                            .opacity(model.data.frames[model.data.selected].filter == filter ? 1 : colorscheme == .dark ? 0.2 : 0.05)
-                            .cornerRadius(1000)
-                            .frame(height: 30)
-                        Text(filter)
-                            .if (model.data.frames[model.data.selected].filter == filter) { view in
-                                view.colorInvert()
+                    if #available(iOS 15.0, *) {
+                        Button(action: {
+                            model.data.frames[model.data.selected].filter = filter
+                            withAnimation {
+                                model.transformImage()
                             }
-                            .fixedSize(horizontal: true, vertical: false)
-                            .padding()
-                    }
-                    .onTapGesture {
-                        model.data.frames[model.data.selected].filter = filter
-                        withAnimation {
-                            model.transformImage()
+                        }) {
+                            Text(filter)
                         }
+                        .buttonStyle(BorderedButtonStyle(tint: model.data.frames[model.data.selected].filter == filter ? .purple : .accentColor))
+                    } else {
+                        // Fallback on earlier versions
                     }
                 }
             }
@@ -211,24 +221,18 @@ struct Style: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(model.materials, id: \.self) { material in
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(material == model.data.frames[model.data.selected].material ? .green : nil)
-                            .opacity(material == model.data.frames[model.data.selected].material ? 1 : colorscheme == .dark ? 0.2 : 0.05)
-                            .cornerRadius(1000)
-                            .frame(height: 30)
-                        Text(material)
-                            .if (material == model.data.frames[model.data.selected].material) { view in
-                                view.colorInvert()
+                    if #available(iOS 15.0, *) {
+                        Button(action: {
+                            model.data.frames[model.data.selected].material = material
+                            withAnimation {
+                                model.transformImage()
                             }
-                            .fixedSize(horizontal: true, vertical: false)
-                            .padding()
-                    }
-                    .onTapGesture {
-                        model.data.frames[model.data.selected].material = material
-                        withAnimation {
-                            model.transformImage()
+                        }) {
+                            Text(material)
                         }
+                        .buttonStyle(BorderedButtonStyle(tint: material == model.data.frames[model.data.selected].material ? .green : .accentColor))
+                    } else {
+                        // Fallback on earlier versions
                     }
                 }
             }
@@ -247,25 +251,19 @@ struct Crop: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(model.sizes, id: \.self) { size in
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .orange : nil)
-                            .opacity(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? 1 : colorscheme == .dark ? 0.2 : 0.05)
-                            .cornerRadius(1000)
-                            .frame(height: 30)
-                        Text("\(Int(size.width))x\(Int(size.height))")
-                            .if (size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height) { view in
-                                view.colorInvert()
+                    if #available(iOS 15.0, *) {
+                        Button(action: {
+                            model.data.frames[model.data.selected].width = size.width
+                            model.data.frames[model.data.selected].height = size.height
+                            withAnimation {
+                                model.transformImage()
                             }
-                            .fixedSize(horizontal: true, vertical: false)
-                            .padding()
-                    }
-                    .onTapGesture {
-                        model.data.frames[model.data.selected].width = size.width
-                        model.data.frames[model.data.selected].height = size.height
-                        withAnimation {
-                            model.transformImage()
+                        }) {
+                            Text("\(Int(size.width))x\(Int(size.height))")
                         }
+                        .buttonStyle(BorderedButtonStyle(tint: size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .orange : .accentColor))
+                    } else {
+                        // Fallback on earlier versions
                     }
                 }
             }
@@ -278,7 +276,6 @@ struct Crop: View {
 struct Adjustment: View {
     
     @ObservedObject var model: Data
-    @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
         ZStack {
@@ -295,6 +292,7 @@ struct Adjustment: View {
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
+        .padding(.bottom)
     }
 }
 
@@ -304,6 +302,6 @@ struct Frame_Previews: PreviewProvider {
              Window(model: Data())
                 .preferredColorScheme($0)
         }
-        .previewDevice("iPhone 12")
+        .previewDevice("iPhone 12 mini")
     }
 }

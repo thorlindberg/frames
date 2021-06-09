@@ -11,7 +11,6 @@ final class Data: NSObject, ObservableObject {
     
     struct Format: Hashable {
         var firstLaunch: Bool
-        var isAction: Bool
         var isImporting: Bool
         var isAugmenting: Bool
         var isAugmented: Bool
@@ -41,13 +40,13 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
-        isAction: false, isImporting: false, isAugmenting: false, isAugmented: false,
+        isImporting: false, isAugmenting: false, isAugmented: false,
         isSwitching: false, isFiltering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [Frame(
             image: UIImage(imageLiteralResourceName: "sample"),
             transform: UIImage(imageLiteralResourceName: "sample"),
-            width: 60, height: 90, border: 0.1, filter: "None", material: "Oak"
+            width: 60, height: 90, border: 0.05, filter: "None", material: "Oak"
         )]
     )
     
@@ -55,12 +54,11 @@ final class Data: NSObject, ObservableObject {
     let materials: [String] = ["Oak", "Steel", "Marble", "Black", "Orange", "Green"]
     
     let sizes: [Size] = [
-        Size(width: 15, height: 30),
-        Size(width: 30, height: 45),
-        Size(width: 45, height: 60),
-        Size(width: 50, height: 70),
         Size(width: 60, height: 90),
-        Size(width: 90, height: 100)
+        Size(width: 50, height: 70),
+        Size(width: 45, height: 60),
+        Size(width: 30, height: 45),
+        Size(width: 15, height: 30)
     ]
     
     var camera: SCNNode? {
@@ -132,7 +130,7 @@ final class Data: NSObject, ObservableObject {
         data.frames.insert(
             Frame(
                 image: image, transform: image,
-                width: 60, height: 90,  border: 0.1,
+                width: 60, height: 90,  border: 0.05,
                 filter: "None", material: "Oak"
             ),
             at: 0
