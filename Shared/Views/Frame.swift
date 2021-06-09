@@ -102,6 +102,65 @@ struct Frame: View {
                 }
                 .disabled(model.data.frames.isEmpty)
             }
+            ToolbarItemGroup(placement: .bottomBar) {
+                HStack {
+                    if model.data.frames.count > 1 {
+                        Button(action: {
+                            withAnimation {
+                                model.data.isSwitching.toggle()
+                            }
+                        }) {
+                            Image(systemName: "square.on.square")
+                                .foregroundColor(.accentColor)
+                        }
+                        .opacity(0)
+                        .disabled(true)
+                    }
+                    Spacer()
+                    HStack(spacing: 30) {
+                        Button(action: {
+                            model.data.fromLeft = true
+                            withAnimation {
+                                model.toggleAdjust()
+                                model.data.isFiltering = true
+                            }
+                        }) {
+                            Image(systemName: "camera.filters")
+                                .foregroundColor(model.data.isFiltering ? .purple : nil)
+                        }
+                        Button(action: {
+                            withAnimation {
+                                model.toggleAdjust()
+                                model.data.isStyling = true
+                            }
+                        }) {
+                            Image(systemName: "cube")
+                                .foregroundColor(model.data.isStyling ? .green : nil)
+                        }
+                        Button(action: {
+                            model.data.fromLeft = false
+                            withAnimation {
+                                model.toggleAdjust()
+                                model.data.isAdjusting = true
+                            }
+                        }) {
+                            Image(systemName: "crop")
+                                .foregroundColor(model.data.isAdjusting ? .orange : nil)
+                        }
+                    }
+                    Spacer()
+                    if model.data.frames.count > 1 {
+                        Button(action: {
+                            withAnimation {
+                                model.data.isSwitching.toggle()
+                            }
+                        }) {
+                            Image(systemName: "square.on.square")
+                                .foregroundColor(.accentColor)
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -236,72 +295,6 @@ struct Adjustment: View {
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
-        .frame(height: 80)
-        ZStack {
-            HStack {
-                if model.data.frames.count > 1 {
-                    Button(action: {
-                        withAnimation {
-                            model.data.isSwitching.toggle()
-                        }
-                    }) {
-                        Image(systemName: "square.on.square")
-                            .foregroundColor(.accentColor)
-                            .font(.system(size: 22))
-                    }
-                    .opacity(0)
-                    .disabled(true)
-                }
-                Spacer()
-                HStack(spacing: 30) {
-                    Button(action: {
-                        model.data.fromLeft = true
-                        withAnimation {
-                            model.toggleAdjust()
-                            model.data.isFiltering = true
-                        }
-                    }) {
-                        Image(systemName: "camera.filters")
-                            .foregroundColor(model.data.isFiltering ? .purple : nil)
-                            .font(.system(size: 22))
-                    }
-                    Button(action: {
-                        withAnimation {
-                            model.toggleAdjust()
-                            model.data.isStyling = true
-                        }
-                    }) {
-                        Image(systemName: "cube")
-                            .foregroundColor(model.data.isStyling ? .green : nil)
-                            .font(.system(size: 22))
-                    }
-                    Button(action: {
-                        model.data.fromLeft = false
-                        withAnimation {
-                            model.toggleAdjust()
-                            model.data.isAdjusting = true
-                        }
-                    }) {
-                        Image(systemName: "crop")
-                            .foregroundColor(model.data.isAdjusting ? .orange : nil)
-                            .font(.system(size: 22))
-                    }
-                }
-                Spacer()
-                if model.data.frames.count > 1 {
-                    Button(action: {
-                        withAnimation {
-                            model.data.isSwitching.toggle()
-                        }
-                    }) {
-                        Image(systemName: "square.on.square")
-                            .foregroundColor(.accentColor)
-                            .font(.system(size: 22))
-                    }
-                }
-            }
-        }
-        .padding()
     }
 }
 
