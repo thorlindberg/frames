@@ -51,7 +51,7 @@ struct Augment: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Augmented Reality")
+            .navigationTitle("Augmented")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(action: {

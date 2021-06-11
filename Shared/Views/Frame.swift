@@ -84,36 +84,31 @@ struct Frame: View {
             model.transformImage()
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitle("Frames")
         .toolbar {
-            ToolbarItemGroup(placement: .cancellationAction) {
-                HStack(spacing: 20) {
-                    if #available(iOS 15.0, *) {
-                        Button(action: {
-                            model.data.isImporting.toggle()
-                        }) {
-                            Image(systemName: "photo")
-                        }
-                        Button(action: {
-                            UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                .first?.rootViewController?
-                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                        }) {
-                            Image(systemName: "viewfinder")
-                        }
-                    } else {
-                        // Fallback on earlier versions
+            ToolbarItem(placement: .cancellationAction) {
+                Menu {
+                    Button(action: {
+                        model.data.isImporting.toggle()
+                    }) {
+                        Label("Import from Photos", systemImage: "photo")
                     }
+                    Button(action: {
+                        UIApplication.shared.windows.filter({$0.isKeyWindow})
+                            .first?.rootViewController?
+                            .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                    }) {
+                        Label("Scan with Camera", systemImage: "viewfinder")
+                    }
+                } label: {
+                    Image(systemName: "camera")
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
-                if #available(iOS 15.0, *) {
-                    Button(action: {
-                        model.data.isAugmenting.toggle()
-                    }) {
-                        Text("AR")
-                    }
-                } else {
-                    // Fallback on earlier versions
+                Button(action: {
+                    model.data.isAugmenting.toggle()
+                }) {
+                    Image(systemName: "play.fill")
                 }
             }
             ToolbarItemGroup(placement: .bottomBar) {
@@ -191,19 +186,16 @@ struct Filter: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(model.filters, id: \.self) { filter in
-                    if #available(iOS 15.0, *) {
-                        Button(action: {
-                            model.data.frames[model.data.selected].filter = filter
-                            withAnimation {
-                                model.transformImage()
-                            }
-                        }) {
-                            Text(filter)
+                    Button(action: {
+                        model.data.frames[model.data.selected].filter = filter
+                        withAnimation {
+                            model.transformImage()
                         }
-                        .buttonStyle(BorderedButtonStyle(tint: model.data.frames[model.data.selected].filter == filter ? .purple : .accentColor))
-                    } else {
-                        // Fallback on earlier versions
+                    }) {
+                        Text(filter)
+                            .padding(.horizontal, 5)
                     }
+                    .buttonStyle(BorderedButtonStyle(tint: model.data.frames[model.data.selected].filter == filter ? .purple : .accentColor))
                 }
             }
             .padding(.horizontal)
@@ -221,19 +213,16 @@ struct Style: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(model.materials, id: \.self) { material in
-                    if #available(iOS 15.0, *) {
-                        Button(action: {
-                            model.data.frames[model.data.selected].material = material
-                            withAnimation {
-                                model.transformImage()
-                            }
-                        }) {
-                            Text(material)
+                    Button(action: {
+                        model.data.frames[model.data.selected].material = material
+                        withAnimation {
+                            model.transformImage()
                         }
-                        .buttonStyle(BorderedButtonStyle(tint: material == model.data.frames[model.data.selected].material ? .green : .accentColor))
-                    } else {
-                        // Fallback on earlier versions
+                    }) {
+                        Text(material)
+                            .padding(.horizontal, 5)
                     }
+                    .buttonStyle(BorderedButtonStyle(tint: material == model.data.frames[model.data.selected].material ? .green : .accentColor))
                 }
             }
             .padding(.horizontal)
@@ -251,20 +240,17 @@ struct Crop: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(model.sizes, id: \.self) { size in
-                    if #available(iOS 15.0, *) {
-                        Button(action: {
-                            model.data.frames[model.data.selected].width = size.width
-                            model.data.frames[model.data.selected].height = size.height
-                            withAnimation {
-                                model.transformImage()
-                            }
-                        }) {
-                            Text("\(Int(size.width))x\(Int(size.height))")
+                    Button(action: {
+                        model.data.frames[model.data.selected].width = size.width
+                        model.data.frames[model.data.selected].height = size.height
+                        withAnimation {
+                            model.transformImage()
                         }
-                        .buttonStyle(BorderedButtonStyle(tint: size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .orange : .accentColor))
-                    } else {
-                        // Fallback on earlier versions
+                    }) {
+                        Text("\(Int(size.width))x\(Int(size.height)) cm")
+                            .padding(.horizontal, 5)
                     }
+                    .buttonStyle(BorderedButtonStyle(tint: size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .orange : .accentColor))
                 }
             }
             .padding(.horizontal)

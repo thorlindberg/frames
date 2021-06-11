@@ -50,8 +50,8 @@ final class Data: NSObject, ObservableObject {
         )]
     )
     
-    let filters: [String] = ["None", "Invert", "BW", "Grayscale"]
-    let materials: [String] = ["Oak", "Steel", "Marble", "Black", "Orange", "Green"]
+    let filters: [String] = ["None", "Invert", "Black/White", "Grayscale"]
+    let materials: [String] = ["Oak", "Steel", "Marble", "Orange", "Green"]
     
     let sizes: [Size] = [
         Size(width: 60, height: 90),
@@ -225,8 +225,10 @@ final class Data: NSObject, ObservableObject {
         }
         UIRectFill(front)
         
-        // fill with white, minus border
-        UIColor.white.setFill()
+        // fill with dominant color in image
+        // source: https://www.hackingwithswift.com/example-code/media/how-to-read-the-average-color-of-a-uiimage-using-ciareaaverage
+        
+        image.averageColor!.setFill()
         UIRectFill(CGRect(
             x: border, y: border,
             width: canvas.width - border * 2,
