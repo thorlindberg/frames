@@ -39,7 +39,7 @@ final class Data: NSObject, ObservableObject {
     }
     
     @Published var data: Format = Format(
-        firstLaunch: !UserDefaults.standard.bool(forKey: "hasLaunched"),
+        firstLaunch: true, // !UserDefaults.standard.bool(forKey: "hasLaunched"),
         isImporting: false, isAugmenting: false, isAugmented: false,
         isSwitching: false, isFiltering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
@@ -50,7 +50,7 @@ final class Data: NSObject, ObservableObject {
         )]
     )
     
-    let filters: [String] = ["None", "Invert", "Black/White", "Grayscale"]
+    let filters: [String] = ["None", "Noir", "Mono", "Invert"]
     let materials: [String] = ["Oak", "Steel", "Marble", "Orange", "Green"]
     
     let sizes: [Size] = [
@@ -170,9 +170,9 @@ final class Data: NSObject, ObservableObject {
             let context = CIContext(options: nil)
             var currentFilter = CIFilter(name: "CIPhotoEffectNoir")
             switch data.frames[data.selected].filter {
+                case "Noir": currentFilter = CIFilter(name: "CIPhotoEffectNoir")
+                case "Mono": currentFilter = CIFilter(name: "CIPhotoEffectMono")
                 case "Invert": currentFilter = CIFilter(name: "CIColorInvert")
-                case "Grayscale": currentFilter = CIFilter(name: "CIPhotoEffectNoir")
-                case "BW": currentFilter = CIFilter(name: "CIPhotoEffectMono")
                 default: return
             }
             currentFilter!.setValue(CIImage(image: image), forKey: kCIInputImageKey)

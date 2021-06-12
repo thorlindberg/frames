@@ -154,7 +154,7 @@ struct Frame: View {
                                     model.data.isAdjusting = true
                                 }
                             }) {
-                                Image(systemName: "crop")
+                                Image(systemName: "selection.pin.in.out")
                                     .foregroundColor(model.data.isAdjusting ? .orange : nil)
                             }
                         }
@@ -231,7 +231,7 @@ struct Style: View {
     
 }
 
-struct Crop: View {
+struct Ratio: View {
     
     @ObservedObject var model: Data
     @Environment(\.colorScheme) var colorscheme
@@ -274,7 +274,7 @@ struct Adjustment: View {
                     .transition(model.data.fromLeft ? .move(edge: .trailing).combined(with: .opacity) : .move(edge: .leading).combined(with: .opacity))
             }
             if model.data.isAdjusting {
-                Crop(model: model)
+                Ratio(model: model)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
