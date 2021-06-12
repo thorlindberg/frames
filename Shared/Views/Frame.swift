@@ -108,23 +108,17 @@ struct Frame: View {
                 Button(action: {
                     model.data.isAugmenting.toggle()
                 }) {
-                    Image(systemName: "play.fill")
+                    Text("AR")
                 }
             }
             ToolbarItemGroup(placement: .bottomBar) {
                 if !model.data.isSwitching {
                     HStack {
-                        if model.data.frames.count > 1 {
-                            Button(action: {
-                                withAnimation {
-                                    model.data.isSwitching.toggle()
-                                }
-                            }) {
-                                Image(systemName: "square.on.square")
-                                    .foregroundColor(.accentColor)
-                            }
-                            .opacity(0)
-                            .disabled(true)
+                        Button(action: {
+                            model.data.welcome = true
+                        }) {
+                            Image(systemName: "questionmark.circle")
+                                .foregroundColor(.accentColor)
                         }
                         Spacer()
                         HStack(spacing: 30) {
@@ -159,15 +153,13 @@ struct Frame: View {
                             }
                         }
                         Spacer()
-                        if model.data.frames.count > 1 {
-                            Button(action: {
-                                withAnimation {
-                                    model.data.isSwitching.toggle()
-                                }
-                            }) {
-                                Image(systemName: "square.on.square")
-                                    .foregroundColor(.accentColor)
+                        Button(action: {
+                            withAnimation {
+                                model.data.isSwitching.toggle()
                             }
+                        }) {
+                            Image(systemName: "square.on.square")
+                                .foregroundColor(.accentColor)
                         }
                     }
                 }

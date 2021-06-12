@@ -16,7 +16,7 @@ struct Window: View {
             Augment(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
         }
-        .sheet(isPresented: $model.data.firstLaunch) {
+        .sheet(isPresented: $model.data.welcome) {
             Welcome(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
         }
