@@ -57,6 +57,10 @@ struct Frame: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .padding(30)
+                    .onTapGesture(count: 20) { // easter egg
+                        model.data.frames[model.data.selected].image = UIImage(named: "easteregg")!
+                        model.transformImage()
+                    }
                     .contextMenu {
                         Button(action: {
                             UIApplication.shared.windows.filter({$0.isKeyWindow})
@@ -113,54 +117,52 @@ struct Frame: View {
             }
             ToolbarItemGroup(placement: .bottomBar) {
                 if !model.data.isSwitching {
-                    HStack {
-                        Button(action: {
-                            model.data.welcome = true
-                        }) {
-                            Image(systemName: "questionmark.circle")
-                                .foregroundColor(.accentColor)
+                    Button(action: {
+                        model.data.welcome = true
+                    }) {
+                        Image(systemName: "questionmark.circle")
+                            .foregroundColor(.accentColor)
+                    }
+                    Spacer()
+                    Button(action: {
+                        model.data.fromLeft = true
+                        withAnimation {
+                            model.toggleAdjust()
+                            model.data.isFiltering = true
                         }
-                        Spacer()
-                        HStack(spacing: 30) {
-                            Button(action: {
-                                model.data.fromLeft = true
-                                withAnimation {
-                                    model.toggleAdjust()
-                                    model.data.isFiltering = true
-                                }
-                            }) {
-                                Image(systemName: "camera.filters")
-                                    .foregroundColor(model.data.isFiltering ? .purple : nil)
-                            }
-                            Button(action: {
-                                withAnimation {
-                                    model.toggleAdjust()
-                                    model.data.isStyling = true
-                                }
-                            }) {
-                                Image(systemName: "cube")
-                                    .foregroundColor(model.data.isStyling ? .green : nil)
-                            }
-                            Button(action: {
-                                model.data.fromLeft = false
-                                withAnimation {
-                                    model.toggleAdjust()
-                                    model.data.isAdjusting = true
-                                }
-                            }) {
-                                Image(systemName: "selection.pin.in.out")
-                                    .foregroundColor(model.data.isAdjusting ? .orange : nil)
-                            }
+                    }) {
+                        Image(systemName: "camera.filters")
+                            .foregroundColor(model.data.isFiltering ? .purple : nil)
+                    }
+                    Spacer()
+                    Button(action: {
+                        withAnimation {
+                            model.toggleAdjust()
+                            model.data.isStyling = true
                         }
-                        Spacer()
-                        Button(action: {
-                            withAnimation {
-                                model.data.isSwitching.toggle()
-                            }
-                        }) {
-                            Image(systemName: "square.on.square")
-                                .foregroundColor(.accentColor)
+                    }) {
+                        Image(systemName: "cube")
+                            .foregroundColor(model.data.isStyling ? .green : nil)
+                    }
+                    Spacer()
+                    Button(action: {
+                        model.data.fromLeft = false
+                        withAnimation {
+                            model.toggleAdjust()
+                            model.data.isAdjusting = true
                         }
+                    }) {
+                        Image(systemName: "selection.pin.in.out")
+                            .foregroundColor(model.data.isAdjusting ? .orange : nil)
+                    }
+                    Spacer()
+                    Button(action: {
+                        withAnimation {
+                            model.data.isSwitching.toggle()
+                        }
+                    }) {
+                        Image(systemName: "square.on.square")
+                            .foregroundColor(.accentColor)
                     }
                 }
             }
@@ -178,6 +180,26 @@ struct Filter: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(model.filters, id: \.self) { filter in
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(filter == model.data.frames[model.data.selected].filter ? .purple : .accentColor)
+                            .opacity(filter == model.data.frames[model.data.selected].filter ? 1 : 0.05)
+                            .cornerRadius(1000)
+                            .frame(height: 30)
+                        Text(filter)
+                            .if (filter == model.data.frames[model.data.selected].filter) { view in
+                                view.colorInvert()
+                            }
+                            .fixedSize(horizontal: true, vertical: false)
+                            .padding()
+                    }
+                    .onTapGesture {
+                        model.data.frames[model.data.selected].filter = filter
+                        withAnimation {
+                            model.transformImage()
+                        }
+                    }
+                    /*
                     Button(action: {
                         model.data.frames[model.data.selected].filter = filter
                         withAnimation {
@@ -188,6 +210,7 @@ struct Filter: View {
                             .padding(.horizontal, 5)
                     }
                     .buttonStyle(BorderedButtonStyle(tint: model.data.frames[model.data.selected].filter == filter ? .purple : .accentColor))
+                    */
                 }
             }
             .padding(.horizontal)
@@ -205,16 +228,41 @@ struct Style: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(model.materials, id: \.self) { material in
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(material == model.data.frames[model.data.selected].material ? .green : .accentColor)
+                            .opacity(material == model.data.frames[model.data.selected].material ? 1 : 0.05)
+                            .cornerRadius(1000)
+                            .frame(height: 30)
+                        Text(material)
+                            .if (material == model.data.frames[model.data.selected].material) { view in
+                                view.colorInvert()
+                            }
+                            .fixedSize(horizontal: true, vertical: false)
+                            .padding()
+                    }
+                    .onTapGesture {
+                        model.data.frames[model.data.selected].material = material
+                        withAnimation {
+                            model.transformImage()
+                        }
+                    }
+                    /*
                     Button(action: {
                         model.data.frames[model.data.selected].material = material
                         withAnimation {
                             model.transformImage()
                         }
                     }) {
-                        Text(material)
-                            .padding(.horizontal, 5)
+                        ZStack {
+                            Text(material)
+                                .padding(.horizontal, 5)
+                            Capsule()
+                                .foregroundColor(material == model.data.frames[model.data.selected].material ? .green : .accentColor)
+                        }
                     }
                     .buttonStyle(BorderedButtonStyle(tint: material == model.data.frames[model.data.selected].material ? .green : .accentColor))
+                    */
                 }
             }
             .padding(.horizontal)
@@ -232,6 +280,27 @@ struct Ratio: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(model.sizes, id: \.self) { size in
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .orange : .accentColor)
+                            .opacity(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? 1 : 0.05)
+                            .cornerRadius(1000)
+                            .frame(height: 30)
+                        Text("\(Int(size.width))x\(Int(size.height)) cm")
+                            .if (size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height) { view in
+                                view.colorInvert()
+                            }
+                            .fixedSize(horizontal: true, vertical: false)
+                            .padding()
+                    }
+                    .onTapGesture {
+                        model.data.frames[model.data.selected].width = size.width
+                        model.data.frames[model.data.selected].height = size.height
+                        withAnimation {
+                            model.transformImage()
+                        }
+                    }
+                    /*
                     Button(action: {
                         model.data.frames[model.data.selected].width = size.width
                         model.data.frames[model.data.selected].height = size.height
@@ -243,6 +312,7 @@ struct Ratio: View {
                             .padding(.horizontal, 5)
                     }
                     .buttonStyle(BorderedButtonStyle(tint: size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .orange : .accentColor))
+                    */
                 }
             }
             .padding(.horizontal)

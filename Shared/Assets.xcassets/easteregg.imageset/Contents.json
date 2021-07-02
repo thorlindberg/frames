@@ -1,12 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "stringsicon_32pt@1x.png",
+      "filename" : "easteregg.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "stringsicon_32pt@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

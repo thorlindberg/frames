@@ -60,7 +60,7 @@ struct Welcome: View {
                             Text("No")
                                 .padding(.horizontal)
                         }
-                        .buttonStyle(BorderedButtonStyle())
+                        // .buttonStyle(BorderedButtonStyle())
                         Spacer()
                         Button(action: {
                             UserDefaults.standard.set(true, forKey: "hasLaunched")
@@ -69,7 +69,7 @@ struct Welcome: View {
                             Text("Purchase for $1")
                                 .padding(.horizontal)
                         }
-                        .buttonStyle(BorderedButtonStyle(tint: .purple))
+                        // .buttonStyle(BorderedButtonStyle(tint: .purple))
                     }
                 }
                 .padding(50)
@@ -79,6 +79,12 @@ struct Welcome: View {
         } else {
             NavigationView {
                 VStack {
+                    HStack {
+                        Image("Icon")
+                            .resizable()
+                            .frame(width: 48, height: 48)
+                        Spacer()
+                    }
                     HStack {
                         VStack(alignment: .leading, spacing: 0) {
                             Text("Augmented Frames")
@@ -96,9 +102,9 @@ struct Welcome: View {
                         NavigationLink(destination: First()) {
                             HStack {
                                 VStack(alignment: .leading, spacing: 3) {
-                                    Text("First")
+                                    Text("Import or scan photos")
                                         .fontWeight(.bold)
-                                    Text("Subtext")
+                                    Text("and edit to your liking ")
                                 }
                                 Spacer()
                                 Image(systemName: "chevron.right")
@@ -110,9 +116,9 @@ struct Welcome: View {
                         NavigationLink(destination: Second()) {
                             HStack {
                                 VStack(alignment: .leading, spacing: 3) {
-                                    Text("Second")
+                                    Text("Customize your frame")
                                         .fontWeight(.bold)
-                                    Text("Subtext")
+                                    Text("with materials and filters")
                                 }
                                 Spacer()
                                 Image(systemName: "chevron.right")
@@ -124,9 +130,9 @@ struct Welcome: View {
                         NavigationLink(destination: Third()) {
                             HStack {
                                 VStack(alignment: .leading, spacing: 3) {
-                                    Text("Third")
+                                    Text("View in Augmented Reality")
                                         .fontWeight(.bold)
-                                    Text("Subtext")
+                                    Text("with realistic sizing")
                                 }
                                 Spacer()
                                 Image(systemName: "chevron.right")
@@ -143,16 +149,16 @@ struct Welcome: View {
                             Image(systemName: "bolt.fill")
                                 .padding(.horizontal)
                         }
-                        .buttonStyle(BorderedButtonStyle(tint: .purple))
+                        // .buttonStyle(BorderedButtonStyle(tint: .purple))
                         Spacer()
                         Button(action: {
                             UserDefaults.standard.set(true, forKey: "hasLaunched")
                             model.data.welcome = false
                         }) {
-                            Text("Understood")
+                            Text("Get started")
                                 .padding(.horizontal)
                         }
-                        .buttonStyle(BorderedButtonStyle())
+                        // .buttonStyle(BorderedButtonStyle())
                     }
                 }
                 .padding(50)
