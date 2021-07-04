@@ -57,10 +57,6 @@ struct Frame: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .padding(30)
-                    .onTapGesture(count: 20) { // easter egg
-                        model.data.frames[model.data.selected].image = UIImage(named: "easteregg")!
-                        model.transformImage()
-                    }
                     .contextMenu {
                         Button(action: {
                             UIApplication.shared.windows.filter({$0.isKeyWindow})
@@ -117,53 +113,50 @@ struct Frame: View {
             }
             ToolbarItemGroup(placement: .bottomBar) {
                 if !model.data.isSwitching {
-                    Button(action: {
-                        model.data.welcome = true
-                    }) {
-                        Image(systemName: "questionmark.circle")
-                            .foregroundColor(.accentColor)
-                    }
+                    Image(systemName: "square.on.square")
+                        .font(.system(size: 20))
+                        .opacity(0)
                     Spacer()
-                    Button(action: {
-                        model.data.fromLeft = true
-                        withAnimation {
-                            model.toggleAdjust()
-                            model.data.isFiltering = true
-                        }
-                    }) {
+                    HStack(spacing: 30) {
                         Image(systemName: "camera.filters")
+                            .font(.system(size: 20))
                             .foregroundColor(model.data.isFiltering ? .purple : nil)
-                    }
-                    Spacer()
-                    Button(action: {
-                        withAnimation {
-                            model.toggleAdjust()
-                            model.data.isStyling = true
-                        }
-                    }) {
+                            .onTapGesture {
+                                model.data.fromLeft = true
+                                withAnimation {
+                                    model.toggleAdjust()
+                                    model.data.isFiltering = true
+                                }
+                            }
                         Image(systemName: "cube")
+                            .font(.system(size: 20))
                             .foregroundColor(model.data.isStyling ? .green : nil)
-                    }
-                    Spacer()
-                    Button(action: {
-                        model.data.fromLeft = false
-                        withAnimation {
-                            model.toggleAdjust()
-                            model.data.isAdjusting = true
-                        }
-                    }) {
+                            .onTapGesture {
+                                withAnimation {
+                                    model.toggleAdjust()
+                                    model.data.isStyling = true
+                                }
+                            }
                         Image(systemName: "selection.pin.in.out")
+                            .font(.system(size: 20))
                             .foregroundColor(model.data.isAdjusting ? .orange : nil)
+                            .onTapGesture {
+                                model.data.fromLeft = false
+                                withAnimation {
+                                    model.toggleAdjust()
+                                    model.data.isAdjusting = true
+                                }
+                            }
                     }
                     Spacer()
-                    Button(action: {
-                        withAnimation {
-                            model.data.isSwitching.toggle()
+                    Image(systemName: "square.on.square")
+                        .font(.system(size: 20))
+                        .foregroundColor(.accentColor)
+                        .onTapGesture {
+                            withAnimation {
+                                model.data.isSwitching.toggle()
+                            }
                         }
-                    }) {
-                        Image(systemName: "square.on.square")
-                            .foregroundColor(.accentColor)
-                    }
                 }
             }
         }
