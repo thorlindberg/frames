@@ -61,6 +61,7 @@ struct Augment: View {
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
+                    /*
                     Button(action: {
                         reload.toggle()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -69,7 +70,14 @@ struct Augment: View {
                             }
                         }
                     }) {
-                        Text("Reload")
+                        Image(systemName: "reload")
+                    }
+                    */
+                    Button(action: {
+                        model.data.isFlashlight.toggle()
+                        toggleTorch(on: model.data.isFlashlight)
+                    }) {
+                        Image(systemName: model.data.isFlashlight ? "bolt.fill" : "bolt.slash")
                     }
                 }
             }

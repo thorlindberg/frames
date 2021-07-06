@@ -106,6 +106,7 @@ struct Frame: View {
             }
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
+                    model.data.isFlashlight = false
                     model.data.isAugmenting.toggle()
                 }) {
                     Text("AR")

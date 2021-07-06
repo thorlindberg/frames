@@ -15,6 +15,7 @@ final class Data: NSObject, ObservableObject {
         var isImporting: Bool
         var isAugmenting: Bool
         var isAugmented: Bool
+        var isFlashlight: Bool
         var isSwitching: Bool
         var isFiltering: Bool
         var isStyling: Bool
@@ -41,7 +42,7 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         welcome: !UserDefaults.standard.bool(forKey: "hasLaunched"), purchase: false,
-        isImporting: false, isAugmenting: false, isAugmented: false,
+        isImporting: false, isAugmenting: false, isAugmented: false, isFlashlight: false,
         isSwitching: false, isFiltering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [Frame(
