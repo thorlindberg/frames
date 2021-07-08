@@ -11,12 +11,10 @@ final class Data: NSObject, ObservableObject {
     
     struct Format: Hashable {
         var welcome: Bool
-        var purchase: Bool
         var isImporting: Bool
         var isAugmenting: Bool
         var isAugmented: Bool
         var isFlashlight: Bool
-        var isSwitching: Bool
         var isFiltering: Bool
         var isStyling: Bool
         var isAdjusting: Bool
@@ -41,9 +39,9 @@ final class Data: NSObject, ObservableObject {
     }
     
     @Published var data: Format = Format(
-        welcome: !UserDefaults.standard.bool(forKey: "hasLaunched"), purchase: false,
+        welcome: true, // !UserDefaults.standard.bool(forKey: "hasLaunched")
         isImporting: false, isAugmenting: false, isAugmented: false, isFlashlight: false,
-        isSwitching: false, isFiltering: false, isStyling: true, isAdjusting: false, fromLeft: false,
+        isFiltering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [Frame(
             image: UIImage(imageLiteralResourceName: "sample"),
@@ -149,7 +147,6 @@ final class Data: NSObject, ObservableObject {
         data.isFiltering = false
         data.isStyling = false
         data.isAdjusting = false
-        data.isSwitching = false
     }
     
     func transformImage() {

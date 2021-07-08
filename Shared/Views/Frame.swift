@@ -3,55 +3,12 @@ import SceneKit
 
 struct Frame: View {
     
-    @Namespace private var animation
     @ObservedObject var model: Data
+    @Namespace private var animation
     
     var body: some View {
         VStack(spacing: 0) {
-            if model.data.isSwitching {
-                ScrollView() {
-                    LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 2)) {
-                        ForEach((0...model.data.frames.count-1), id: \.self) { index in
-                            Image(uiImage: model.data.frames[index].transform)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .contextMenu {
-                                    Button(action: {
-                                        UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                            .first?
-                                            .rootViewController?
-                                            .present(UIActivityViewController(activityItems: [model.data.frames[index].transform], applicationActivities: nil), animated: true)
-                                    }) {
-                                        Label("Share", systemImage: "square.and.arrow.up")
-                                    }
-                                    if model.data.frames.count > 1 {
-                                        Button(action: {
-                                            withAnimation {
-                                                model.removeImage(index: index)
-                                                if model.data.frames.count == 1 {
-                                                    model.data.selected = 0
-                                                    model.toggleAdjust()
-                                                    model.data.isStyling = true
-                                                }
-                                            }
-                                        }) {
-                                            Label("Delete", systemImage: "delete.left")
-                                        }
-                                    }
-                                }
-                                .matchedGeometryEffect(id: String(index), in: animation)
-                                .onTapGesture {
-                                    model.data.selected = index
-                                    withAnimation {
-                                        model.toggleAdjust()
-                                        model.data.isStyling = true
-                                    }
-                                }
-                        }
-                    }
-                    .padding(30)
-                }
-            } else if model.data.frames[model.data.selected].transform != model.data.frames[model.data.selected].image {
+            if model.data.frames[model.data.selected].transform != model.data.frames[model.data.selected].image {
                 Spacer()
                 Image(uiImage: model.data.frames[model.data.selected].transform)
                     .resizable()
@@ -77,89 +34,10 @@ struct Frame: View {
                     .matchedGeometryEffect(id: String(model.data.selected), in: animation)
                 Spacer()
                 Adjustment(model: model)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
         .onAppear {
             model.transformImage()
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarTitle("Frames")
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Menu {
-                    Button(action: {
-                        model.data.isImporting.toggle()
-                    }) {
-                        Label("Import from Photos", systemImage: "photo")
-                    }
-                    Button(action: {
-                        UIApplication.shared.windows.filter({$0.isKeyWindow})
-                            .first?.rootViewController?
-                            .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                    }) {
-                        Label("Scan with Camera", systemImage: "viewfinder")
-                    }
-                } label: {
-                    Image(systemName: "camera")
-                }
-            }
-            ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
-                    model.data.isFlashlight = false
-                    model.data.isAugmenting.toggle()
-                }) {
-                    Text("AR")
-                }
-            }
-            ToolbarItemGroup(placement: .bottomBar) {
-                if !model.data.isSwitching {
-                    Image(systemName: "square.on.square")
-                        .font(.system(size: 20))
-                        .opacity(0)
-                    Spacer()
-                    HStack(spacing: 30) {
-                        Image(systemName: "camera.filters")
-                            .font(.system(size: 20))
-                            .foregroundColor(model.data.isFiltering ? .purple : nil)
-                            .onTapGesture {
-                                model.data.fromLeft = true
-                                withAnimation {
-                                    model.toggleAdjust()
-                                    model.data.isFiltering = true
-                                }
-                            }
-                        Image(systemName: "cube")
-                            .font(.system(size: 20))
-                            .foregroundColor(model.data.isStyling ? .green : nil)
-                            .onTapGesture {
-                                withAnimation {
-                                    model.toggleAdjust()
-                                    model.data.isStyling = true
-                                }
-                            }
-                        Image(systemName: "selection.pin.in.out")
-                            .font(.system(size: 20))
-                            .foregroundColor(model.data.isAdjusting ? .orange : nil)
-                            .onTapGesture {
-                                model.data.fromLeft = false
-                                withAnimation {
-                                    model.toggleAdjust()
-                                    model.data.isAdjusting = true
-                                }
-                            }
-                    }
-                    Spacer()
-                    Image(systemName: "square.on.square")
-                        .font(.system(size: 20))
-                        .foregroundColor(.accentColor)
-                        .onTapGesture {
-                            withAnimation {
-                                model.data.isSwitching.toggle()
-                            }
-                        }
-                }
-            }
         }
     }
     
@@ -175,10 +53,9 @@ struct Filter: View {
             HStack {
                 ForEach(model.filters, id: \.self) { filter in
                     ZStack {
-                        Rectangle()
+                        Capsule()
                             .foregroundColor(filter == model.data.frames[model.data.selected].filter ? .purple : .accentColor)
-                            .opacity(filter == model.data.frames[model.data.selected].filter ? 1 : 0.05)
-                            .cornerRadius(1000)
+                            .opacity(filter == model.data.frames[model.data.selected].filter ? 1 : colorscheme == .dark ? 0.1 : 0.05)
                             .frame(height: 30)
                         Text(filter)
                             .if (filter == model.data.frames[model.data.selected].filter) { view in
@@ -223,10 +100,9 @@ struct Style: View {
             HStack {
                 ForEach(model.materials, id: \.self) { material in
                     ZStack {
-                        Rectangle()
+                        Capsule()
                             .foregroundColor(material == model.data.frames[model.data.selected].material ? .green : .accentColor)
-                            .opacity(material == model.data.frames[model.data.selected].material ? 1 : 0.05)
-                            .cornerRadius(1000)
+                            .opacity(material == model.data.frames[model.data.selected].material ? 1 : colorscheme == .dark ? 0.1 : 0.05)
                             .frame(height: 30)
                         Text(material)
                             .if (material == model.data.frames[model.data.selected].material) { view in
@@ -275,10 +151,9 @@ struct Ratio: View {
             HStack {
                 ForEach(model.sizes, id: \.self) { size in
                     ZStack {
-                        Rectangle()
+                        Capsule()
                             .foregroundColor(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .orange : .accentColor)
-                            .opacity(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? 1 : 0.05)
-                            .cornerRadius(1000)
+                            .opacity(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? 1 : colorscheme == .dark ? 0.1 : 0.05)
                             .frame(height: 30)
                         Text("\(Int(size.width))x\(Int(size.height)) cm")
                             .if (size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height) { view in

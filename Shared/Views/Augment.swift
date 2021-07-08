@@ -6,82 +6,12 @@ import ARKit
 struct Augment: View {
     
     @ObservedObject var model: Data
-    @State var reload: Bool = false
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                if !reload {
-                    NavigationIndicator(model: model)
-                        .ignoresSafeArea()
-                        .onAppear { model.data.isAugmented = false }
-                    if !model.data.isAugmented {
-                        /*
-                        Rectangle()
-                            .ignoresSafeArea()
-                            .opacity(model.data.isAugmented ? 0 : 0.5)
-                        VStack {
-                            HStack {
-                                RoundedRectangle(cornerRadius: 100)
-                                    .frame(height: 5)
-                                Text("Top of wall")
-                                    .frame(width: 100)
-                                RoundedRectangle(cornerRadius: 100)
-                                    .frame(height: 5)
-                            }
-                            Spacer()
-                            HStack {
-                                RoundedRectangle(cornerRadius: 100)
-                                    .frame(height: 5)
-                                Text("Bottom of wall")
-                                    .frame(width: 125)
-                                RoundedRectangle(cornerRadius: 100)
-                                    .frame(height: 5)
-                            }
-                        }
-                        .foregroundColor(.white)
-                        .padding(30)
-                        */
-                    }
-                    Image(uiImage: model.data.frames[model.data.selected].transform)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding(model.data.isAugmented ? 70 : 50)
-                        .opacity(model.data.isAugmented ? 0 : 0.5)
-                }
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Augmented")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        model.data.isAugmenting.toggle()
-                    }) {
-                        Text("Cancel")
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    /*
-                    Button(action: {
-                        reload.toggle()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            withAnimation {
-                                reload.toggle()
-                            }
-                        }
-                    }) {
-                        Image(systemName: "reload")
-                    }
-                    */
-                    Button(action: {
-                        model.data.isFlashlight.toggle()
-                        toggleTorch(on: model.data.isFlashlight)
-                    }) {
-                        Image(systemName: model.data.isFlashlight ? "bolt.fill" : "bolt.slash")
-                    }
-                }
-            }
-        }
+        ARViewContainer(model: model)
+            .transition(.move(edge: .bottom))
+            .ignoresSafeArea()
+            .onAppear { model.data.isAugmented = false }
     }
     
 }
@@ -90,19 +20,7 @@ struct Augment: View {
 // resource: https://ttt.studio/blog/a-workaround-for-the-limitations-of-arkit-2/
 // source: https://blog.devgenius.io/implementing-ar-in-swiftui-without-storyboards-ec529ace7ab2
 
-struct NavigationIndicator: UIViewControllerRepresentable {
-    
-    @ObservedObject var model: Data
-    
-    typealias UIViewControllerType = ARView
-    func makeUIViewController(context: Context) -> ARView {
-        return ARView(model)
-    }
-    func updateUIViewController(_ uiViewController: NavigationIndicator.UIViewControllerType, context: UIViewControllerRepresentableContext<NavigationIndicator>) { }
-    
-}
-
-struct ARViewIndicator: UIViewControllerRepresentable {
+struct ARViewContainer: UIViewControllerRepresentable {
     
     @ObservedObject var model: Data
     
@@ -112,8 +30,8 @@ struct ARViewIndicator: UIViewControllerRepresentable {
         return ARView(model)
     }
     func updateUIViewController(_ uiViewController:
-        ARViewIndicator.UIViewControllerType, context:
-        UIViewControllerRepresentableContext<ARViewIndicator>) { }
+        ARViewContainer.UIViewControllerType, context:
+        UIViewControllerRepresentableContext<ARViewContainer>) { }
     
 }
 
@@ -216,4 +134,44 @@ class ARView: UIViewController, ARSCNViewDelegate {
 
     }
     
+}
+
+// source: https://stackoverflow.com/questions/62388053/reset-arview-and-run-coaching-overlay-again
+
+/*
+extension ARView: ARCoachingOverlayViewDelegate {
+    
+    func addCoaching() {
+        // Create a ARCoachingOverlayView object
+        let coachingOverlay = ARCoachingOverlayView()
+        // Make sure it rescales if the device orientation changes
+        coachingOverlay.autoresizingMask = [
+            .flexibleWidth, .flexibleHeight
+        ]
+        self.view.addSubview(coachingOverlay)
+        // Set the Augmented Reality goal
+        coachingOverlay.goal = .verticalPlane
+        // Set the ARSession
+        coachingOverlay.session = self.session
+        // Set the delegate for any callbacks
+        coachingOverlay.delegate = self
+    }
+    // Example callback for the delegate object
+    func coachingOverlayViewDidDeactivate(
+        _ coachingOverlayView: ARCoachingOverlayView
+    ) {
+        self.addObjectsToScene()
+    }
+    
+}
+*/
+
+struct Augment_Previews: PreviewProvider {
+    static var previews: some View {
+        ForEach(ColorScheme.allCases, id: \.self) {
+             Window(model: Data())
+                .preferredColorScheme($0)
+        }
+        .previewDevice("iPhone 12 mini")
+    }
 }
