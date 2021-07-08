@@ -130,7 +130,6 @@ struct Window: View {
         }
         .sheet(isPresented: $model.data.welcome) {
             Welcome(model: model)
-                .modifier(DisableModalDismiss(disabled: true))
         }
     }
     
