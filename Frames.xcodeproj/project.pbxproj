@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		7E05A08C2694635400041AEC /* Torch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E05A08B2694635400041AEC /* Torch.swift */; };
-		7E05A08E2695BAB400041AEC /* Switching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E05A08D2695BAB400041AEC /* Switching.swift */; };
 		7E20825E2647F4BC00404BC1 /* Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E20825D2647F4BC00404BC1 /* Frame.swift */; };
 		7E2CF2DF26444CC0005B7E3C /* FramesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CF2CC26444CBF005B7E3C /* FramesApp.swift */; };
 		7E2CF2E326444CC0005B7E3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E2CF2CE26444CC0005B7E3C /* Assets.xcassets */; };
@@ -24,7 +23,6 @@
 
 /* Begin PBXFileReference section */
 		7E05A08B2694635400041AEC /* Torch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Torch.swift; sourceTree = "<group>"; };
-		7E05A08D2695BAB400041AEC /* Switching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Switching.swift; sourceTree = "<group>"; };
 		7E20825D2647F4BC00404BC1 /* Frame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frame.swift; sourceTree = "<group>"; };
 		7E2CF2CC26444CBF005B7E3C /* FramesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FramesApp.swift; sourceTree = "<group>"; };
 		7E2CF2CE26444CC0005B7E3C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -104,10 +102,9 @@
 			isa = PBXGroup;
 			children = (
 				7E2CF2F326446F1F005B7E3C /* Window.swift */,
+				7E9630642674ABE900AC735F /* Welcome.swift */,
 				7E20825D2647F4BC00404BC1 /* Frame.swift */,
 				7E326870264D361B00A9CBB3 /* Augment.swift */,
-				7E05A08D2695BAB400041AEC /* Switching.swift */,
-				7E9630642674ABE900AC735F /* Welcome.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -182,7 +179,6 @@
 			files = (
 				7E73152726546EBF0062A84F /* Conditional.swift in Sources */,
 				7EF3EE282671F4A600206426 /* AverageColor.swift in Sources */,
-				7E05A08E2695BAB400041AEC /* Switching.swift in Sources */,
 				7E05A08C2694635400041AEC /* Torch.swift in Sources */,
 				7E2CF2EE26444E0A005B7E3C /* Data.swift in Sources */,
 				7E20825E2647F4BC00404BC1 /* Frame.swift in Sources */,

@@ -39,39 +39,53 @@ struct Window: View {
                             }
                         }
                         ToolbarItemGroup(placement: .bottomBar) {
-                            Spacer()
-                            HStack(spacing: 30) {
-                                Image(systemName: "camera.filters")
+                            if !model.data.isSwitching {
+                                Image(systemName: "sparkles.rectangle.stack")
                                     .font(.system(size: 20))
-                                    .foregroundColor(model.data.isFiltering ? .purple : nil)
                                     .onTapGesture {
-                                        model.data.fromLeft = true
-                                        withAnimation {
-                                            model.toggleAdjust()
-                                            model.data.isFiltering = true
-                                        }
+                                        model.data.welcome.toggle()
                                     }
-                                Image(systemName: "cube")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(model.data.isStyling ? .green : nil)
-                                    .onTapGesture {
-                                        withAnimation {
-                                            model.toggleAdjust()
-                                            model.data.isStyling = true
+                                Spacer()
+                                HStack(spacing: 30) {
+                                    Image(systemName: "camera.filters")
+                                        .font(.system(size: 20))
+                                        .foregroundColor(model.data.isFiltering ? .purple : nil)
+                                        .onTapGesture {
+                                            model.data.fromLeft = true
+                                            withAnimation {
+                                                model.toggleAdjust()
+                                                model.data.isFiltering = true
+                                            }
                                         }
-                                    }
-                                Image(systemName: "selection.pin.in.out")
+                                    Image(systemName: "cube")
+                                        .font(.system(size: 20))
+                                        .foregroundColor(model.data.isStyling ? .green : nil)
+                                        .onTapGesture {
+                                            withAnimation {
+                                                model.toggleAdjust()
+                                                model.data.isStyling = true
+                                            }
+                                        }
+                                    Image(systemName: "selection.pin.in.out")
+                                        .font(.system(size: 20))
+                                        .foregroundColor(model.data.isAdjusting ? .orange : nil)
+                                        .onTapGesture {
+                                            model.data.fromLeft = false
+                                            withAnimation {
+                                                model.toggleAdjust()
+                                                model.data.isAdjusting = true
+                                            }
+                                        }
+                                }
+                                Spacer()
+                                Image(systemName: "square.on.square")
                                     .font(.system(size: 20))
-                                    .foregroundColor(model.data.isAdjusting ? .orange : nil)
                                     .onTapGesture {
-                                        model.data.fromLeft = false
                                         withAnimation {
-                                            model.toggleAdjust()
-                                            model.data.isAdjusting = true
+                                            model.data.isSwitching.toggle()
                                         }
                                     }
                             }
-                            Spacer()
                         }
                     }
             }
