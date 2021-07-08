@@ -10,8 +10,8 @@ func deg2rad(_ number: Double) -> Double {
 final class Data: NSObject, ObservableObject {
     
     struct Format: Hashable {
-        var newbie: Bool
         var welcome: Bool
+        var isNavigating: Bool
         var isImporting: Bool
         var isSwitching: Bool
         var isAugmenting: Bool
@@ -41,8 +41,7 @@ final class Data: NSObject, ObservableObject {
     }
     
     @Published var data: Format = Format(
-        newbie: !UserDefaults.standard.bool(forKey: "hasLaunched"),
-        welcome: !UserDefaults.standard.bool(forKey: "hasLaunched"),
+        welcome: !UserDefaults.standard.bool(forKey: "hasLaunched"), isNavigating: false,
         isImporting: false, isSwitching: false, isAugmenting: false, isAugmented: false, isFlashlight: false,
         isFiltering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,

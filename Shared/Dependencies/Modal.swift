@@ -1,6 +1,6 @@
-import SwiftUI
-
 // source: https://stackoverflow.com/a/60939207/15072454
+
+import SwiftUI
 
 extension UIApplication {
 

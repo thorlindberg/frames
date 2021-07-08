@@ -1,7 +1,7 @@
+// source: https://www.hackingwithswift.com/example-code/media/how-to-turn-on-the-camera-flashlight-to-make-a-torch
+
 import SwiftUI
 import AVFoundation
-
-// source: https://www.hackingwithswift.com/example-code/media/how-to-turn-on-the-camera-flashlight-to-make-a-torch
 
 func toggleTorch(on: Bool) {
     guard let device = AVCaptureDevice.default(for: .video) else { return }

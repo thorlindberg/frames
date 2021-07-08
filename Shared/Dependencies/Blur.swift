@@ -1,6 +1,6 @@
-import SwiftUI
-
 // source: https://blog.devgenius.io/blur-effect-with-vibrancy-in-swiftui-bada837fdf50
+
+import SwiftUI
 
 struct BlurView: UIViewRepresentable {
     typealias UIViewType = UIVisualEffectView

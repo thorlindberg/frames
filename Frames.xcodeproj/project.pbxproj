@@ -18,6 +18,7 @@
 		7E73152726546EBF0062A84F /* Conditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E73152626546EBF0062A84F /* Conditional.swift */; };
 		7E9630652674ABE900AC735F /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9630642674ABE900AC735F /* Welcome.swift */; };
 		7EDEADAD26972253004F8906 /* Scroll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEADAC26972253004F8906 /* Scroll.swift */; };
+		7EDEADAF269790F0004F8906 /* Mail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEADAE269790F0004F8906 /* Mail.swift */; };
 		7EECEF2C264C742C00B5149B /* Modal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EECEF2B264C742C00B5149B /* Modal.swift */; };
 		7EF3EE282671F4A600206426 /* AverageColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EF3EE272671F4A600206426 /* AverageColor.swift */; };
 /* End PBXBuildFile section */
@@ -36,6 +37,7 @@
 		7E73152626546EBF0062A84F /* Conditional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditional.swift; sourceTree = "<group>"; };
 		7E9630642674ABE900AC735F /* Welcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		7EDEADAC26972253004F8906 /* Scroll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scroll.swift; sourceTree = "<group>"; };
+		7EDEADAE269790F0004F8906 /* Mail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mail.swift; sourceTree = "<group>"; };
 		7EECEF2B264C742C00B5149B /* Modal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Modal.swift; sourceTree = "<group>"; };
 		7EF3EE272671F4A600206426 /* AverageColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AverageColor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,6 +99,7 @@
 				7EF3EE272671F4A600206426 /* AverageColor.swift */,
 				7E05A08B2694635400041AEC /* Torch.swift */,
 				7EDEADAC26972253004F8906 /* Scroll.swift */,
+				7EDEADAE269790F0004F8906 /* Mail.swift */,
 			);
 			path = Dependencies;
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 				7EECEF2C264C742C00B5149B /* Modal.swift in Sources */,
 				7E326871264D361B00A9CBB3 /* Augment.swift in Sources */,
 				7E9630652674ABE900AC735F /* Welcome.swift in Sources */,
+				7EDEADAF269790F0004F8906 /* Mail.swift in Sources */,
 				7E73152526546EB00062A84F /* Blur.swift in Sources */,
 				7E2CF2F426446F1F005B7E3C /* Window.swift in Sources */,
 				7E2CF2DF26444CC0005B7E3C /* FramesApp.swift in Sources */,

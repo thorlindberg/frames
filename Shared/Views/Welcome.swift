@@ -7,41 +7,7 @@ struct Welcome: View {
     
     var body: some View {
         NavigationView {
-            ZStack {
-                List {
-                    Section(header:
-                        Label("add photo", systemImage: "camera")
-                            .padding(.top, 230)
-                    ) {
-                        NavigationLink(destination: First()) {
-                            Text("Import from Photos")
-                        }
-                        NavigationLink(destination: First()) {
-                            Text("Scan with Camera")
-                        }
-                    }
-                    Section(header:
-                        Label("customize frame", systemImage: "cube")
-                    ) {
-                        NavigationLink(destination: Second()) {
-                            Text("Photo filters")
-                        }
-                        NavigationLink(destination: Second()) {
-                            Text("Frame materials")
-                        }
-                        NavigationLink(destination: Second()) {
-                            Text("Frame sizes")
-                        }
-                    }
-                    Section(header:
-                        Label("augment reality", systemImage: "eye")
-                    ) {
-                        NavigationLink(destination: Third()) {
-                            Text("Hang frame in AR")
-                        }
-                    }
-                }
-                .listStyle(InsetGroupedListStyle())
+            List {
                 ZStack {
                     VStack {
                         HStack {
@@ -49,8 +15,11 @@ struct Welcome: View {
                             Image("pear")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(height: 200)
-                                .opacity(0.1)
+                                .frame(width: 145)
+                                .opacity(0.2)
+                                .padding(.top, -6)
+                                .padding(.horizontal, -16)
+                                .padding(.bottom, -100)
                         }
                         Spacer()
                     }
@@ -61,41 +30,158 @@ struct Welcome: View {
                                 .fontWeight(.bold)
                                 .padding(.bottom, 10)
                             Text("Version 1.0")
-                                .font(.system(size: 20))
+                                .font(.system(size: 18))
                                 .opacity(0.5)
+                        }
+                        .padding(.horizontal, -6)
+                        Spacer()
+                    }
+                    .padding()
+                    /*
+                    VStack {
+                        HStack {
                             Spacer()
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.system(size: 30))
+                                .opacity(0.5)
+                                .padding(.top, 4)
+                                .padding(.horizontal, -6)
+                                .onTapGesture {
+                                    UserDefaults.standard.set(true, forKey: "hasLaunched")
+                                    model.data.welcome.toggle()
+                                }
                         }
                         Spacer()
-                        VStack {
-                            Button(action: {
-                                UserDefaults.standard.set(true, forKey: "hasLaunched")
-                                model.data.welcome.toggle()
-                            }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .font(.system(size: 30))
-                                    .opacity(0.2)
-                            }
-                            Spacer()
-                        }
                     }
-                    .padding(.horizontal)
-                    .padding(.top, 40)
+                    */
+                }
+                NavigationLink(destination: Premium()) {
+                    Label("Unlock premium", systemImage: "dollarsign.circle")
+                        .foregroundColor(.purple)
+                }
+                NavigationLink(
+                    destination: Mail(model: model),
+                    isActive: $model.data.isNavigating,
+                    label: {
+                        Label("Contact support", systemImage: "envelope")
+                    }
+                )
+                .isDetailLink(false) // resource: https://stackoverflow.com/questions/57334455/swiftui-how-to-pop-to-root-view
+                Section(header:
+                    Text("1. add photo")
+                ) {
+                    NavigationLink(destination: Import()) {
+                        Label("Import from Photos", systemImage: "photo")
+                    }
+                    NavigationLink(destination: Scan()) {
+                        Label("Scan with Camera", systemImage: "viewfinder")
+                    }
+                }
+                Section(header:
+                    Text("2. customize frame")
+                ) {
+                    NavigationLink(destination: Template()) {
+                        Label("Photo filters", systemImage: "camera.filters")
+                    }
+                    NavigationLink(destination: Template()) {
+                        Label("Frame materials", systemImage: "cube")
+                    }
+                    NavigationLink(destination: Template()) {
+                        Label("Frame sizes", systemImage: "selection.pin.in.out")
+                    }
+                }
+                Section(header:
+                    Text("3. augment reality")
+                ) {
+                    NavigationLink(destination: Template()) {
+                        Label("Hang frame in AR", systemImage: "move.3d")
+                    }
+                }
+                Button(action: {
+                    model.data.welcome.toggle()
+                }) {
+                    HStack {
+                        Spacer()
+                        Text("Get started")
+                            .foregroundColor(.blue)
+                        Spacer()
+                    }
                 }
             }
+            .listStyle(InsetGroupedListStyle())
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarHidden(true)
+            .padding(.top, -16)
         }
     }
     
 }
 
-struct First: View {
+struct Premium: View {
+    
+    var body: some View {
+        List {
+            
+        }
+        .listStyle(InsetGroupedListStyle())
+        .navigationBarTitle("Unlock premium")
+    }
+    
+}
+
+struct Mail: View {
+    
+    @ObservedObject var model: Data
+    
+    @State var header: String = "Augmented Frames v.1.0"
+    @State var intro: String = "Greetings Thor,"
+    @State var text: String = ""
+    
+    var body: some View {
+        List {
+            Section(header: Text("topic").padding(.top)) {
+                TextField("", text: $header)
+                    .disabled(true)
+            }
+            Section(header: Text("text")) {
+                HStack {
+                    TextField("", text: $intro)
+                        .disabled(true)
+                    if text != "" {
+                        Text("Reset")
+                            .foregroundColor(.red)
+                            .onTapGesture {
+                                text = ""
+                            }
+                    }
+                }
+                TextEditor(text: $text)
+            }
+            Button(action: {
+                text = ""
+                model.data.isNavigating = false
+            }) {
+                HStack {
+                    Spacer()
+                    Text("Send feedback")
+                        .foregroundColor(.blue)
+                    Spacer()
+                }
+            }
+        }
+        .listStyle(InsetGroupedListStyle())
+        .navigationBarTitle("Contact support")
+    }
+    
+}
+
+struct Import: View {
     
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
         List {
-            Section(header: Label("Import from Photos", systemImage: "photo").padding(.top)) {
+            Section(header: Text("import from photos").padding(.top)) {
                 Image(colorscheme == .dark ? "first_dark" : "first")
                     .resizable()
                     .scaledToFill()
@@ -103,7 +189,7 @@ struct First: View {
                     .padding(.vertical, -6)
                     .padding(.horizontal, -16)
             }
-            Section(header: Label("Import from Photos", systemImage: "photo").padding(.top)) {
+            Section(header: Text("import from photos").padding(.top)) {
                 Image(colorscheme == .dark ? "first_dark" : "first")
                     .resizable()
                     .scaledToFill()
@@ -111,7 +197,7 @@ struct First: View {
                     .padding(.vertical, -6)
                     .padding(.horizontal, -16)
             }
-            Section(header: Label("Import from Photos", systemImage: "photo").padding(.top)) {
+            Section(header: Text("import from photos").padding(.top)) {
                 Image(colorscheme == .dark ? "first_dark" : "first")
                     .resizable()
                     .scaledToFill()
@@ -119,69 +205,35 @@ struct First: View {
                     .padding(.vertical, -6)
                     .padding(.horizontal, -16)
             }
-            /*
-            Section(header: Label("Import from Photos", systemImage: "photo").padding(.top)) {
-                HStack {
-                    Text("1. Click")
-                    Image(systemName: "camera")
-                    Text("to add a photo")
-                }
-                HStack {
-                    Text("2. Click")
-                    Image(systemName: "photo")
-                    Text("to import from Photos")
-                }
-                Text("3. Select a photo to import it")
-            }
-            Section(header: Label("Scan with Camera", systemImage: "viewfinder")) {
-                HStack {
-                    Text("1. Click")
-                    Image(systemName: "camera")
-                    Text("to add a photo")
-                }
-                HStack {
-                    Text("2. Click")
-                    Image(systemName: "viewfinder")
-                    Text("to scan with Camera")
-                }
-                HStack {
-                    Text("3. Click")
-                    Image(systemName: "record.circle")
-                    Text("to scan a photo")
-                }
-                HStack {
-                    Text("4. Click")
-                    Text("Save")
-                        .bold()
-                    Text("to use the scanned photo")
-                }
-            }
-            */
         }
         .listStyle(InsetGroupedListStyle())
-        .navigationBarTitle("Add photo")
+        .navigationBarTitle("Import from Photos")
     }
     
 }
 
-struct Second: View {
+struct Scan: View {
     
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        Text("Second")
-            .navigationBarTitle("Customize frames")
+        List {
+        }
+        .listStyle(InsetGroupedListStyle())
+        .navigationBarTitle("Scan with Camera")
     }
     
 }
 
-struct Third: View {
+struct Template: View {
     
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        Text("Third")
-            .navigationBarTitle("Augment Reality")
+        List {
+        }
+        .listStyle(InsetGroupedListStyle())
+        .navigationBarTitle("Template")
     }
     
 }
@@ -189,7 +241,7 @@ struct Third: View {
 struct Welcome_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Data())
+            Welcome(model: Data())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")
