@@ -68,33 +68,17 @@ struct Welcome: View {
                 )
                 .isDetailLink(false) // resource: https://stackoverflow.com/questions/57334455/swiftui-how-to-pop-to-root-view
                 Section(header:
-                    Text("1. add photo")
+                    Text("quickstart guide")
+                            .padding(.top)
                 ) {
-                    NavigationLink(destination: Import()) {
-                        Label("Import from Photos", systemImage: "photo")
+                    NavigationLink(destination: First()) {
+                        Label("Add photo", systemImage: "camera")
                     }
-                    NavigationLink(destination: Scan()) {
-                        Label("Scan with Camera", systemImage: "viewfinder")
+                    NavigationLink(destination: Second()) {
+                        Label("Customize frame", systemImage: "cube")
                     }
-                }
-                Section(header:
-                    Text("2. customize frame")
-                ) {
-                    NavigationLink(destination: Template()) {
-                        Label("Photo filters", systemImage: "camera.filters")
-                    }
-                    NavigationLink(destination: Template()) {
-                        Label("Frame materials", systemImage: "cube")
-                    }
-                    NavigationLink(destination: Template()) {
-                        Label("Frame sizes", systemImage: "selection.pin.in.out")
-                    }
-                }
-                Section(header:
-                    Text("3. augment reality")
-                ) {
-                    NavigationLink(destination: Template()) {
-                        Label("Hang frame in AR", systemImage: "move.3d")
+                    NavigationLink(destination: Third()) {
+                        Label("Augment Reality", systemImage: "move.3d")
                     }
                 }
                 Button(action: {
@@ -121,7 +105,6 @@ struct Premium: View {
     
     var body: some View {
         List {
-            
         }
         .listStyle(InsetGroupedListStyle())
         .navigationBarTitle("Unlock premium")
@@ -175,57 +158,88 @@ struct Mail: View {
     
 }
 
-struct Import: View {
+struct First: View {
     
     @Environment(\.colorScheme) var colorscheme
+    @State var selection: Int = 1
     
     var body: some View {
-        List {
-            Section(header: Text("import from photos").padding(.top)) {
-                Image(colorscheme == .dark ? "first_dark" : "first")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 190, alignment: .top)
-                    .padding(.vertical, -6)
-                    .padding(.horizontal, -16)
+        VStack(spacing: 0) {
+            Picker(selection: $selection, label: Text("")) {
+                Text("Import").tag(1)
+                Text("Scan").tag(2)
             }
-            Section(header: Text("import from photos").padding(.top)) {
-                Image(colorscheme == .dark ? "first_dark" : "first")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 190, alignment: .top)
-                    .padding(.vertical, -6)
-                    .padding(.horizontal, -16)
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+            Divider()
+            List {
+                if selection == 1 {
+                    Section(header: Text("import from photos").padding(.top)) {
+                        Image(colorscheme == .dark ? "first_dark" : "first")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 190, alignment: .top)
+                            .padding(.vertical, -6)
+                            .padding(.horizontal, -16)
+                    }
+                    Section(header: Text("import from photos").padding(.top)) {
+                        Image(colorscheme == .dark ? "first_dark" : "first")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 190, alignment: .top)
+                            .padding(.vertical, -6)
+                            .padding(.horizontal, -16)
+                    }
+                    Section(header: Text("import from photos").padding(.top)) {
+                        Image(colorscheme == .dark ? "first_dark" : "first")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 190, alignment: .top)
+                            .padding(.vertical, -6)
+                            .padding(.horizontal, -16)
+                    }
+                }
+                if selection == 2 {
+                }
             }
-            Section(header: Text("import from photos").padding(.top)) {
-                Image(colorscheme == .dark ? "first_dark" : "first")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 190, alignment: .top)
-                    .padding(.vertical, -6)
-                    .padding(.horizontal, -16)
-            }
+            .listStyle(InsetGroupedListStyle())
         }
-        .listStyle(InsetGroupedListStyle())
-        .navigationBarTitle("Import from Photos")
+        .navigationBarTitle("Add photo")
     }
     
 }
 
-struct Scan: View {
+struct Second: View {
     
     @Environment(\.colorScheme) var colorscheme
+    @State var selection: Int = 2
     
     var body: some View {
-        List {
+        VStack(spacing: 0) {
+            Picker(selection: $selection, label: Text("")) {
+                Text("Filters").tag(1)
+                Text("Materials").tag(2)
+                Text("Sizes").tag(3)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+            Divider()
+            List {
+                if selection == 1 {
+                }
+                if selection == 2 {
+                }
+                if selection == 3 {
+                }
+            }
+            .listStyle(InsetGroupedListStyle())
         }
-        .listStyle(InsetGroupedListStyle())
-        .navigationBarTitle("Scan with Camera")
+        .navigationBarTitle("Customize frame")
     }
     
 }
 
-struct Template: View {
+struct Third: View {
     
     @Environment(\.colorScheme) var colorscheme
     
@@ -233,7 +247,7 @@ struct Template: View {
         List {
         }
         .listStyle(InsetGroupedListStyle())
-        .navigationBarTitle("Template")
+        .navigationBarTitle("Augment Reality")
     }
     
 }
