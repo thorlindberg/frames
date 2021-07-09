@@ -7,87 +7,94 @@ struct Window: View {
     var body: some View {
         ZStack {
             NavigationView {
-                Frame(model: model)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationBarTitle("Frames")
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Menu {
+                ZStack {
+                    if model.data.isEditing {
+                        Frame(model: model)
+                    } else {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            ForEach(model.data.frames, id: \.self) { frame in
+                                Frame(model: model)
+                            }
+                        }
+                    }
+                }
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarTitle("Frames")
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Text(model.data.isEditing ? "Cancel" : "Edit")
+                            .foregroundColor(model.data.isEditing ? .red : .blue)
+                            .onTapGesture {
+                                withAnimation {
+                                    model.data.isEditing.toggle()
+                                }
+                            }
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Text(model.data.isEditing ? "Save" : "AR")
+                            .foregroundColor(.blue)
+                            .bold()
+                            .onTapGesture {
+                                withAnimation {
+                                    if model.data.isEditing {
+                                        model.data.isEditing.toggle()
+                                    } else {
+                                        model.data.isAugmenting.toggle()
+                                    }
+                                }
+                            }
+                    }
+                    ToolbarItemGroup(placement: .bottomBar) {
+                        Spacer()
+                        HStack(spacing: 30) {
+                            if model.data.isEditing {
+                                Image(systemName: "camera.filters")
+                                    .font(.system(size: 20))
+                                    .foregroundColor(model.data.isFiltering ? .purple : nil)
+                                    .onTapGesture {
+                                        model.data.fromLeft = true
+                                        withAnimation {
+                                            model.toggleAdjust()
+                                            model.data.isFiltering = true
+                                        }
+                                    }
+                                Image(systemName: "cube")
+                                    .font(.system(size: 20))
+                                    .foregroundColor(model.data.isStyling ? .green : nil)
+                                    .onTapGesture {
+                                        withAnimation {
+                                            model.toggleAdjust()
+                                            model.data.isStyling = true
+                                        }
+                                    }
+                                Image(systemName: "selection.pin.in.out")
+                                    .font(.system(size: 20))
+                                    .foregroundColor(model.data.isAdjusting ? .orange : nil)
+                                    .onTapGesture {
+                                        model.data.fromLeft = false
+                                        withAnimation {
+                                            model.toggleAdjust()
+                                            model.data.isAdjusting = true
+                                        }
+                                    }
+                            } else {
                                 Button(action: {
                                     model.data.isImporting.toggle()
                                 }) {
-                                    Label("Import from Photos", systemImage: "photo")
+                                    Text("Import")
                                 }
                                 Button(action: {
                                     UIApplication.shared.windows.filter({$0.isKeyWindow})
                                         .first?.rootViewController?
                                         .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
                                 }) {
-                                    Label("Scan with Camera", systemImage: "viewfinder")
+                                    Text("Scan")
                                 }
-                            } label: {
-                                Image(systemName: "camera")
                             }
                         }
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button(action: {
-                                withAnimation {
-                                    model.data.isAugmenting.toggle()
-                                }
-                            }) {
-                                Text("AR")
-                            }
-                        }
-                        ToolbarItemGroup(placement: .bottomBar) {
-                            if !model.data.isSwitching {
-                                Image(systemName: "sparkles.rectangle.stack")
-                                    .font(.system(size: 20))
-                                    .onTapGesture {
-                                        model.data.welcome.toggle()
-                                    }
-                                Spacer()
-                                HStack(spacing: 30) {
-                                    Image(systemName: "camera.filters")
-                                        .font(.system(size: 20))
-                                        .foregroundColor(model.data.isFiltering ? .purple : nil)
-                                        .onTapGesture {
-                                            model.data.fromLeft = true
-                                            withAnimation {
-                                                model.toggleAdjust()
-                                                model.data.isFiltering = true
-                                            }
-                                        }
-                                    Image(systemName: "cube")
-                                        .font(.system(size: 20))
-                                        .foregroundColor(model.data.isStyling ? .green : nil)
-                                        .onTapGesture {
-                                            withAnimation {
-                                                model.toggleAdjust()
-                                                model.data.isStyling = true
-                                            }
-                                        }
-                                    Image(systemName: "selection.pin.in.out")
-                                        .font(.system(size: 20))
-                                        .foregroundColor(model.data.isAdjusting ? .orange : nil)
-                                        .onTapGesture {
-                                            model.data.fromLeft = false
-                                            withAnimation {
-                                                model.toggleAdjust()
-                                                model.data.isAdjusting = true
-                                            }
-                                        }
-                                }
-                                Spacer()
-                                Image(systemName: "square.on.square")
-                                    .font(.system(size: 20))
-                                    .onTapGesture {
-                                        withAnimation {
-                                            model.data.isSwitching.toggle()
-                                        }
-                                    }
-                            }
-                        }
+                        Spacer()
                     }
+                }
             }
             if model.data.isAugmenting {
                 NavigationView {

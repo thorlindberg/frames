@@ -82,6 +82,7 @@ struct Welcome: View {
                     }
                 }
                 Button(action: {
+                    UserDefaults.standard.set(true, forKey: "hasLaunched")
                     model.data.welcome.toggle()
                 }) {
                     HStack {

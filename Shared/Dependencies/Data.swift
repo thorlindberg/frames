@@ -12,8 +12,8 @@ final class Data: NSObject, ObservableObject {
     struct Format: Hashable {
         var welcome: Bool
         var isNavigating: Bool
+        var isEditing: Bool
         var isImporting: Bool
-        var isSwitching: Bool
         var isAugmenting: Bool
         var isAugmented: Bool
         var isFlashlight: Bool
@@ -41,8 +41,8 @@ final class Data: NSObject, ObservableObject {
     }
     
     @Published var data: Format = Format(
-        welcome: !UserDefaults.standard.bool(forKey: "hasLaunched"), isNavigating: false,
-        isImporting: false, isSwitching: false, isAugmenting: false, isAugmented: false, isFlashlight: false,
+        welcome: !UserDefaults.standard.bool(forKey: "hasLaunched"), isNavigating: false, isEditing: false,
+        isImporting: false, isAugmenting: false, isAugmented: false, isFlashlight: false,
         isFiltering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [Frame(

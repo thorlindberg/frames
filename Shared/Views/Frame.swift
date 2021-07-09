@@ -8,56 +8,12 @@ struct Frame: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            if model.data.isSwitching {
-                ScrollView() {
-                    LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 2)) {
-                        ForEach((0...model.data.frames.count-1), id: \.self) { index in
-                            Image(uiImage: model.data.frames[index].transform)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .contextMenu {
-                                    Button(action: {
-                                        UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                            .first?
-                                            .rootViewController?
-                                            .present(UIActivityViewController(activityItems: [model.data.frames[index].transform], applicationActivities: nil), animated: true)
-                                    }) {
-                                        Label("Share", systemImage: "square.and.arrow.up")
-                                    }
-                                    if model.data.frames.count > 1 {
-                                        Button(action: {
-                                            withAnimation {
-                                                model.removeImage(index: index)
-                                                if model.data.frames.count == 1 {
-                                                    model.data.selected = 0
-                                                    model.toggleAdjust()
-                                                    model.data.isStyling = true
-                                                }
-                                            }
-                                        }) {
-                                            Label("Delete", systemImage: "delete.left")
-                                        }
-                                    }
-                                }
-                                .matchedGeometryEffect(id: String(index), in: animation)
-                                .onTapGesture {
-                                    model.data.selected = index
-                                    withAnimation {
-                                        model.toggleAdjust()
-                                        model.data.isStyling = true
-                                        model.data.isSwitching.toggle()
-                                    }
-                                }
-                        }
-                    }
-                    .padding(30)
-                }
-            } else if model.data.frames[model.data.selected].transform != model.data.frames[model.data.selected].image {
+            if model.data.frames[model.data.selected].transform != model.data.frames[model.data.selected].image {
                 Spacer()
                 Image(uiImage: model.data.frames[model.data.selected].transform)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .padding(30)
+                    .padding(model.data.isEditing ? 28 : 56)
                     .contextMenu {
                         Button(action: {
                             UIApplication.shared.windows.filter({$0.isKeyWindow})
@@ -77,7 +33,9 @@ struct Frame: View {
                     }
                     .matchedGeometryEffect(id: String(model.data.selected), in: animation)
                 Spacer()
-                Adjustment(model: model)
+                if model.data.isEditing {
+                    Adjustment(model: model)
+                }
             }
         }
         .onAppear {
