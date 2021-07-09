@@ -5,133 +5,84 @@ struct Window: View {
     @ObservedObject var model: Data
     
     var body: some View {
-        ZStack {
-            NavigationView {
-                ZStack {
-                    if model.data.isEditing {
-                        Frame(model: model)
-                    } else {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            ForEach(model.data.frames, id: \.self) { frame in
-                                Frame(model: model)
-                            }
-                        }
-                    }
-                }
+        NavigationView {
+            Frame(model: model)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarTitle("Frames")
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Text(model.data.isEditing ? "Cancel" : "Edit")
-                            .foregroundColor(model.data.isEditing ? .red : .blue)
-                            .onTapGesture {
-                                withAnimation {
-                                    model.data.isEditing.toggle()
-                                }
+                        Menu {
+                            Button(action: {
+                                model.data.isImporting.toggle()
+                            }) {
+                                Label("Import from Photos", systemImage: "photo")
                             }
+                            Button(action: {
+                                UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                    .first?.rootViewController?
+                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                            }) {
+                                Label("Scan with Camera", systemImage: "viewfinder")
+                            }
+                        } label: {
+                            Image(systemName: "camera")
+                        }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Text(model.data.isEditing ? "Save" : "AR")
-                            .foregroundColor(.blue)
-                            .bold()
-                            .onTapGesture {
-                                withAnimation {
-                                    if model.data.isEditing {
-                                        model.data.isEditing.toggle()
-                                    } else {
-                                        model.data.isAugmenting.toggle()
-                                    }
-                                }
+                        NavigationLink(
+                            destination: Augment(model: model),
+                            isActive: $model.data.isAugmenting,
+                            label: {
+                                Text("AR")
                             }
+                        )
+                        .isDetailLink(false)
                     }
                     ToolbarItemGroup(placement: .bottomBar) {
+                        Image(systemName: "rectangle.stack")
+                            .font(.system(size: 20))
+                            .onTapGesture {
+                                model.data.welcome.toggle()
+                            }
                         Spacer()
                         HStack(spacing: 30) {
-                            if model.data.isEditing {
-                                Image(systemName: "camera.filters")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(model.data.isFiltering ? .purple : nil)
-                                    .onTapGesture {
-                                        model.data.fromLeft = true
-                                        withAnimation {
-                                            model.toggleAdjust()
-                                            model.data.isFiltering = true
-                                        }
+                            Image(systemName: "camera.filters")
+                                .font(.system(size: 20))
+                                .foregroundColor(model.data.isFiltering ? .purple : nil)
+                                .onTapGesture {
+                                    model.data.fromLeft = true
+                                    withAnimation {
+                                        model.toggleAdjust()
+                                        model.data.isFiltering = true
                                     }
-                                Image(systemName: "cube")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(model.data.isStyling ? .green : nil)
-                                    .onTapGesture {
-                                        withAnimation {
-                                            model.toggleAdjust()
-                                            model.data.isStyling = true
-                                        }
-                                    }
-                                Image(systemName: "selection.pin.in.out")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(model.data.isAdjusting ? .orange : nil)
-                                    .onTapGesture {
-                                        model.data.fromLeft = false
-                                        withAnimation {
-                                            model.toggleAdjust()
-                                            model.data.isAdjusting = true
-                                        }
-                                    }
-                            } else {
-                                Button(action: {
-                                    model.data.isImporting.toggle()
-                                }) {
-                                    Text("Import")
                                 }
-                                Button(action: {
-                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                        .first?.rootViewController?
-                                        .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                                }) {
-                                    Text("Scan")
+                            Image(systemName: "cube")
+                                .font(.system(size: 20))
+                                .foregroundColor(model.data.isStyling ? .green : nil)
+                                .onTapGesture {
+                                    withAnimation {
+                                        model.toggleAdjust()
+                                        model.data.isStyling = true
+                                    }
                                 }
-                            }
+                            Image(systemName: "selection.pin.in.out")
+                                .font(.system(size: 20))
+                                .foregroundColor(model.data.isAdjusting ? .orange : nil)
+                                .onTapGesture {
+                                    model.data.fromLeft = false
+                                    withAnimation {
+                                        model.toggleAdjust()
+                                        model.data.isAdjusting = true
+                                    }
+                                }
                         }
                         Spacer()
+                        Image(systemName: "square.on.square") // does nothing right now
+                            .font(.system(size: 20))
                     }
                 }
-            }
-            if model.data.isAugmenting {
-                NavigationView {
-                    Augment(model: model)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .cancellationAction) {
-                                Button(action: {
-                                    withAnimation {
-                                        model.data.isAugmenting.toggle()
-                                    }
-                                }) {
-                                    HStack {
-                                        Image(systemName: "chevron.left")
-                                        Text("Back")
-                                    }
-                                }
-                            }
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button(action: {
-                                    model.data.isFlashlight.toggle()
-                                    toggleTorch(on: model.data.isFlashlight)
-                                }) {
-                                    HStack {
-                                        Text("Flash")
-                                            .if (model.data.isFlashlight) { view in
-                                                view.bold()
-                                            }
-                                        Image(systemName: model.data.isFlashlight ? "bolt.fill" : "bolt.slash")
-                                    }
-                                }
-                            }
-                        }
-                }
-                .transition(.move(edge: .trailing))
-            }
         }
+        .navigationViewStyle(StackNavigationViewStyle()) // disables split view on iPad
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model)
         }

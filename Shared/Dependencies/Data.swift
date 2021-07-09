@@ -12,10 +12,8 @@ final class Data: NSObject, ObservableObject {
     struct Format: Hashable {
         var welcome: Bool
         var isNavigating: Bool
-        var isEditing: Bool
         var isImporting: Bool
         var isAugmenting: Bool
-        var isAugmented: Bool
         var isFlashlight: Bool
         var isFiltering: Bool
         var isStyling: Bool
@@ -41,8 +39,8 @@ final class Data: NSObject, ObservableObject {
     }
     
     @Published var data: Format = Format(
-        welcome: !UserDefaults.standard.bool(forKey: "hasLaunched"), isNavigating: false, isEditing: false,
-        isImporting: false, isAugmenting: false, isAugmented: false, isFlashlight: false,
+        welcome: UserDefaults.standard.bool(forKey: "hasLaunched"), isNavigating: false,
+        isImporting: false, isAugmenting: false, isFlashlight: false,
         isFiltering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [Frame(
@@ -79,11 +77,6 @@ final class Data: NSObject, ObservableObject {
         // create scene and box
         let scene = SCNScene()
         let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
-        
-        /*
-        // set scene background
-        scene.background.contents = data.colorscheme == .dark ? UIColor.black : UIColor.white
-        */
         
         // define materials
         let front = SCNMaterial()

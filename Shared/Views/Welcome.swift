@@ -37,23 +37,6 @@ struct Welcome: View {
                         Spacer()
                     }
                     .padding()
-                    /*
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Image(systemName: "xmark.circle.fill")
-                                .font(.system(size: 30))
-                                .opacity(0.5)
-                                .padding(.top, 4)
-                                .padding(.horizontal, -6)
-                                .onTapGesture {
-                                    UserDefaults.standard.set(true, forKey: "hasLaunched")
-                                    model.data.welcome.toggle()
-                                }
-                        }
-                        Spacer()
-                    }
-                    */
                 }
                 NavigationLink(destination: Premium()) {
                     Label("Unlock premium", systemImage: "dollarsign.circle")

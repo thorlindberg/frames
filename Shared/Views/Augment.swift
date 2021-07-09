@@ -9,9 +9,23 @@ struct Augment: View {
     
     var body: some View {
         ARViewContainer(model: model)
-            .transition(.move(edge: .bottom))
             .ignoresSafeArea()
-            .onAppear { model.data.isAugmented = false }
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        model.data.isFlashlight.toggle()
+                        toggleTorch(on: model.data.isFlashlight)
+                    }) {
+                        HStack {
+                            Text("Flash")
+                                .if (model.data.isFlashlight) { view in
+                                    view.bold()
+                                }
+                            Image(systemName: model.data.isFlashlight ? "bolt.fill" : "bolt.slash")
+                        }
+                    }
+                }
+            }
     }
     
 }
@@ -89,48 +103,42 @@ class ARView: UIViewController, ARSCNViewDelegate {
         
         // source: https://stackoverflow.com/a/51905229/15072454
         
-        if !model.data.isAugmented {
-            
-            guard anchor is ARPlaneAnchor else { return }
+        guard anchor is ARPlaneAnchor else { return }
 
-            // let width = CGFloat(planeAnchor.extent.x)
-            // let height = CGFloat(planeAnchor.extent.z)
-            // if width < model.data.frames[model.data.selected].transform.size.width/1000 || height < model.data.frames[model.data.selected].transform.size.height/1000 { return }
-            
-            let imageHolder = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
-            imageHolder.eulerAngles.x = -.pi/2
-            
-            // define materials
-            let front = SCNMaterial()
-            front.diffuse.contents = model.data.frames[model.data.selected].transform
-            
-            let frame = SCNMaterial()
-            switch model.data.frames[model.data.selected].material {
-                case "Black": frame.diffuse.contents = UIColor.black
-                case "Oak": frame.diffuse.contents = UIImage(named: "material_oak")
-                case "Steel": frame.diffuse.contents = UIImage(named: "material_steel")
-                case "Marble": frame.diffuse.contents = UIImage(named: "material_marble")
-                default: frame.diffuse.contents = UIColor.white
-            }
-            frame.diffuse.wrapT = SCNWrapMode.repeat
-            frame.diffuse.wrapS = SCNWrapMode.repeat
-            
-            // add materials to sides
-            imageHolder.geometry?.materials = [front, frame, frame, frame, frame, frame]
-            
-            // frame size
-            imageHolder.scale = SCNVector3(
-                Float(model.data.frames[model.data.selected].width/100),
-                Float(model.data.frames[model.data.selected].height/100),
-                1
-            )
-            
-            // add frame to scene
-            node.addChildNode(imageHolder)
-
-            withAnimation { model.data.isAugmented = true }
-            
+        // let width = CGFloat(planeAnchor.extent.x)
+        // let height = CGFloat(planeAnchor.extent.z)
+        // if width < model.data.frames[model.data.selected].transform.size.width/1000 || height < model.data.frames[model.data.selected].transform.size.height/1000 { return }
+        
+        let imageHolder = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
+        imageHolder.eulerAngles.x = -.pi/2
+        
+        // define materials
+        let front = SCNMaterial()
+        front.diffuse.contents = model.data.frames[model.data.selected].transform
+        
+        let frame = SCNMaterial()
+        switch model.data.frames[model.data.selected].material {
+            case "Black": frame.diffuse.contents = UIColor.black
+            case "Oak": frame.diffuse.contents = UIImage(named: "material_oak")
+            case "Steel": frame.diffuse.contents = UIImage(named: "material_steel")
+            case "Marble": frame.diffuse.contents = UIImage(named: "material_marble")
+            default: frame.diffuse.contents = UIColor.white
         }
+        frame.diffuse.wrapT = SCNWrapMode.repeat
+        frame.diffuse.wrapS = SCNWrapMode.repeat
+        
+        // add materials to sides
+        imageHolder.geometry?.materials = [front, frame, frame, frame, frame, frame]
+        
+        // frame size
+        imageHolder.scale = SCNVector3(
+            Float(model.data.frames[model.data.selected].width/100),
+            Float(model.data.frames[model.data.selected].height/100),
+            1
+        )
+        
+        // add frame to scene
+        node.addChildNode(imageHolder)
 
     }
     

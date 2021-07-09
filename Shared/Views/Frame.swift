@@ -4,7 +4,6 @@ import SceneKit
 struct Frame: View {
     
     @ObservedObject var model: Data
-    @Namespace private var animation
     
     var body: some View {
         VStack(spacing: 0) {
@@ -13,7 +12,7 @@ struct Frame: View {
                 Image(uiImage: model.data.frames[model.data.selected].transform)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .padding(model.data.isEditing ? 28 : 56)
+                    .padding(28)
                     .contextMenu {
                         Button(action: {
                             UIApplication.shared.windows.filter({$0.isKeyWindow})
@@ -31,11 +30,9 @@ struct Frame: View {
                             }
                         }
                     }
-                    .matchedGeometryEffect(id: String(model.data.selected), in: animation)
                 Spacer()
-                if model.data.isEditing {
-                    Adjustment(model: model)
-                }
+                Adjustment(model: model)
+                    .padding(.bottom)
             }
         }
         .onAppear {
@@ -51,43 +48,29 @@ struct Filter: View {
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack {
-                ForEach(model.filters, id: \.self) { filter in
-                    ZStack {
-                        Capsule()
-                            .foregroundColor(filter == model.data.frames[model.data.selected].filter ? .purple : .accentColor)
-                            .opacity(filter == model.data.frames[model.data.selected].filter ? 1 : colorscheme == .dark ? 0.1 : 0.05)
-                            .frame(height: 30)
-                        Text(filter)
-                            .if (filter == model.data.frames[model.data.selected].filter) { view in
-                                view.colorInvert()
-                            }
-                            .fixedSize(horizontal: true, vertical: false)
-                            .padding()
-                    }
-                    .onTapGesture {
-                        model.data.frames[model.data.selected].filter = filter
-                        withAnimation {
-                            model.transformImage()
+        HStack {
+            ForEach(model.filters, id: \.self) { filter in
+                ZStack {
+                    Capsule()
+                        .foregroundColor(filter == model.data.frames[model.data.selected].filter ? .purple : .accentColor)
+                        .opacity(filter == model.data.frames[model.data.selected].filter ? 1 : colorscheme == .dark ? 0.1 : 0.05)
+                        .frame(height: 30)
+                    Text(filter)
+                        .if (filter == model.data.frames[model.data.selected].filter) { view in
+                            view.colorInvert()
                         }
+                        .fixedSize(horizontal: true, vertical: false)
+                        .padding()
+                }
+                .onTapGesture {
+                    model.data.frames[model.data.selected].filter = filter
+                    withAnimation {
+                        model.transformImage()
                     }
-                    /*
-                    Button(action: {
-                        model.data.frames[model.data.selected].filter = filter
-                        withAnimation {
-                            model.transformImage()
-                        }
-                    }) {
-                        Text(filter)
-                            .padding(.horizontal, 5)
-                    }
-                    .buttonStyle(BorderedButtonStyle(tint: model.data.frames[model.data.selected].filter == filter ? .purple : .accentColor))
-                    */
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
     }
     
 }
@@ -98,47 +81,29 @@ struct Style: View {
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack {
-                ForEach(model.materials, id: \.self) { material in
-                    ZStack {
-                        Capsule()
-                            .foregroundColor(material == model.data.frames[model.data.selected].material ? .green : .accentColor)
-                            .opacity(material == model.data.frames[model.data.selected].material ? 1 : colorscheme == .dark ? 0.1 : 0.05)
-                            .frame(height: 30)
-                        Text(material)
-                            .if (material == model.data.frames[model.data.selected].material) { view in
-                                view.colorInvert()
-                            }
-                            .fixedSize(horizontal: true, vertical: false)
-                            .padding()
-                    }
-                    .onTapGesture {
-                        model.data.frames[model.data.selected].material = material
-                        withAnimation {
-                            model.transformImage()
+        HStack {
+            ForEach(model.materials, id: \.self) { material in
+                ZStack {
+                    Capsule()
+                        .foregroundColor(material == model.data.frames[model.data.selected].material ? .green : .accentColor)
+                        .opacity(material == model.data.frames[model.data.selected].material ? 1 : colorscheme == .dark ? 0.1 : 0.05)
+                        .frame(height: 30)
+                    Text(material)
+                        .if (material == model.data.frames[model.data.selected].material) { view in
+                            view.colorInvert()
                         }
+                        .fixedSize(horizontal: true, vertical: false)
+                        .padding()
+                }
+                .onTapGesture {
+                    model.data.frames[model.data.selected].material = material
+                    withAnimation {
+                        model.transformImage()
                     }
-                    /*
-                    Button(action: {
-                        model.data.frames[model.data.selected].material = material
-                        withAnimation {
-                            model.transformImage()
-                        }
-                    }) {
-                        ZStack {
-                            Text(material)
-                                .padding(.horizontal, 5)
-                            Capsule()
-                                .foregroundColor(material == model.data.frames[model.data.selected].material ? .green : .accentColor)
-                        }
-                    }
-                    .buttonStyle(BorderedButtonStyle(tint: material == model.data.frames[model.data.selected].material ? .green : .accentColor))
-                    */
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
     }
     
 }
@@ -149,45 +114,30 @@ struct Ratio: View {
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack {
-                ForEach(model.sizes, id: \.self) { size in
-                    ZStack {
-                        Capsule()
-                            .foregroundColor(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .orange : .accentColor)
-                            .opacity(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? 1 : colorscheme == .dark ? 0.1 : 0.05)
-                            .frame(height: 30)
-                        Text("\(Int(size.width))x\(Int(size.height)) cm")
-                            .if (size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height) { view in
-                                view.colorInvert()
-                            }
-                            .fixedSize(horizontal: true, vertical: false)
-                            .padding()
-                    }
-                    .onTapGesture {
-                        model.data.frames[model.data.selected].width = size.width
-                        model.data.frames[model.data.selected].height = size.height
-                        withAnimation {
-                            model.transformImage()
+        HStack {
+            ForEach(model.sizes, id: \.self) { size in
+                ZStack {
+                    Capsule()
+                        .foregroundColor(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .orange : .accentColor)
+                        .opacity(size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? 1 : colorscheme == .dark ? 0.1 : 0.05)
+                        .frame(height: 30)
+                    Text("\(Int(size.width))x\(Int(size.height)) cm")
+                        .if (size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height) { view in
+                            view.colorInvert()
                         }
+                        .fixedSize(horizontal: true, vertical: false)
+                        .padding()
+                }
+                .onTapGesture {
+                    model.data.frames[model.data.selected].width = size.width
+                    model.data.frames[model.data.selected].height = size.height
+                    withAnimation {
+                        model.transformImage()
                     }
-                    /*
-                    Button(action: {
-                        model.data.frames[model.data.selected].width = size.width
-                        model.data.frames[model.data.selected].height = size.height
-                        withAnimation {
-                            model.transformImage()
-                        }
-                    }) {
-                        Text("\(Int(size.width))x\(Int(size.height)) cm")
-                            .padding(.horizontal, 5)
-                    }
-                    .buttonStyle(BorderedButtonStyle(tint: size.width == model.data.frames[model.data.selected].width && size.height == model.data.frames[model.data.selected].height ? .orange : .accentColor))
-                    */
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
     }
     
 }
@@ -197,7 +147,7 @@ struct Adjustment: View {
     @ObservedObject var model: Data
     
     var body: some View {
-        ZStack {
+        ScrollView(.horizontal, showsIndicators: false) {
             if model.data.isFiltering {
                 Filter(model: model)
                     .transition(.move(edge: .leading).combined(with: .opacity))
@@ -211,7 +161,6 @@ struct Adjustment: View {
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
-        .padding(.bottom)
     }
 }
 
