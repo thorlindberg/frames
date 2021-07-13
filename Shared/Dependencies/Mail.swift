@@ -26,7 +26,7 @@ extension EmailHelper {
             let bodyEncoded = body.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
             let mails = to.joined(separator: ",")
             
-            let alert = UIAlertController(title: "Cannot open Mail!", message: "", preferredStyle: .actionSheet)
+            let alert = UIAlertController(title: "Can't send feedback", message: "", preferredStyle: .actionSheet)
             
             var haveExternalMailbox = false
             
@@ -49,7 +49,7 @@ extension EmailHelper {
             if haveExternalMailbox {
                 alert.message = "Would you like to open an external mailbox?"
             } else {
-                alert.message = "Please add your mail to Settings before using the mail service."
+                alert.message = "Add a mail account to send feedback"
                 
                 if let settingsUrl = URL(string: UIApplication.openSettingsURLString),
                    UIApplication.shared.canOpenURL(settingsUrl) {
@@ -59,7 +59,7 @@ extension EmailHelper {
                 }
             }
             
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            alert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
             viewController.present(alert, animated: true, completion: nil)
             return
         }

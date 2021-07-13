@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:../Shared/Persistence.swift">
+   </FileRef>
+   <FileRef
+      location = "group:../Shared/Window.swift">
+   </FileRef>
+   <FileRef
       location = "self:">
    </FileRef>
 </Workspace>

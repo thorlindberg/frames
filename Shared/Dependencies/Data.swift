@@ -11,8 +11,9 @@ final class Data: NSObject, ObservableObject {
     
     struct Format: Hashable {
         var welcome: Bool
-        var isNavigating: Bool
+        var guide: String
         var isImporting: Bool
+        var isEditing: Bool
         var isAugmenting: Bool
         var isFlashlight: Bool
         var isFiltering: Bool
@@ -21,13 +22,13 @@ final class Data: NSObject, ObservableObject {
         var fromLeft: Bool
         var selected: Int
         var frames: [Frame]
+        var feedback: Contact
     }
     
     struct Frame: Hashable {
         var image: UIImage
         var transform: UIImage
-        var width: CGFloat
-        var height: CGFloat
+        var size: Size
         var border: CGFloat
         var filter: String
         var material: String
@@ -38,20 +39,49 @@ final class Data: NSObject, ObservableObject {
         var height: CGFloat
     }
     
+    struct Contact: Hashable {
+        var category: String
+        var issue: String
+        var description: String
+        var email: String
+        var focus: String
+        var invalid: Bool
+        var success: Bool
+    }
+    
     @Published var data: Format = Format(
-        welcome: UserDefaults.standard.bool(forKey: "hasLaunched"), isNavigating: false,
-        isImporting: false, isAugmenting: false, isFlashlight: false,
+        welcome: !UserDefaults.standard.bool(forKey: "v1.0"), guide: "",
+        isImporting: false, isEditing: false, isAugmenting: false, isFlashlight: false,
         isFiltering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [Frame(
             image: UIImage(imageLiteralResourceName: "sample"),
             transform: UIImage(imageLiteralResourceName: "sample"),
-            width: 60, height: 90, border: 0.05, filter: "None", material: "Oak"
-        )]
+            size: Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak"
+        )],
+        feedback: Contact(
+            category: "",
+            issue: "",
+            description: "",
+            email: "",
+            focus: "",
+            invalid: false,
+            success: false
+        )
     )
     
-    let filters: [String] = ["None", "Noir", "Mono", "Invert"]
-    let materials: [String] = ["Oak", "Steel", "Marble", "Orange", "Green"]
+    let feedbackreset = Contact(
+        category: "",
+        issue: "",
+        description: "",
+        email: "",
+        focus: "",
+        invalid: false,
+        success: false
+    )
+    
+    let filters: [String] = ["None", "Noir", "Monotone", "Invert colors"]
+    let materials: [String] = ["Oak wood", "Polished steel", "Gray marble"]
     
     let sizes: [Size] = [
         Size(width: 60, height: 90),
@@ -100,8 +130,8 @@ final class Data: NSObject, ObservableObject {
         
         // frame size
         node.scale = SCNVector3(
-            Float(data.frames[data.selected].width/100),
-            Float(data.frames[data.selected].height/100),
+            Float(data.frames[data.selected].size.width/100),
+            Float(data.frames[data.selected].size.height/100),
             1
         )
         
@@ -125,7 +155,7 @@ final class Data: NSObject, ObservableObject {
         data.frames.insert(
             Frame(
                 image: image, transform: image,
-                width: 60, height: 90,  border: 0.05,
+                size: Size(width: 60, height: 90), border: 0.05,
                 filter: "None", material: "Oak"
             ),
             at: 0
@@ -179,7 +209,7 @@ final class Data: NSObject, ObservableObject {
         // set frame size
         let canvas = CGSize(
             width: image.size.width,
-            height: image.size.width*(data.frames[data.selected].height/data.frames[data.selected].width)
+            height: image.size.width*(data.frames[data.selected].size.height/data.frames[data.selected].size.width)
         )
         
         // set image size
@@ -286,18 +316,14 @@ struct ImagePicker: UIViewControllerRepresentable {
             if let uiImage = info[.originalImage] as? UIImage {
                 parent.model.addImage(image: uiImage)
             }
-            parent.presentationMode.wrappedValue.dismiss()
+            if parent.model.data.welcome {
+                withAnimation {
+                    parent.model.data.guide = ""
+                }
+            } else {
+                parent.presentationMode.wrappedValue.dismiss()
+            }
         }
     }
     
-}
-
-struct Data_Previews: PreviewProvider {
-    static var previews: some View {
-        ForEach(ColorScheme.allCases, id: \.self) {
-             Window(model: Data())
-                .preferredColorScheme($0)
-        }
-        .previewDevice("iPhone 12 mini")
-    }
 }

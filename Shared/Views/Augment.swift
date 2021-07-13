@@ -8,24 +8,36 @@ struct Augment: View {
     @ObservedObject var model: Data
     
     var body: some View {
-        ARViewContainer(model: model)
-            .ignoresSafeArea()
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
-                        model.data.isFlashlight.toggle()
-                        toggleTorch(on: model.data.isFlashlight)
-                    }) {
-                        HStack {
-                            Text("Flash")
-                                .if (model.data.isFlashlight) { view in
-                                    view.bold()
-                                }
-                            Image(systemName: model.data.isFlashlight ? "bolt.fill" : "bolt.slash")
+        NavigationView {
+            ARViewContainer(model: model)
+                .ignoresSafeArea()
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(action: {
+                            model.data.isFlashlight = false
+                            model.data.isAugmenting.toggle()
+                        }) {
+                            Text("Close")
+                        }
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(action: {
+                            model.data.isFlashlight.toggle()
+                            toggleTorch(on: model.data.isFlashlight)
+                        }) {
+                            HStack {
+                                Text("Flash")
+                                    .if (model.data.isFlashlight) { view in
+                                        view.bold()
+                                    }
+                                Image(systemName: model.data.isFlashlight ? "bolt.fill" : "bolt.slash")
+                            }
                         }
                     }
                 }
-            }
+                .navigationBarTitleDisplayMode(.inline)
+        }
+        .navigationViewStyle(StackNavigationViewStyle()) // disables split view on iPad
     }
     
 }
@@ -132,8 +144,8 @@ class ARView: UIViewController, ARSCNViewDelegate {
         
         // frame size
         imageHolder.scale = SCNVector3(
-            Float(model.data.frames[model.data.selected].width/100),
-            Float(model.data.frames[model.data.selected].height/100),
+            Float(model.data.frames[model.data.selected].size.width/100),
+            Float(model.data.frames[model.data.selected].size.height/100),
             1
         )
         
@@ -177,7 +189,7 @@ extension ARView: ARCoachingOverlayViewDelegate {
 struct Augment_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-             Window(model: Data())
+            Window(model: Data())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")
