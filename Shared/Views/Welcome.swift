@@ -67,7 +67,6 @@ struct Welcome: View {
                     HStack {
                         Spacer()
                         Text(!UserDefaults.standard.bool(forKey: "v1.0") ? "Get started" : "Close")
-                            .foregroundColor(.blue)
                         Spacer()
                     }
                 }
@@ -186,7 +185,7 @@ struct Contact: View {
                                         .opacity(0.3)
                                 } else {
                                     Text("Done")
-                                        .foregroundColor(.blue)
+                                        .foregroundColor(.accentColor)
                                         .bold()
                                         .onTapGesture {
                                             UIApplication.shared.endEditing()
@@ -230,7 +229,7 @@ struct Contact: View {
                                         .opacity(0.3)
                                 } else {
                                     Text("Done")
-                                        .foregroundColor(.blue)
+                                        .foregroundColor(.accentColor)
                                         .bold()
                                         .onTapGesture {
                                             UIApplication.shared.endEditing()
@@ -256,7 +255,6 @@ struct Contact: View {
                                     HStack {
                                         Spacer()
                                         Text("Request refund")
-                                            .foregroundColor(.blue)
                                         Spacer()
                                     }
                                 }
@@ -288,7 +286,6 @@ struct Contact: View {
                                     HStack {
                                         Spacer()
                                         Text("Send feedback")
-                                            .foregroundColor(.blue)
                                         Spacer()
                                     }
                                 }

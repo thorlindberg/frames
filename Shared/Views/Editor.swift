@@ -62,34 +62,41 @@ struct Editor: View {
                     if model.data.isEditing {
                         List {
                             Section {
+                                Button(action: {
+                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                        .first?
+                                        .rootViewController?
+                                        .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].transform], applicationActivities: nil), animated: true)
+                                }) {
+                                    HStack {
+                                        Text("Share")
+                                        Spacer()
+                                        Image(systemName: "square.and.arrow.up")
+                                    }
+                                }
+                            }
+                            Section {
                                 HStack {
-                                    Text("Size")
+                                    Text("Filters")
                                     Spacer()
-                                    Image(systemName: "selection.pin.in.out")
+                                    Image(systemName: "camera.filters")
                                 }
                                 .opacity(0.3)
-                                Stepper(
-                                    "Width: \(Int(model.data.frames[model.data.selected].size.width))",
-                                    value: Binding(
-                                        get: { model.data.frames[model.data.selected].size.width },
-                                        set: {
-                                            model.data.frames[model.data.selected].size.width = $0
-                                            model.transformImage()
-                                        }
-                                    ),
-                                    in: 10...200
-                                )
-                                Stepper(
-                                    "Height: \(Int(model.data.frames[model.data.selected].size.height))",
-                                    value: Binding(
-                                        get: { model.data.frames[model.data.selected].size.height },
-                                        set: {
-                                            model.data.frames[model.data.selected].size.height = $0
-                                            model.transformImage()
-                                        }
-                                    ),
-                                    in: 10...200
-                                )
+                                LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
+                                    ForEach(model.filters, id: \.self) { filter in
+                                        Image(uiImage: model.filterImage(filter: filter))
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .onTapGesture {
+                                                model.data.frames[model.data.selected].filter = filter
+                                                model.transformImage()
+                                            }
+                                            .if (model.data.frames[model.data.selected].filter == filter) { view in
+                                                view.border(Color.accentColor, width: 4)
+                                            }
+                                    }
+                                }
+                                .padding(.vertical, 10)
                             }
                             Section {
                                 HStack {
@@ -129,40 +136,35 @@ struct Editor: View {
                             }
                             Section {
                                 HStack {
-                                    Text("Filters")
+                                    Text("Size")
                                     Spacer()
-                                    Image(systemName: "camera.filters")
+                                    Image(systemName: "selection.pin.in.out")
                                 }
                                 .opacity(0.3)
-                                LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
-                                    ForEach(model.filters, id: \.self) { filter in
-                                        Image(uiImage: model.filterImage(filter: filter))
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .onTapGesture {
-                                                model.data.frames[model.data.selected].filter = filter
-                                                model.transformImage()
-                                            }
-                                            .if (model.data.frames[model.data.selected].filter == filter) { view in
-                                                view.border(Color.accentColor, width: 4)
-                                            }
-                                    }
-                                }
-                                .padding(.vertical, 10)
+                                Stepper(
+                                    "Width: \(Int(model.data.frames[model.data.selected].size.width))",
+                                    value: Binding(
+                                        get: { model.data.frames[model.data.selected].size.width },
+                                        set: {
+                                            model.data.frames[model.data.selected].size.width = $0
+                                            model.transformImage()
+                                        }
+                                    ),
+                                    in: 10...200
+                                )
+                                Stepper(
+                                    "Height: \(Int(model.data.frames[model.data.selected].size.height))",
+                                    value: Binding(
+                                        get: { model.data.frames[model.data.selected].size.height },
+                                        set: {
+                                            model.data.frames[model.data.selected].size.height = $0
+                                            model.transformImage()
+                                        }
+                                    ),
+                                    in: 10...200
+                                )
                             }
                             Section {
-                                Button(action: {
-                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                        .first?
-                                        .rootViewController?
-                                        .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].transform], applicationActivities: nil), animated: true)
-                                }) {
-                                    HStack {
-                                        Text("Share")
-                                        Spacer()
-                                        Image(systemName: "square.and.arrow.up")
-                                    }
-                                }
                                 Button(action: {
                                     withAnimation {
                                         model.data.isEditing.toggle()

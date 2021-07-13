@@ -19,7 +19,9 @@ struct Window: View {
                     ToolbarItem(placement: .principal) {
                         Button(action: {
                             model.data.welcome.toggle()
-                            model.data.isEditing = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                model.data.isEditing = false
+                            }
                         }) {
                             Text("Augmented Frames")
                                 .bold()
