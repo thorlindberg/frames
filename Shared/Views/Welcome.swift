@@ -77,14 +77,14 @@ struct Welcome: View {
             .navigationBarHidden(true)
         }
         .onAppear {
-            model.toggleAdjust()
-            model.data.isStyling = true
-            frames = model.data.frames
-            model.data.frames = [Data.Frame(
-                image: UIImage(imageLiteralResourceName: "sample"),
-                transform: UIImage(imageLiteralResourceName: "sample"),
-                size: Data.Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak"
-            )]
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                frames = model.data.frames
+                model.data.frames = [Data.Frame(
+                    image: UIImage(imageLiteralResourceName: "sample"),
+                    transform: UIImage(imageLiteralResourceName: "sample"),
+                    size: Data.Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak"
+                )]
+            }
         }
     }
     
@@ -365,6 +365,7 @@ struct First: View {
                             }
                             Spacer()
                             Text("AR")
+                                .foregroundColor(.accentColor)
                                 .bold()
                                 .opacity(0.2)
                             
@@ -453,8 +454,10 @@ struct Second: View {
                 ZStack {
                     HStack {
                         Image(systemName: "camera.fill")
+                            .foregroundColor(.accentColor)
                         Spacer()
                         Text("AR")
+                            .foregroundColor(.accentColor)
                             .bold()
                     }
                     HStack {
@@ -497,9 +500,11 @@ struct Third: View {
                     ZStack {
                         HStack {
                             Image(systemName: "camera.fill")
+                                .foregroundColor(.accentColor)
                                 .opacity(0.2)
                             Spacer()
                             Text("AR")
+                                .foregroundColor(.accentColor)
                                 .bold()
                                 .onTapGesture {
                                     withAnimation {

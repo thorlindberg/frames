@@ -3,6 +3,7 @@ import SwiftUI
 struct Editor: View {
     
     @ObservedObject var model: Data
+    @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
         if !model.data.frames.isEmpty {
@@ -12,19 +13,22 @@ struct Editor: View {
                         VStack {
                             Spacer()
                             HStack(spacing: 0) {
-                                ForEach(model.data.frames.indices, id: \.self) { index in
+                                ForEach(model.data.isEditing ? model.data.frames.indices.filter({$0 == model.data.selected}) : Array(model.data.frames.indices), id: \.self) { index in
                                     Image(uiImage: model.data.frames[index].transform)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
-                                        .padding(.leading, 28)
+                                        .padding(.horizontal, 28)
                                         .padding(.vertical, model.data.isEditing ? nil : 28)
-                                        .frame(width: geometry.size.width - 28)
+                                        .frame(width: geometry.size.width)
                                         .onTapGesture {
-                                            withAnimation {
-                                                model.data.selected = index
-                                                model.data.isEditing.toggle()
+                                            if !model.data.welcome {
+                                                withAnimation {
+                                                    model.data.selected = index
+                                                    model.data.isEditing.toggle()
+                                                }
                                             }
                                         }
+                                        .transition(index < model.data.selected ? .move(edge: .leading).combined(with: .opacity) : .move(edge: .trailing).combined(with: .opacity))
                                 }
                             }
                             Spacer()
@@ -32,20 +36,34 @@ struct Editor: View {
                     }
                     .disabled(model.data.isEditing)
                     .onTapGesture {
-                        if model.data.isEditing {
+                        if model.data.isEditing && !model.data.welcome {
                             withAnimation {
                                 model.data.isEditing.toggle()
                             }
                         }
                     }
                 }
-                if model.data.isEditing {
-                    VStack(spacing: 0) {
-                        Divider()
+                .frame(height: model.data.isEditing ? 200 : nil)
+                VStack(spacing: 0) {
+                    Divider()
+                    /*
+                    HStack {
+                        Spacer()
+                        Capsule()
+                            .foregroundColor(colorscheme == .dark ? Color.white : Color.black)
+                            .frame(width: 60, height: 8)
+                            .padding(.vertical, 10)
+                            .opacity(0.2)
+                        Spacer()
+                    }
+                    .background(colorscheme == .dark ? Color.black : Color(red: 0, green: 0, blue: 0, opacity: 0.05))
+                    Divider()
+                    */
+                    if model.data.isEditing {
                         List {
                             Section {
                                 HStack {
-                                    Text("Frame size")
+                                    Text("Size")
                                     Spacer()
                                     Image(systemName: "selection.pin.in.out")
                                 }
@@ -72,35 +90,10 @@ struct Editor: View {
                                     ),
                                     in: 10...200
                                 )
-                                /*
-                                Picker(
-                                    selection: Binding(
-                                        get: { model.data.frames[model.data.selected].size },
-                                        set: {
-                                            model.data.frames[model.data.selected].size = $0
-                                            withAnimation {
-                                                model.transformImage()
-                                            }
-                                        }
-                                    ),
-                                    label: HStack {
-                                        Text("Frame sizes")
-                                        Spacer()
-                                        Image(systemName: "selection.pin.in.out")
-                                    }
-                                    .opacity(0.3)
-                                ) {
-                                    ForEach(model.sizes, id: \.self) { size in
-                                        Text("\(Int(size.width))x\(Int(size.height)) cm")
-                                            .tag(size)
-                                    }
-                                }
-                                .pickerStyle(InlinePickerStyle())
-                                */
                             }
                             Section {
                                 HStack {
-                                    Text("Frame material")
+                                    Text("Materials")
                                     Spacer()
                                     Image(systemName: "cube")
                                 }
@@ -133,33 +126,10 @@ struct Editor: View {
                                     }
                                 }
                                 .padding(.vertical, 10)
-                                /*
-                                Picker(
-                                    selection: Binding(
-                                        get: { model.data.frames[model.data.selected].material },
-                                        set: {
-                                            model.data.frames[model.data.selected].material = $0
-                                            model.transformImage()
-                                        }
-                                    ),
-                                    label: HStack {
-                                        Text("Frame material")
-                                        Spacer()
-                                        Image(systemName: "cube")
-                                    }
-                                    .opacity(0.3)
-                                ) {
-                                    ForEach(model.materials, id: \.self) { material in
-                                        Text(material)
-                                            .tag(material)
-                                    }
-                                }
-                                .pickerStyle(InlinePickerStyle())
-                                */
                             }
                             Section {
                                 HStack {
-                                    Text("Photo filter")
+                                    Text("Filters")
                                     Spacer()
                                     Image(systemName: "camera.filters")
                                 }
@@ -179,35 +149,41 @@ struct Editor: View {
                                     }
                                 }
                                 .padding(.vertical, 10)
-                                /*
-                                Picker(
-                                    selection: Binding(
-                                        get: { model.data.frames[model.data.selected].filter },
-                                        set: {
-                                            model.data.frames[model.data.selected].filter = $0
-                                            model.transformImage()
-                                        }
-                                    ),
-                                    label: HStack {
-                                        Text("Photo filters")
+                            }
+                            Section {
+                                Button(action: {
+                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                        .first?
+                                        .rootViewController?
+                                        .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].transform], applicationActivities: nil), animated: true)
+                                }) {
+                                    HStack {
+                                        Text("Share")
                                         Spacer()
-                                        Image(systemName: "camera.filters")
-                                    }
-                                    .opacity(0.3)
-                                ) {
-                                    ForEach(model.filters, id: \.self) { filter in
-                                        Text(filter)
-                                            .tag(filter)
+                                        Image(systemName: "square.and.arrow.up")
                                     }
                                 }
-                                .pickerStyle(InlinePickerStyle())
-                                */
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.isEditing.toggle()
+                                        model.removeImage(index: model.data.selected)
+                                    }
+                                }) {
+                                    HStack {
+                                        Text("Delete")
+                                        Spacer()
+                                        Image(systemName: "delete.left")
+                                    }
+                                }
+                                .accentColor(.red)
                             }
                         }
                         .listStyle(InsetGroupedListStyle())
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
-                    .transition(.move(edge: .bottom))
                 }
+                .frame(height: model.data.isEditing ? nil : 0)
+                .transition(.move(edge: .bottom))
             }
             .onAppear {
                 model.transformImage()

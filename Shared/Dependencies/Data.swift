@@ -16,10 +16,6 @@ final class Data: NSObject, ObservableObject {
         var isEditing: Bool
         var isAugmenting: Bool
         var isFlashlight: Bool
-        var isFiltering: Bool
-        var isStyling: Bool
-        var isAdjusting: Bool
-        var fromLeft: Bool
         var selected: Int
         var frames: [Frame]
         var feedback: Contact
@@ -52,7 +48,6 @@ final class Data: NSObject, ObservableObject {
     @Published var data: Format = Format(
         welcome: !UserDefaults.standard.bool(forKey: "v1.0"), guide: "",
         isImporting: false, isEditing: false, isAugmenting: false, isFlashlight: false,
-        isFiltering: false, isStyling: true, isAdjusting: false, fromLeft: false,
         selected: 0,
         frames: [Frame(
             image: UIImage(imageLiteralResourceName: "sample"),
@@ -163,12 +158,6 @@ final class Data: NSObject, ObservableObject {
     
     func removeImage(index: Int) {
         data.frames.remove(at: index)
-    }
-    
-    func toggleAdjust() {
-        data.isFiltering = false
-        data.isStyling = false
-        data.isAdjusting = false
     }
     
     func filterImage(filter: String) -> UIImage {

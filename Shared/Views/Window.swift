@@ -19,6 +19,7 @@ struct Window: View {
                     ToolbarItem(placement: .principal) {
                         Button(action: {
                             model.data.welcome.toggle()
+                            model.data.isEditing = false
                         }) {
                             Text("Augmented Frames")
                                 .bold()
@@ -26,55 +27,34 @@ struct Window: View {
                         .accentColor(colorscheme == .dark ? .white : .black)
                     }
                     ToolbarItem(placement: .cancellationAction) {
-                        if model.data.isEditing {
-                            Text("Delete")
-                                .foregroundColor(.red)
-                                .onTapGesture {
-                                    model.data.isEditing.toggle()
-                                    model.removeImage(index: model.data.selected)
-                                }
-                        } else {
-                            Menu {
-                                Button(action: {
-                                    model.data.isImporting.toggle()
-                                }) {
-                                    Label("Import from Photos", systemImage: "photo")
-                                }
-                                Button(action: {
-                                    //
-                                }) {
-                                    Label("Capture with Camera", systemImage: "camera")
-                                }
-                                .disabled(true) // needs to be implemented first
-                                Button(action: {
-                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                        .first?.rootViewController?
-                                        .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                                }) {
-                                    Label("Scan with Camera", systemImage: "viewfinder")
-                                }
-                            } label: {
-                                Image(systemName: "camera.fill")
+                        Menu {
+                            Button(action: {
+                                model.data.isImporting.toggle()
+                            }) {
+                                Label("Import from Photos", systemImage: "photo")
                             }
+                            Button(action: {
+                                //
+                            }) {
+                                Label("Capture with Camera", systemImage: "camera")
+                            }
+                            .disabled(true) // needs to be implemented first
+                            Button(action: {
+                                UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                    .first?.rootViewController?
+                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                            }) {
+                                Label("Scan with Camera", systemImage: "viewfinder")
+                            }
+                        } label: {
+                            Image(systemName: "camera.fill")
                         }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        if model.data.isEditing {
-                            Button(action: {
-                                UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                    .first?
-                                    .rootViewController?
-                                    .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].transform], applicationActivities: nil), animated: true)
-                            }) {
-                                Text("Share")
-                                // Image(systemName: "square.and.arrow.up")
-                            }
-                        } else {
-                            Button(action: {
-                                model.data.isAugmenting.toggle()
-                            }) {
-                                Text("AR")
-                            }
+                        Button(action: {
+                            model.data.isAugmenting.toggle()
+                        }) {
+                            Text("AR")
                         }
                     }
                 }
