@@ -57,7 +57,7 @@ final class Data: NSObject, ObservableObject {
         frames: [Frame(
             image: UIImage(imageLiteralResourceName: "sample"),
             transform: UIImage(imageLiteralResourceName: "sample"),
-            size: Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak wood"
+            size: Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak"
         )],
         feedback: Contact(
             category: "",
@@ -80,8 +80,8 @@ final class Data: NSObject, ObservableObject {
         success: false
     )
     
-    let filters: [String] = ["None", "Noir", "Monotone", "Invert colors"]
-    let materials: [String] = ["Oak wood", "Polished steel", "Gray marble"]
+    let filters: [String] = ["None", "Noir", "Mono", "Invert"]
+    let materials: [String] = ["Oak", "Steel", "Marble"]
     
     let sizes: [Size] = [
         Size(width: 60, height: 90),
@@ -114,12 +114,9 @@ final class Data: NSObject, ObservableObject {
         
         let frame = SCNMaterial()
         switch data.frames[data.selected].material {
-            case "Black": frame.diffuse.contents = UIColor.black
-            case "Orange": frame.diffuse.contents = UIColor.orange
-            case "Green": frame.diffuse.contents = UIColor.green
-            case "Oak wood": frame.diffuse.contents = UIImage(named: "material_oak")
-            case "Polished steel": frame.diffuse.contents = UIImage(named: "material_steel")
-            case "Gray marble": frame.diffuse.contents = UIImage(named: "material_marble")
+            case "Oak": frame.diffuse.contents = UIImage(named: "material_oak")
+            case "Steel": frame.diffuse.contents = UIImage(named: "material_steel")
+            case "Marble": frame.diffuse.contents = UIImage(named: "material_marble")
             default: frame.diffuse.contents = UIColor.white
         }
         frame.diffuse.wrapT = SCNWrapMode.repeat
@@ -156,7 +153,7 @@ final class Data: NSObject, ObservableObject {
             Frame(
                 image: image, transform: image,
                 size: Size(width: 60, height: 90), border: 0.05,
-                filter: "None", material: "Oak wood"
+                filter: "None", material: "Oak"
             ),
             at: 0
         )
@@ -172,6 +169,28 @@ final class Data: NSObject, ObservableObject {
         data.isFiltering = false
         data.isStyling = false
         data.isAdjusting = false
+    }
+    
+    func filterImage(filter: String) -> UIImage {
+        
+        var image = data.frames[data.selected].image
+        
+        let context = CIContext(options: nil)
+        var currentFilter = CIFilter(name: "CIPhotoEffectNoir")
+        switch filter {
+            case "Noir": currentFilter = CIFilter(name: "CIPhotoEffectNoir")
+            case "Mono": currentFilter = CIFilter(name: "CIPhotoEffectMono")
+            case "Invert": currentFilter = CIFilter(name: "CIColorInvert")
+            default: return image
+        }
+        currentFilter!.setValue(CIImage(image: image), forKey: kCIInputImageKey)
+        if let output = currentFilter?.outputImage,
+            let cgImage = context.createCGImage(output, from: output.extent) {
+            image = UIImage(cgImage: cgImage)
+        }
+        
+        return image
+        
     }
     
     func transformImage() {
@@ -239,12 +258,9 @@ final class Data: NSObject, ObservableObject {
             height: canvas.height
         )
         switch data.frames[data.selected].material {
-            case "Black": UIColor.black.setFill()
-            case "Orange": UIColor.orange.setFill()
-            case "Green": UIColor.green.setFill()
-            case "Oak wood": UIImage(named: "material_oak")?.drawAsPattern(in: front)
-            case "Polished steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
-            case "Gray marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)
+            case "Oak": UIImage(named: "material_oak")?.drawAsPattern(in: front)
+            case "Steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
+            case "Marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)
             default: UIColor.white.setFill()
         }
         UIRectFill(front)
