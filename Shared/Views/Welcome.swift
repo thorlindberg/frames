@@ -344,16 +344,18 @@ struct First: View {
                         HStack {
                             Menu {
                                 Button(action: {
-                                    withAnimation {
-                                        model.data.guide = "import"
-                                    }
+                                    model.data.guide = "import"
                                 }) {
                                     Label("Import from Photos", systemImage: "photo")
                                 }
                                 Button(action: {
-                                    withAnimation {
-                                        model.data.guide = "scan"
-                                    }
+                                    model.data.guide = "capture"
+                                }) {
+                                    Label("Capture with Camera", systemImage: "camera")
+                                }
+                                .disabled(true) // needs to be implemented first
+                                Button(action: {
+                                    model.data.guide = "scan"
                                 }) {
                                     Label("Scan with Camera", systemImage: "viewfinder")
                                 }
@@ -375,7 +377,7 @@ struct First: View {
                             Spacer()
                         }
                     }
-                    Frame(model: model)
+                    Editor(model: model)
                         .frame(height: 420)
                         .padding(.vertical, -6)
                         .padding(.horizontal, -16)
@@ -463,7 +465,7 @@ struct Second: View {
                     }
                 }
                 .opacity(0.2)
-                Frame(model: model)
+                Editor(model: model)
                     .frame(height: 420)
                     .padding(.vertical, -6)
                     .padding(.horizontal, -16)
@@ -513,7 +515,7 @@ struct Third: View {
                             Spacer()
                         }
                     }
-                    Frame(model: model)
+                    Editor(model: model)
                         .frame(height: 420)
                         .padding(.vertical, -6)
                         .padding(.horizontal, -16)

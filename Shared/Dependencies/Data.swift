@@ -57,7 +57,7 @@ final class Data: NSObject, ObservableObject {
         frames: [Frame(
             image: UIImage(imageLiteralResourceName: "sample"),
             transform: UIImage(imageLiteralResourceName: "sample"),
-            size: Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak"
+            size: Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak wood"
         )],
         feedback: Contact(
             category: "",
@@ -117,9 +117,9 @@ final class Data: NSObject, ObservableObject {
             case "Black": frame.diffuse.contents = UIColor.black
             case "Orange": frame.diffuse.contents = UIColor.orange
             case "Green": frame.diffuse.contents = UIColor.green
-            case "Oak": frame.diffuse.contents = UIImage(named: "material_oak")
-            case "Steel": frame.diffuse.contents = UIImage(named: "material_steel")
-            case "Marble": frame.diffuse.contents = UIImage(named: "material_marble")
+            case "Oak wood": frame.diffuse.contents = UIImage(named: "material_oak")
+            case "Polished steel": frame.diffuse.contents = UIImage(named: "material_steel")
+            case "Gray marble": frame.diffuse.contents = UIImage(named: "material_marble")
             default: frame.diffuse.contents = UIColor.white
         }
         frame.diffuse.wrapT = SCNWrapMode.repeat
@@ -156,7 +156,7 @@ final class Data: NSObject, ObservableObject {
             Frame(
                 image: image, transform: image,
                 size: Size(width: 60, height: 90), border: 0.05,
-                filter: "None", material: "Oak"
+                filter: "None", material: "Oak wood"
             ),
             at: 0
         )
@@ -242,9 +242,9 @@ final class Data: NSObject, ObservableObject {
             case "Black": UIColor.black.setFill()
             case "Orange": UIColor.orange.setFill()
             case "Green": UIColor.green.setFill()
-            case "Oak": UIImage(named: "material_oak")?.drawAsPattern(in: front)
-            case "Steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
-            case "Marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)
+            case "Oak wood": UIImage(named: "material_oak")?.drawAsPattern(in: front)
+            case "Polished steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
+            case "Gray marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)
             default: UIColor.white.setFill()
         }
         UIRectFill(front)

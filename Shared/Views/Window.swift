@@ -19,19 +19,18 @@ struct Window: View {
                         Button(action: {
                             model.data.welcome.toggle()
                         }) {
-                            Text(model.data.isEditing ? "Edit frame" : "Augmented Frames")
+                            Text("Augmented Frames")
                                 .bold()
                         }
+                        .accentColor(.black)
                     }
                     ToolbarItem(placement: .cancellationAction) {
                         if model.data.isEditing {
-                            Button(action: {
-                                withAnimation {
-                                    model.data.isEditing.toggle()
+                            Text("Delete")
+                                .foregroundColor(.red)
+                                .onTapGesture {
+                                    model.removeImage(index: model.data.selected)
                                 }
-                            }) {
-                                Text("Close")
-                            }
                         } else {
                             Menu {
                                 Button(action: {
@@ -44,6 +43,7 @@ struct Window: View {
                                 }) {
                                     Label("Capture with Camera", systemImage: "camera")
                                 }
+                                .disabled(true) // needs to be implemented first
                                 Button(action: {
                                     UIApplication.shared.windows.filter({$0.isKeyWindow})
                                         .first?.rootViewController?
@@ -57,12 +57,21 @@ struct Window: View {
                         }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        if !model.data.isEditing {
+                        if model.data.isEditing {
+                            Button(action: {
+                                UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                    .first?
+                                    .rootViewController?
+                                    .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].transform], applicationActivities: nil), animated: true)
+                            }) {
+                                Text("Share")
+                                // Image(systemName: "square.and.arrow.up")
+                            }
+                        } else {
                             Button(action: {
                                 model.data.isAugmenting.toggle()
                             }) {
                                 Text("AR")
-                                    .foregroundColor(.blue)
                             }
                         }
                     }
