@@ -36,11 +36,10 @@ struct Window: View {
                                 Label("Import from Photos", systemImage: "photo")
                             }
                             Button(action: {
-                                //
+                                model.data.isCapturing.toggle()
                             }) {
                                 Label("Capture with Camera", systemImage: "camera")
                             }
-                            .disabled(true) // needs to be implemented first
                             Button(action: {
                                 UIApplication.shared.windows.filter({$0.isKeyWindow})
                                     .first?.rootViewController?
@@ -62,11 +61,16 @@ struct Window: View {
                 }
         }
         .navigationViewStyle(StackNavigationViewStyle()) // disables split view on iPad
-        .sheet(isPresented: $model.data.isImporting) {
-            ImagePicker(model: model)
-        }
         .sheet(isPresented: $model.data.welcome) {
             Welcome(model: model)
+                .modifier(DisableModalDismiss(disabled: true))
+        }
+        .fullScreenCover(isPresented: $model.data.isImporting) {
+            ImagePicker(model: model, type: "import")
+                .modifier(DisableModalDismiss(disabled: true))
+        }
+        .fullScreenCover(isPresented: $model.data.isCapturing) {
+            ImagePicker(model: model, type: "capture")
                 .modifier(DisableModalDismiss(disabled: true))
         }
         .fullScreenCover(isPresented: $model.data.isAugmenting) {

@@ -28,6 +28,9 @@ struct Editor: View {
                                                 }
                                             }
                                         }
+                                        .onAppear {
+                                            model.transformImage(index: index)
+                                        }
                                         .transition(index < model.data.selected ? .move(edge: .leading).combined(with: .opacity) : .move(edge: .trailing).combined(with: .opacity))
                                 }
                             }
@@ -59,8 +62,8 @@ struct Editor: View {
                     .background(colorscheme == .dark ? Color.black : Color(red: 0, green: 0, blue: 0, opacity: 0.05))
                     Divider()
                     */
-                    if model.data.isEditing {
-                        List {
+                    List {
+                        if model.data.isEditing {
                             Section {
                                 Button(action: {
                                     UIApplication.shared.windows.filter({$0.isKeyWindow})
@@ -89,7 +92,7 @@ struct Editor: View {
                                             .aspectRatio(contentMode: .fit)
                                             .onTapGesture {
                                                 model.data.frames[model.data.selected].filter = filter
-                                                model.transformImage()
+                                                model.transformImage(index: model.data.selected)
                                             }
                                             .if (model.data.frames[model.data.selected].filter == filter) { view in
                                                 view.border(Color.accentColor, width: 4)
@@ -125,7 +128,7 @@ struct Editor: View {
                                         }
                                         .onTapGesture {
                                             model.data.frames[model.data.selected].material = material
-                                            model.transformImage()
+                                            model.transformImage(index: model.data.selected)
                                         }
                                         .if (model.data.frames[model.data.selected].material == material) { view in
                                             view.border(Color.accentColor, width: 4)
@@ -147,7 +150,7 @@ struct Editor: View {
                                         get: { model.data.frames[model.data.selected].size.width },
                                         set: {
                                             model.data.frames[model.data.selected].size.width = $0
-                                            model.transformImage()
+                                            model.transformImage(index: model.data.selected)
                                         }
                                     ),
                                     in: 10...200
@@ -158,7 +161,7 @@ struct Editor: View {
                                         get: { model.data.frames[model.data.selected].size.height },
                                         set: {
                                             model.data.frames[model.data.selected].size.height = $0
-                                            model.transformImage()
+                                            model.transformImage(index: model.data.selected)
                                         }
                                     ),
                                     in: 10...200
@@ -180,15 +183,11 @@ struct Editor: View {
                                 .accentColor(.red)
                             }
                         }
-                        .listStyle(InsetGroupedListStyle())
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
+                    .listStyle(InsetGroupedListStyle())
                 }
                 .frame(height: model.data.isEditing ? nil : 0)
                 .transition(.move(edge: .bottom))
-            }
-            .onAppear {
-                model.transformImage()
             }
         }
     }

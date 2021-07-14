@@ -13,6 +13,7 @@ final class Data: NSObject, ObservableObject {
         var welcome: Bool
         var guide: String
         var isImporting: Bool
+        var isCapturing: Bool
         var isEditing: Bool
         var isAugmenting: Bool
         var isFlashlight: Bool
@@ -47,13 +48,19 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         welcome: !UserDefaults.standard.bool(forKey: "v1.0"), guide: "",
-        isImporting: false, isEditing: false, isAugmenting: false, isFlashlight: false,
+        isImporting: false, isCapturing: false, isEditing: false, isAugmenting: false, isFlashlight: false,
         selected: 0,
-        frames: [Frame(
-            image: UIImage(imageLiteralResourceName: "sample"),
-            transform: UIImage(imageLiteralResourceName: "sample"),
-            size: Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak"
-        )],
+        frames: [
+            Frame(
+                image: UIImage(imageLiteralResourceName: "sample"),
+                transform: UIImage(imageLiteralResourceName: "sample"),
+                size: Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak"
+            ), Frame(
+                image: UIImage(imageLiteralResourceName: "sample2"),
+                transform: UIImage(imageLiteralResourceName: "sample2"),
+                size: Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak"
+            )
+        ],
         feedback: Contact(
             category: "",
             issue: "",
@@ -153,7 +160,7 @@ final class Data: NSObject, ObservableObject {
             at: 0
         )
         data.selected = 0
-        transformImage()
+        transformImage(index: data.selected)
     }
     
     func removeImage(index: Int) {
@@ -182,13 +189,13 @@ final class Data: NSObject, ObservableObject {
         
     }
     
-    func transformImage() {
+    func transformImage(index: Int) {
         
         // resource: https://stackoverflow.com/a/39987845/15072454
         
         // reset transformed image
-        data.frames[data.selected].transform = data.frames[data.selected].image
-        var image = data.frames[data.selected].transform
+        data.frames[index].transform = data.frames[index].image
+        var image = data.frames[index].transform
         
         // convert image to JPEG
         if let jpegData = image.jpegData(compressionQuality: 1.0) {
@@ -198,10 +205,10 @@ final class Data: NSObject, ObservableObject {
         // filter image
         // resource: https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html
         // source: https://stackoverflow.com/questions/40178846/convert-uiimage-to-grayscale-keeping-image-quality
-        if data.frames[data.selected].filter != "None" {
+        if data.frames[index].filter != "None" {
             let context = CIContext(options: nil)
             var currentFilter = CIFilter(name: "CIPhotoEffectNoir")
-            switch data.frames[data.selected].filter {
+            switch data.frames[index].filter {
                 case "Noir": currentFilter = CIFilter(name: "CIPhotoEffectNoir")
                 case "Mono": currentFilter = CIFilter(name: "CIPhotoEffectMono")
                 case "Invert": currentFilter = CIFilter(name: "CIColorInvert")
@@ -217,23 +224,23 @@ final class Data: NSObject, ObservableObject {
         // set frame size
         let canvas = CGSize(
             width: image.size.width,
-            height: image.size.width*(data.frames[data.selected].size.height/data.frames[data.selected].size.width)
+            height: image.size.width*(data.frames[index].size.height/data.frames[index].size.width)
         )
         
         // set image size
-        let border = canvas.width*data.frames[data.selected].border/2
+        let border = canvas.width*data.frames[index].border/2
         var imageSize = CGRect(
             x: border,
             y: border + (canvas.height - canvas.width*(image.size.height/image.size.width)) / 2,
-            width: canvas.width-canvas.width*data.frames[data.selected].border,
-            height: canvas.width*(image.size.height/image.size.width)-canvas.width*data.frames[data.selected].border
+            width: canvas.width-canvas.width*data.frames[index].border,
+            height: canvas.width*(image.size.height/image.size.width)-canvas.width*data.frames[index].border
         )
         if image.size.height > canvas.height {
             imageSize = CGRect(
                 x: border + (canvas.width - canvas.height*(image.size.width/image.size.height)) / 2,
                 y: border,
-                width: canvas.height*(image.size.width/image.size.height)-canvas.width*data.frames[data.selected].border,
-                height: canvas.height-canvas.width*data.frames[data.selected].border
+                width: canvas.height*(image.size.width/image.size.height)-canvas.width*data.frames[index].border,
+                height: canvas.height-canvas.width*data.frames[index].border
             )
         }
         
@@ -246,7 +253,7 @@ final class Data: NSObject, ObservableObject {
             width: canvas.width,
             height: canvas.height
         )
-        switch data.frames[data.selected].material {
+        switch data.frames[index].material {
             case "Oak": UIImage(named: "material_oak")?.drawAsPattern(in: front)
             case "Steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
             case "Marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)
@@ -272,7 +279,7 @@ final class Data: NSObject, ObservableObject {
         UIGraphicsEndImageContext()
         
         // update transformed image
-        data.frames[data.selected].transform = newImage!
+        data.frames[index].transform = newImage!
         
     }
     
@@ -294,41 +301,4 @@ extension Data: VNDocumentCameraViewControllerDelegate {
         }
         controller.dismiss(animated: true, completion: nil)
     }
-}
-
-struct ImagePicker: UIViewControllerRepresentable {
-    
-    // source: https://www.hackingwithswift.com/books/ios-swiftui/importing-an-image-into-swiftui-using-uiimagepickercontroller
-    
-    @ObservedObject var model: Data
-    @Environment(\.presentationMode) var presentationMode
-
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.delegate = context.coordinator
-        return picker
-    }
-    
-    func makeCoordinator() -> Coordinator { Coordinator(self) }
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) { }
-    
-    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-        let parent: ImagePicker
-        init(_ parent: ImagePicker) {
-            self.parent = parent
-        }
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-            if let uiImage = info[.originalImage] as? UIImage {
-                parent.model.addImage(image: uiImage)
-            }
-            if parent.model.data.welcome {
-                withAnimation {
-                    parent.model.data.guide = ""
-                }
-            } else {
-                parent.presentationMode.wrappedValue.dismiss()
-            }
-        }
-    }
-    
 }

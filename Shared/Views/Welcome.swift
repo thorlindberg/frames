@@ -350,7 +350,6 @@ struct First: View {
                                 }) {
                                     Label("Capture with Camera", systemImage: "camera")
                                 }
-                                .disabled(true) // needs to be implemented first
                                 Button(action: {
                                     model.data.guide = "scan"
                                 }) {
@@ -383,7 +382,7 @@ struct First: View {
                 }
                 if model.data.guide == "import" {
                     Section(header:
-                                Text("tap a photo to import it")
+                                Text("tap a photo to import")
                     ) {
                         Text("Close")
                             .onTapGesture {
@@ -391,7 +390,7 @@ struct First: View {
                                     model.data.guide = ""
                                 }
                             }
-                        ImagePicker(model: model)
+                        ImagePicker(model: model, type: "import")
                             .frame(height: 530)
                             .padding(.top, -115)
                             .padding(.bottom, -6)
@@ -404,6 +403,30 @@ struct First: View {
                         }
                     }
                 }
+                if model.data.guide == "capture" {
+                    Section(header:
+                                Text("tap circle to capture a photo")
+                    ) {
+                        Text("Close")
+                            .onTapGesture {
+                                withAnimation {
+                                    model.data.guide = ""
+                                }
+                            }
+                        ImagePicker(model: model, type: "capture")
+                            .frame(height: 530)
+                            .padding(.top, -115)
+                            .padding(.bottom, -6)
+                            .padding(.horizontal, -16)
+                    }
+                    .id("capture")
+                    .onAppear {
+                        withAnimation {
+                            proxy.scrollTo("capture", anchor: .top)
+                        }
+                    }
+                }
+                /*
                 if model.data.guide == "scan" {
                     Section(header:
                                 Text("tap the record button to scan")
@@ -414,7 +437,7 @@ struct First: View {
                                     model.data.guide = ""
                                 }
                             }
-                        ImagePicker(model: model)
+                        ImagePicker(model: model, type: "capture")
                             .frame(height: 530)
                             .padding(.top, -115)
                             .padding(.bottom, -6)
@@ -427,6 +450,7 @@ struct First: View {
                         }
                     }
                 }
+                */
             }
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle("Add photo")
