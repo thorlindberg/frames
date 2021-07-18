@@ -43,6 +43,7 @@ struct Welcome: View {
                     Label("Unlock premium", systemImage: "star.fill")
                         .foregroundColor(.purple)
                 }
+                .disabled(true) // disabled until page finalised
                 NavigationLink(destination: Contact(model: model)) {
                     Label("Contact support", systemImage: "bubble.right")
                 }
@@ -55,6 +56,7 @@ struct Welcome: View {
                     NavigationLink(destination: Second(model: model)) {
                         Label("Customize frame", systemImage: "cube")
                     }
+                    .disabled(true) // disabled because of new customization UI
                     NavigationLink(destination: Third(model: model)) {
                         Label("Augment Reality", systemImage: "move.3d")
                     }
@@ -343,17 +345,17 @@ struct First: View {
                                 Button(action: {
                                     model.data.guide = "import"
                                 }) {
-                                    Label("Import from Photos", systemImage: "photo")
+                                    Label("Choose Photo", systemImage: "photo")
                                 }
                                 Button(action: {
                                     model.data.guide = "capture"
                                 }) {
-                                    Label("Capture with Camera", systemImage: "camera")
+                                    Label("Capture Photo", systemImage: "camera")
                                 }
                                 Button(action: {
                                     model.data.guide = "scan"
                                 }) {
-                                    Label("Scan with Camera", systemImage: "viewfinder")
+                                    Label("Scan Photo", systemImage: "viewfinder")
                                 }
                                 .disabled(true) // needs to be implemented first
                             } label: {

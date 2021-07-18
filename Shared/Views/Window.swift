@@ -13,57 +13,85 @@ struct Window: View {
 
     var body: some View {
         NavigationView {
-            Editor(model: model)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Button(action: {
-                            model.data.welcome.toggle()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                model.data.isEditing = false
+            GeometryReader { proxy in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    VStack {
+                        Spacer()
+                        HStack(spacing: 0) {
+                            ForEach(Array(model.data.frames.indices), id: \.self) { index in
+                                Image(uiImage: model.data.frames[index].transform)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .padding()
+                                    .frame(width: proxy.size.width)
+                                    .onTapGesture {
+                                        if !model.data.welcome {
+                                            model.data.selected = index
+                                            model.data.isEditing.toggle()
+                                        }
+                                    }
+                                    .onAppear {
+                                        model.transformImage(index: index)
+                                    }
                             }
-                        }) {
-                            Text("Augmented Frames")
-                                .bold()
                         }
-                        .accentColor(colorscheme == .dark ? .white : .black)
-                    }
-                    ToolbarItem(placement: .cancellationAction) {
-                        Menu {
-                            Button(action: {
-                                model.data.isImporting.toggle()
-                            }) {
-                                Label("Import from Photos", systemImage: "photo")
-                            }
-                            Button(action: {
-                                model.data.isCapturing.toggle()
-                            }) {
-                                Label("Capture with Camera", systemImage: "camera")
-                            }
-                            Button(action: {
-                                UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                    .first?.rootViewController?
-                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                            }) {
-                                Label("Scan with Camera", systemImage: "viewfinder")
-                            }
-                        } label: {
-                            Image(systemName: "camera.fill")
-                        }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            model.data.isAugmenting.toggle()
-                        }) {
-                            Text("AR")
-                        }
+                        Spacer()
                     }
                 }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Button(action: {
+                        model.data.welcome.toggle()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            model.data.isEditing = false
+                        }
+                    }) {
+                        Text("Augmented Frames")
+                            .bold()
+                    }
+                    .accentColor(colorscheme == .dark ? .white : .black)
+                }
+                ToolbarItem(placement: .cancellationAction) {
+                    Menu {
+                        Button(action: {
+                            model.data.isImporting.toggle()
+                        }) {
+                            Label("Choose Photo", systemImage: "photo")
+                        }
+                        Button(action: {
+                            model.data.isCapturing.toggle()
+                        }) {
+                            Label("Capture Photo", systemImage: "camera")
+                        }
+                        Button(action: {
+                            UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                .first?.rootViewController?
+                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                        }) {
+                            Label("Scan Photo", systemImage: "viewfinder")
+                        }
+                    } label: {
+                        Image(systemName: "camera.fill")
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        model.data.isAugmenting.toggle()
+                    }) {
+                        Text("AR")
+                    }
+                }
+            }
         }
         .navigationViewStyle(StackNavigationViewStyle()) // disables split view on iPad
         .sheet(isPresented: $model.data.welcome) {
             Welcome(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
+        }
+        .sheet(isPresented: $model.data.isEditing) {
+            Editor(model: model)
         }
         .fullScreenCover(isPresented: $model.data.isImporting) {
             ImagePicker(model: model, type: "import")

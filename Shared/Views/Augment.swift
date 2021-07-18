@@ -97,7 +97,7 @@ class ARView: UIViewController, ARSCNViewDelegate {
         super.viewWillAppear(animated)
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .vertical
-        arView.session.run(configuration)
+        arView.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
         arView.delegate = self
     }
     override func viewWillDisappear(_ animated: Bool) {
@@ -130,7 +130,6 @@ class ARView: UIViewController, ARSCNViewDelegate {
         
         let frame = SCNMaterial()
         switch model.data.frames[model.data.selected].material {
-            case "Black": frame.diffuse.contents = UIColor.black
             case "Oak": frame.diffuse.contents = UIImage(named: "material_oak")
             case "Steel": frame.diffuse.contents = UIImage(named: "material_steel")
             case "Marble": frame.diffuse.contents = UIImage(named: "material_marble")
