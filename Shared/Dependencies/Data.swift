@@ -13,6 +13,7 @@ final class Data: NSObject, ObservableObject {
         var colorscheme: ColorScheme?
         var welcome: Bool
         var guide: String
+        var reload: Bool
         var isImporting: Bool
         var isCapturing: Bool
         var isEditing: Bool
@@ -49,7 +50,8 @@ final class Data: NSObject, ObservableObject {
     
     @Published var data: Format = Format(
         welcome: !UserDefaults.standard.bool(forKey: "v1.0"), guide: "",
-        isImporting: false, isCapturing: false, isEditing: false, isAugmenting: false, isFlashlight: false,
+        reload: false, isImporting: false, isCapturing: false, isEditing: false,
+        isAugmenting: false, isFlashlight: false,
         selected: 0,
         frames: [
             Frame(
@@ -163,12 +165,20 @@ final class Data: NSObject, ObservableObject {
             ),
             at: 0
         )
-        data.selected = 0
-        transformImage(index: data.selected)
+        reloadStack()
     }
     
     func removeImage(index: Int) {
         data.frames.remove(at: index)
+        reloadStack()
+    }
+    
+    func reloadStack() {
+        data.selected = 0
+        data.reload = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.data.reload = false
+        }
     }
     
     func filterImage(filter: String) -> UIImage {

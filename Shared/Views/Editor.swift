@@ -132,19 +132,21 @@ struct Editor: View {
                             Image(systemName: "square.and.arrow.up")
                         }
                     }
-                    Button(action: {
-                        withAnimation {
-                            model.data.isEditing.toggle()
-                            model.removeImage(index: model.data.selected)
+                    if model.data.frames.count > 1 {
+                        Button(action: {
+                            withAnimation {
+                                model.data.isEditing.toggle()
+                                model.removeImage(index: model.data.selected)
+                            }
+                        }) {
+                            HStack {
+                                Text("Delete")
+                                Spacer()
+                                Image(systemName: "delete.left")
+                            }
                         }
-                    }) {
-                        HStack {
-                            Text("Delete")
-                            Spacer()
-                            Image(systemName: "delete.left")
-                        }
+                        .accentColor(.red)
                     }
-                    .accentColor(.red)
                 }
             }
             .listStyle(InsetGroupedListStyle())

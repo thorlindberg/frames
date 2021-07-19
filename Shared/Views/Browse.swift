@@ -11,6 +11,7 @@ struct Browse: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 480)
+                    .opacity(index == model.data.selected ? 1 : 0.3)
                     .onAppear {
                         model.transformImage(index: index)
                     }

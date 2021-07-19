@@ -14,65 +14,71 @@ struct Window: View {
 
     var body: some View {
         NavigationView {
-            Browse(model: model)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Button(action: {
-                            model.data.welcome.toggle()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                model.data.isEditing = false
-                            }
-                        }) {
-                            Text("Augmented Frames")
-                                .bold()
-                        }
-                        .accentColor(colorscheme == .dark ? .white : .black)
-                    }
-                    ToolbarItem(placement: .cancellationAction) {
-                        Menu {
-                            Button(action: {
-                                model.data.isImporting.toggle()
-                            }) {
-                                Label("Choose Photo", systemImage: "photo")
-                            }
-                            Button(action: {
-                                model.data.isCapturing.toggle()
-                            }) {
-                                Label("Capture Photo", systemImage: "camera")
-                            }
-                            Button(action: {
-                                UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                    .first?.rootViewController?
-                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                            }) {
-                                Label("Scan Photo", systemImage: "viewfinder")
-                            }
-                        } label: {
-                            Image(systemName: "camera.fill")
-                        }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            model.data.isAugmenting.toggle()
-                        }) {
-                            Text("AR")
-                        }
-                    }
-                    /*
-                    ToolbarItem(placement: .bottomBar) {
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                model.data.isEditing.toggle()
-                            }) {
-                                Text("Customize")
-                            }
-                            Spacer()
-                        }
-                    }
-                    */
+            ZStack {
+                if model.data.reload {
+                    Browse(model: model)
+                } else {
+                    Browse(model: model)
                 }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Button(action: {
+                        model.data.welcome.toggle()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            model.data.isEditing = false
+                        }
+                    }) {
+                        Text("Augmented Frames")
+                            .bold()
+                    }
+                    .accentColor(colorscheme == .dark ? .white : .black)
+                }
+                ToolbarItem(placement: .cancellationAction) {
+                    Menu {
+                        Button(action: {
+                            model.data.isImporting.toggle()
+                        }) {
+                            Label("Choose Photo", systemImage: "photo")
+                        }
+                        Button(action: {
+                            model.data.isCapturing.toggle()
+                        }) {
+                            Label("Capture Photo", systemImage: "camera")
+                        }
+                        Button(action: {
+                            UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                .first?.rootViewController?
+                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                        }) {
+                            Label("Scan Photo", systemImage: "viewfinder")
+                        }
+                    } label: {
+                        Image(systemName: "camera.fill")
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        model.data.isAugmenting.toggle()
+                    }) {
+                        Text("AR")
+                    }
+                }
+                /*
+                ToolbarItem(placement: .bottomBar) {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            model.data.isEditing.toggle()
+                        }) {
+                            Text("Customize")
+                        }
+                        Spacer()
+                    }
+                }
+                */
+            }
         }
         .navigationViewStyle(StackNavigationViewStyle()) // disables split view on iPad
         .sheet(isPresented: $model.data.welcome) {
