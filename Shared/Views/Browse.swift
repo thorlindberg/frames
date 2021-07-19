@@ -5,13 +5,16 @@ struct Browse: View {
     @ObservedObject var model: Data
     
     var body: some View {
-        ScrollStack(items: model.data.frames.count, direction: .vertical, size: 480, selection: $model.data.selected) {
+        ScrollStack(items: model.data.frames.count, direction: UIDevice.current.userInterfaceIdiom == .pad ? .horizontal : .vertical, size: 480, selection: $model.data.selected) {
             ForEach(Array(model.data.frames.indices), id: \.self) { index in
                 Image(uiImage: model.data.frames[index].transform)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(height: 480)
-                    .padding(.horizontal, 28)
+                    .frame(
+                        width: UIDevice.current.userInterfaceIdiom == .pad ? 480 : nil,
+                        height: UIDevice.current.userInterfaceIdiom == .pad ? nil : 480
+                    )
+                    .padding(UIDevice.current.userInterfaceIdiom == .pad ? .vertical : .horizontal, 28)
                     .opacity(model.data.welcome ? 1 : index == model.data.selected ? 1 : 0.3)
                     .onAppear {
                         model.transformImage(index: index)
@@ -39,7 +42,7 @@ struct Browse: View {
                         if model.data.welcome {
                             model.data.guide = "customize"
                         }
-                        if index == model.data.selected {
+                        if UIDevice.current.userInterfaceIdiom != .pad && index == model.data.selected {
                             model.data.isEditing.toggle()
                         }
                     }

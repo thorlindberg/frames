@@ -14,6 +14,13 @@ struct Window: View {
 
     var body: some View {
         NavigationView {
+            /*
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                Editor(model: model)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationBarTitle("Frame")
+            }
+            */
             ZStack {
                 if model.data.reload {
                     Browse(model: model)
@@ -65,29 +72,19 @@ struct Window: View {
                         Text("AR")
                     }
                 }
-                /*
-                ToolbarItem(placement: .bottomBar) {
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            model.data.isEditing.toggle()
-                        }) {
-                            Text("Customize")
-                        }
-                        Spacer()
-                    }
-                }
-                */
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle()) // disables split view on iPad
         .sheet(isPresented: $model.data.welcome) {
             Welcome(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
         }
         .sheet(isPresented: $model.data.isEditing) {
-            Editor(model: model)
-                .modifier(DisableModalDismiss(disabled: true))
+            NavigationView {
+                Editor(model: model)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationBarTitle("Frame")
+            }
+            .modifier(DisableModalDismiss(disabled: true))
         }
         .fullScreenCover(isPresented: $model.data.isImporting) {
             ImagePicker(model: model, type: "import")

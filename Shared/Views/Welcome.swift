@@ -509,7 +509,7 @@ struct Second: View {
                                 }
                             }
                         Editor(model: model)
-                            .frame(height: 420)
+                            .frame(height: 530)
                             .padding(.top, -115)
                             .padding(.bottom, -6)
                             .padding(.horizontal, -16)
