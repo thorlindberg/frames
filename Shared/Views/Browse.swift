@@ -5,12 +5,12 @@ struct Browse: View {
     @ObservedObject var model: Data
     
     var body: some View {
-        ScrollStack(items: model.data.frames.count, selection: $model.data.selected) {
+        ScrollStack(items: model.data.frames.count, direction: .vertical, size: 480, selection: $model.data.selected) {
             ForEach(Array(model.data.frames.indices), id: \.self) { index in
                 Image(uiImage: model.data.frames[index].transform)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 280)
+                    .frame(height: 480)
                     .onAppear {
                         model.transformImage(index: index)
                     }
