@@ -149,7 +149,9 @@ struct Editor: View {
                         ForEach(10...200, id: \.self) { value in
                             Button(action: {
                                 model.data.frames[model.data.selected].size.width = CGFloat(value)
-                                model.transformImage(index: model.data.selected)
+                                withAnimation {
+                                    model.transformImage(index: model.data.selected)
+                                }
                             }) {
                                 Text("\(value) cm")
                             }
@@ -165,7 +167,9 @@ struct Editor: View {
                         ForEach(10...200, id: \.self) { value in
                             Button(action: {
                                 model.data.frames[model.data.selected].size.height = CGFloat(value)
-                                model.transformImage(index: model.data.selected)
+                                withAnimation {
+                                    model.transformImage(index: model.data.selected)
+                                }
                             }) {
                                 Text("\(value) cm")
                             }

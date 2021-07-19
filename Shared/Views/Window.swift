@@ -14,13 +14,13 @@ struct Window: View {
 
     var body: some View {
         NavigationView {
-            /*
+            // BREAKS IPHONE VERSION WHEN FALSE
             if UIDevice.current.userInterfaceIdiom == .pad {
                 Editor(model: model)
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationBarTitle("Frame")
             }
-            */
+            //
             ZStack {
                 if model.data.reload {
                     Browse(model: model)
