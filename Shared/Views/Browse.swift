@@ -33,6 +33,11 @@ struct Browse: View {
                             }
                         }
                     }
+                    .onTapGesture {
+                        if index == model.data.selected {
+                            model.data.isEditing.toggle()
+                        }
+                    }
             }
         }
     }

@@ -59,6 +59,7 @@ struct Window: View {
                             Text("AR")
                         }
                     }
+                    /*
                     ToolbarItem(placement: .bottomBar) {
                         HStack {
                             Spacer()
@@ -70,6 +71,7 @@ struct Window: View {
                             Spacer()
                         }
                     }
+                    */
                 }
         }
         .navigationViewStyle(StackNavigationViewStyle()) // disables split view on iPad
