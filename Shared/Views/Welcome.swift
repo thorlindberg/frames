@@ -56,7 +56,6 @@ struct Welcome: View {
                     NavigationLink(destination: Second(model: model)) {
                         Label("Customize frame", systemImage: "cube")
                     }
-                    .disabled(true) // disabled because of new customization UI
                     NavigationLink(destination: Third(model: model)) {
                         Label("Augment Reality", systemImage: "move.3d")
                     }
@@ -376,7 +375,8 @@ struct First: View {
                             Spacer()
                         }
                     }
-                    Window(model: model)
+                    Browse(model: model)
+                        .padding(56)
                         .frame(height: 420)
                         .padding(.vertical, -6)
                         .padding(.horizontal, -16)
@@ -469,41 +469,64 @@ struct Second: View {
     @ObservedObject var model: Data
     
     var body: some View {
-        List {
-            Section(header:
-                        Text("use the center menu to customize")
-                        .padding(.top)
-            ) {
-                ZStack {
-                    HStack {
-                        Image(systemName: "camera.fill")
-                            .foregroundColor(.accentColor)
-                        Spacer()
-                        Text("AR")
-                            .foregroundColor(.accentColor)
-                            .bold()
+        ScrollViewReader { proxy in
+            List {
+                Section(header:
+                            Text("tap framed photo to customize")
+                            .padding(.top)
+                ) {
+                    ZStack {
+                        HStack {
+                            Image(systemName: "camera.fill")
+                                .foregroundColor(.accentColor)
+                            Spacer()
+                            Text("AR")
+                                .foregroundColor(.accentColor)
+                                .bold()
+                        }
+                        HStack {
+                            Spacer()
+                            Text("Augmented Frames")
+                                .bold()
+                            Spacer()
+                        }
                     }
-                    HStack {
-                        Spacer()
-                        Text("Augmented Frames")
-                            .bold()
-                        Spacer()
+                    .opacity(0.2)
+                    Browse(model: model)
+                        .padding(56)
+                        .frame(height: 420)
+                        .padding(.vertical, -6)
+                        .padding(.horizontal, -16)
+                }
+                if model.data.guide == "customize" {
+                    Section(header:
+                                Text("customize a framed photo")
+                    ) {
+                        Text("Close")
+                            .onTapGesture {
+                                withAnimation {
+                                    model.data.guide = ""
+                                }
+                            }
+                        Editor(model: model)
+                            .frame(height: 420)
+                            .padding(.top, -115)
+                            .padding(.bottom, -6)
+                            .padding(.horizontal, -16)
+                    }
+                    .id("customize")
+                    .onAppear {
+                        withAnimation {
+                            proxy.scrollTo("customize", anchor: .top)
+                        }
                     }
                 }
-                .opacity(0.2)
-                Window(model: model)
-                    .frame(height: 420)
-                    .padding(.vertical, -6)
-                    .padding(.horizontal, -16)
             }
-        }
-        .listStyle(InsetGroupedListStyle())
-        .navigationBarTitle("Customize frame")
-        .onAppear {
-            model.data.guide = "customize"
-        }
-        .onDisappear {
-            model.data.guide = ""
+            .listStyle(InsetGroupedListStyle())
+            .navigationBarTitle("Customize frame")
+            .onDisappear {
+                model.data.guide = ""
+            }
         }
     }
     
@@ -543,7 +566,8 @@ struct Third: View {
                             Spacer()
                         }
                     }
-                    Window(model: model)
+                    Browse(model: model)
+                        .padding(56)
                         .frame(height: 420)
                         .padding(.vertical, -6)
                         .padding(.horizontal, -16)

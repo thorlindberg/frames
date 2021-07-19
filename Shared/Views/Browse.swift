@@ -11,12 +11,13 @@ struct Browse: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 480)
-                    .opacity(index == model.data.selected ? 1 : 0.3)
+                    .padding(.horizontal, 28)
+                    .opacity(model.data.welcome ? 1 : index == model.data.selected ? 1 : 0.3)
                     .onAppear {
                         model.transformImage(index: index)
                     }
                     .contextMenu {
-                        if index == model.data.selected {
+                        if !model.data.welcome && index == model.data.selected {
                             Button(action: {
                                 UIApplication.shared.windows.filter({$0.isKeyWindow})
                                     .first?
@@ -35,6 +36,9 @@ struct Browse: View {
                         }
                     }
                     .onTapGesture {
+                        if model.data.welcome {
+                            model.data.guide = "customize"
+                        }
                         if index == model.data.selected {
                             model.data.isEditing.toggle()
                         }

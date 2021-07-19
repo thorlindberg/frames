@@ -9,24 +9,26 @@ struct Editor: View {
     var body: some View {
         NavigationView {
             List {
-                Section {
-                    HStack {
-                        Text("3D model")
-                        Spacer()
-                        Image(systemName: "move.3d")
-                    }
-                    .opacity(0.3)
-                    SceneView(
-                        scene: model.scene,
-                        pointOfView: model.camera,
-                        options: [.allowsCameraControl]
-                    )
-                    .frame(height: 230)
-                    .padding(.horizontal, -16)
-                    .padding(.vertical, -16)
-                    .onChange(of: colorscheme) { value in
-                        withAnimation {
-                            model.data.colorscheme = value
+                if !model.data.welcome {
+                    Section {
+                        HStack {
+                            Text("3D model")
+                            Spacer()
+                            Image(systemName: "move.3d")
+                        }
+                        .opacity(0.3)
+                        SceneView(
+                            scene: model.scene,
+                            pointOfView: model.camera,
+                            options: [.allowsCameraControl]
+                        )
+                        .frame(height: 230)
+                        .padding(.horizontal, -16)
+                        .padding(.vertical, -16)
+                        .onChange(of: colorscheme) { value in
+                            withAnimation {
+                                model.data.colorscheme = value
+                            }
                         }
                     }
                 }
@@ -96,28 +98,81 @@ struct Editor: View {
                         Image(systemName: "selection.pin.in.out")
                     }
                     .opacity(0.3)
-                    Stepper(
-                        "Width: \(Int(model.data.frames[model.data.selected].size.width))",
-                        value: Binding(
-                            get: { model.data.frames[model.data.selected].size.width },
-                            set: {
-                                model.data.frames[model.data.selected].size.width = $0
-                                model.transformImage(index: model.data.selected)
+                    ZStack {
+                        Rectangle()
+                            .opacity(0.5)
+                            .frame(width: 160, height: 120)
+                        HStack {
+                            Spacer()
+                            Menu {
+                                ForEach(10...200, id: \.self) { value in
+                                    Button(action: {
+                                        model.data.frames[model.data.selected].size.height = CGFloat(value)
+                                        model.transformImage(index: model.data.selected)
+                                    }) {
+                                        Text("\(value) cm")
+                                    }
+                                }
+                            } label: {
+                                Text("\(Int(model.data.frames[model.data.selected].size.height)) cm")
                             }
-                        ),
-                        in: 10...200
-                    )
-                    Stepper(
-                        "Height: \(Int(model.data.frames[model.data.selected].size.height))",
-                        value: Binding(
-                            get: { model.data.frames[model.data.selected].size.height },
-                            set: {
-                                model.data.frames[model.data.selected].size.height = $0
-                                model.transformImage(index: model.data.selected)
+                        }
+                        VStack {
+                            Spacer()
+                            HStack {
+                                Spacer()
+                                Menu {
+                                    ForEach(10...200, id: \.self) { value in
+                                        Button(action: {
+                                            model.data.frames[model.data.selected].size.width = CGFloat(value)
+                                            model.transformImage(index: model.data.selected)
+                                        }) {
+                                            Text("\(value) cm")
+                                        }
+                                    }
+                                } label: {
+                                    Text("\(Int(model.data.frames[model.data.selected].size.width)) cm")
+                                }
+                                Spacer()
                             }
-                        ),
-                        in: 10...200
-                    )
+                        }
+                    }
+                    .frame(height: 200)
+                    .padding(.vertical, -6)
+                    .padding(.horizontal, -16)
+                    .padding(16)
+                    HStack {
+                        Text("Width")
+                        Spacer()
+                        Menu {
+                            ForEach(10...200, id: \.self) { value in
+                                Button(action: {
+                                    model.data.frames[model.data.selected].size.width = CGFloat(value)
+                                    model.transformImage(index: model.data.selected)
+                                }) {
+                                    Text("\(value) cm")
+                                }
+                            }
+                        } label: {
+                            Text("\(Int(model.data.frames[model.data.selected].size.width)) cm")
+                        }
+                    }
+                    HStack {
+                        Text("Height")
+                        Spacer()
+                        Menu {
+                            ForEach(10...200, id: \.self) { value in
+                                Button(action: {
+                                    model.data.frames[model.data.selected].size.height = CGFloat(value)
+                                    model.transformImage(index: model.data.selected)
+                                }) {
+                                    Text("\(value) cm")
+                                }
+                            }
+                        } label: {
+                            Text("\(Int(model.data.frames[model.data.selected].size.height)) cm")
+                        }
+                    }
                 }
                 Section {
                     Button(action: {
