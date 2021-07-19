@@ -376,7 +376,7 @@ struct First: View {
                             Spacer()
                         }
                     }
-                    Editor(model: model)
+                    Window(model: model)
                         .frame(height: 420)
                         .padding(.vertical, -6)
                         .padding(.horizontal, -16)
@@ -491,7 +491,7 @@ struct Second: View {
                     }
                 }
                 .opacity(0.2)
-                Editor(model: model)
+                Window(model: model)
                     .frame(height: 420)
                     .padding(.vertical, -6)
                     .padding(.horizontal, -16)
@@ -543,7 +543,7 @@ struct Third: View {
                             Spacer()
                         }
                     }
-                    Editor(model: model)
+                    Window(model: model)
                         .frame(height: 420)
                         .padding(.vertical, -6)
                         .padding(.horizontal, -16)

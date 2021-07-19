@@ -10,6 +10,7 @@ func deg2rad(_ number: Double) -> Double {
 final class Data: NSObject, ObservableObject {
     
     struct Format: Hashable {
+        var colorscheme: ColorScheme?
         var welcome: Bool
         var guide: String
         var isImporting: Bool
@@ -96,7 +97,7 @@ final class Data: NSObject, ObservableObject {
     var camera: SCNNode? {
         let node = SCNNode()
         node.camera = SCNCamera()
-        node.position = SCNVector3Make(0, 0, 1.1)
+        node.position = SCNVector3Make(0, 0, 1.3)
         return node
     }
     
@@ -109,6 +110,9 @@ final class Data: NSObject, ObservableObject {
         // create scene and box
         let scene = SCNScene()
         let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
+        
+        // set scene background
+        scene.background.contents = data.colorscheme == .dark ? UIColor.systemGray5 : UIColor.white
         
         // define materials
         let front = SCNMaterial()
@@ -135,7 +139,7 @@ final class Data: NSObject, ObservableObject {
         )
         
         // rotate frame
-        node.rotation = SCNVector4(1, 0, 0, deg2rad(350))
+        /* node.rotation = SCNVector4(1, 0, 0, deg2rad(350)) */
         
         // add frame to scene
         scene.rootNode.addChildNode(node)
@@ -300,5 +304,15 @@ extension Data: VNDocumentCameraViewControllerDelegate {
             addImage(image: scan.imageOfPage(at:i))
         }
         controller.dismiss(animated: true, completion: nil)
+    }
+}
+
+struct Data_Previews: PreviewProvider {
+    static var previews: some View {
+        ForEach(ColorScheme.allCases, id: \.self) {
+            Editor(model: Data())
+                .preferredColorScheme($0)
+        }
+        .previewDevice("iPhone 12")
     }
 }

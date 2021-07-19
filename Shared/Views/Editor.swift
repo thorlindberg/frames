@@ -1,4 +1,5 @@
 import SwiftUI
+import SceneKit
 
 struct Editor: View {
     
@@ -6,13 +7,29 @@ struct Editor: View {
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        VStack(spacing: 0) {
-            Image(uiImage: model.data.frames[index].transform)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .padding()
-                .frame(height: 200)
+        NavigationView {
             List {
+                Section {
+                    HStack {
+                        Text("3D model")
+                        Spacer()
+                        Image(systemName: "move.3d")
+                    }
+                    .opacity(0.3)
+                    SceneView(
+                        scene: model.scene,
+                        pointOfView: model.camera,
+                        options: [.allowsCameraControl]
+                    )
+                    .frame(height: 230)
+                    .padding(.horizontal, -16)
+                    .padding(.vertical, -16)
+                    .onChange(of: colorscheme) { value in
+                        withAnimation {
+                            model.data.colorscheme = value
+                        }
+                    }
+                }
                 Section {
                     HStack {
                         Text("Filters")
@@ -116,15 +133,6 @@ struct Editor: View {
                         }
                     }
                     Button(action: {
-                        //
-                    }) {
-                        HStack {
-                            Text("Reset")
-                            Spacer()
-                            Image(systemName: "arrow.uturn.backward")
-                        }
-                    }
-                    Button(action: {
                         withAnimation {
                             model.data.isEditing.toggle()
                             model.removeImage(index: model.data.selected)
@@ -140,6 +148,36 @@ struct Editor: View {
                 }
             }
             .listStyle(InsetGroupedListStyle())
+            .navigationBarTitle("Customize")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        model.data.isEditing.toggle()
+                    }) {
+                        Text("Cancel")
+                    }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    if model.data.frames[model.data.selected].filter != "None" || model.data.frames[model.data.selected].material != "Oak" || model.data.frames[model.data.selected].size != Data.Size(width: 60, height: 90) {
+                        Text("Reset")
+                            .foregroundColor(.orange)
+                            .bold()
+                            .onTapGesture {
+                                model.data.frames[model.data.selected].filter = "None"
+                                model.data.frames[model.data.selected].material = "Oak"
+                                model.data.frames[model.data.selected].size = Data.Size(width: 60, height: 90)
+                                withAnimation {
+                                    model.transformImage(index: model.data.selected)
+                                }
+                            }
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
+        .onAppear {
+            model.data.colorscheme = colorscheme
         }
     }
     
@@ -148,7 +186,7 @@ struct Editor: View {
 struct Editor_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Data())
+            Editor(model: Data())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12")
