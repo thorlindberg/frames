@@ -23,16 +23,10 @@
 		7E13BE3C2699944B00B1D78B /* Augment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE352699944B00B1D78B /* Augment.swift */; };
 		7E13BE482699946100B1D78B /* Conditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE3F2699946100B1D78B /* Conditional.swift */; };
 		7E13BE492699946100B1D78B /* Conditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE3F2699946100B1D78B /* Conditional.swift */; };
-		7E13BE4A2699946100B1D78B /* Scroll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE402699946100B1D78B /* Scroll.swift */; };
-		7E13BE4B2699946100B1D78B /* Scroll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE402699946100B1D78B /* Scroll.swift */; };
 		7E13BE4C2699946100B1D78B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE412699946100B1D78B /* Model.swift */; };
 		7E13BE4D2699946100B1D78B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE412699946100B1D78B /* Model.swift */; };
 		7E13BE4E2699946100B1D78B /* Modal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE422699946100B1D78B /* Modal.swift */; };
 		7E13BE4F2699946100B1D78B /* Modal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE422699946100B1D78B /* Modal.swift */; };
-		7E13BE502699946100B1D78B /* Mail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE432699946100B1D78B /* Mail.swift */; };
-		7E13BE512699946100B1D78B /* Mail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE432699946100B1D78B /* Mail.swift */; };
-		7E13BE542699946100B1D78B /* Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE452699946100B1D78B /* Blur.swift */; };
-		7E13BE552699946100B1D78B /* Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE452699946100B1D78B /* Blur.swift */; };
 		7E13BE562699946100B1D78B /* AverageColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE462699946100B1D78B /* AverageColor.swift */; };
 		7E13BE572699946100B1D78B /* AverageColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE462699946100B1D78B /* AverageColor.swift */; };
 		7E13BE582699946100B1D78B /* Torch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE472699946100B1D78B /* Torch.swift */; };
@@ -43,8 +37,6 @@
 		7EBE116B26A4C09200BA6993 /* Browse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE116926A4C09200BA6993 /* Browse.swift */; };
 		7EBE116D26A5787F00BA6993 /* ScrollStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE116C26A5787F00BA6993 /* ScrollStack.swift */; };
 		7EBE116E26A5787F00BA6993 /* ScrollStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE116C26A5787F00BA6993 /* ScrollStack.swift */; };
-		7ECC528226A49C790049CF3D /* Scrolling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ECC528126A49C790049CF3D /* Scrolling.swift */; };
-		7ECC528326A49C790049CF3D /* Scrolling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ECC528126A49C790049CF3D /* Scrolling.swift */; };
 		7EEFDCD62699950A006D4984 /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCD42699950A006D4984 /* Window.swift */; };
 		7EEFDCD72699950A006D4984 /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCD42699950A006D4984 /* Window.swift */; };
 		7EEFDCD82699950A006D4984 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCD52699950A006D4984 /* Persistence.swift */; };
@@ -90,17 +82,13 @@
 		7E13BE342699944B00B1D78B /* Welcome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		7E13BE352699944B00B1D78B /* Augment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Augment.swift; sourceTree = "<group>"; };
 		7E13BE3F2699946100B1D78B /* Conditional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conditional.swift; sourceTree = "<group>"; };
-		7E13BE402699946100B1D78B /* Scroll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scroll.swift; sourceTree = "<group>"; };
 		7E13BE412699946100B1D78B /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		7E13BE422699946100B1D78B /* Modal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Modal.swift; sourceTree = "<group>"; };
-		7E13BE432699946100B1D78B /* Mail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mail.swift; sourceTree = "<group>"; };
-		7E13BE452699946100B1D78B /* Blur.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blur.swift; sourceTree = "<group>"; };
 		7E13BE462699946100B1D78B /* AverageColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AverageColor.swift; sourceTree = "<group>"; };
 		7E13BE472699946100B1D78B /* Torch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Torch.swift; sourceTree = "<group>"; };
 		7E3834B2269EC86F0058699C /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		7EBE116926A4C09200BA6993 /* Browse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Browse.swift; sourceTree = "<group>"; };
 		7EBE116C26A5787F00BA6993 /* ScrollStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStack.swift; sourceTree = "<group>"; };
-		7ECC528126A49C790049CF3D /* Scrolling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scrolling.swift; sourceTree = "<group>"; };
 		7EEFDCD42699950A006D4984 /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		7EEFDCD52699950A006D4984 /* Persistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		7EEFDCDC26999729006D4984 /* Email validation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Email validation.swift"; sourceTree = "<group>"; };
@@ -233,14 +221,10 @@
 				7E13BE462699946100B1D78B /* AverageColor.swift */,
 				7EEFDCDC26999729006D4984 /* Email validation.swift */,
 				7EEFDCD52699950A006D4984 /* Persistence.swift */,
-				7E13BE452699946100B1D78B /* Blur.swift */,
 				7E13BE3F2699946100B1D78B /* Conditional.swift */,
 				7E3834B2269EC86F0058699C /* ImagePicker.swift */,
-				7E13BE432699946100B1D78B /* Mail.swift */,
 				7E13BE422699946100B1D78B /* Modal.swift */,
-				7E13BE402699946100B1D78B /* Scroll.swift */,
 				7E13BE472699946100B1D78B /* Torch.swift */,
-				7ECC528126A49C790049CF3D /* Scrolling.swift */,
 			);
 			path = Dependencies;
 			sourceTree = "<group>";
@@ -410,7 +394,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E13BE502699946100B1D78B /* Mail.swift in Sources */,
 				7E13BE482699946100B1D78B /* Conditional.swift in Sources */,
 				7EBE116D26A5787F00BA6993 /* ScrollStack.swift in Sources */,
 				7E13BE4E2699946100B1D78B /* Modal.swift in Sources */,
@@ -419,14 +402,11 @@
 				7E13BE392699944B00B1D78B /* Welcome.swift in Sources */,
 				7EEFDCDD26999729006D4984 /* Email validation.swift in Sources */,
 				7E13BE15269991E900B1D78B /* Frames.xcdatamodeld in Sources */,
-				7E13BE542699946100B1D78B /* Blur.swift in Sources */,
 				7E13BE562699946100B1D78B /* AverageColor.swift in Sources */,
 				7E13BE17269991E900B1D78B /* FramesApp.swift in Sources */,
 				7EEFDCD82699950A006D4984 /* Persistence.swift in Sources */,
-				7ECC528226A49C790049CF3D /* Scrolling.swift in Sources */,
 				7EEFDCD62699950A006D4984 /* Window.swift in Sources */,
 				7E13BE3B2699944B00B1D78B /* Augment.swift in Sources */,
-				7E13BE4A2699946100B1D78B /* Scroll.swift in Sources */,
 				7E13BE582699946100B1D78B /* Torch.swift in Sources */,
 				7E13BE4C2699946100B1D78B /* Model.swift in Sources */,
 				7E053C02269D7CCF00138400 /* Editor.swift in Sources */,
@@ -437,7 +417,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E13BE512699946100B1D78B /* Mail.swift in Sources */,
 				7E13BE492699946100B1D78B /* Conditional.swift in Sources */,
 				7EBE116E26A5787F00BA6993 /* ScrollStack.swift in Sources */,
 				7E13BE4F2699946100B1D78B /* Modal.swift in Sources */,
@@ -446,14 +425,11 @@
 				7E13BE3A2699944B00B1D78B /* Welcome.swift in Sources */,
 				7EEFDCDE26999729006D4984 /* Email validation.swift in Sources */,
 				7E13BE16269991E900B1D78B /* Frames.xcdatamodeld in Sources */,
-				7E13BE552699946100B1D78B /* Blur.swift in Sources */,
 				7E13BE572699946100B1D78B /* AverageColor.swift in Sources */,
 				7E13BE18269991E900B1D78B /* FramesApp.swift in Sources */,
 				7EEFDCD92699950A006D4984 /* Persistence.swift in Sources */,
-				7ECC528326A49C790049CF3D /* Scrolling.swift in Sources */,
 				7EEFDCD72699950A006D4984 /* Window.swift in Sources */,
 				7E13BE3C2699944B00B1D78B /* Augment.swift in Sources */,
-				7E13BE4B2699946100B1D78B /* Scroll.swift in Sources */,
 				7E13BE592699946100B1D78B /* Torch.swift in Sources */,
 				7E13BE4D2699946100B1D78B /* Model.swift in Sources */,
 				7E053C03269D7CCF00138400 /* Editor.swift in Sources */,
