@@ -101,8 +101,27 @@ final class Data: NSObject, ObservableObject {
                 height: image.size.width*(height/width)
             )
             
-            // set image size
+            // begin image
+            UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
+            
+            // set frame material
+            let front = CGRect(x: 0, y: 0, width: canvas.width, height: canvas.height)
+            switch material {
+                case "Oak": UIImage(named: "material_oak")?.drawAsPattern(in: front)
+                case "Steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
+                case "Marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)
+                default: UIColor.white.setFill()
+            }
+            UIRectFill(front)
+            
+            // set border size
             let border = canvas.width*border/2
+            
+            // fill with dominant color in image
+            image.averageColor!.setFill()
+            UIRectFill(CGRect(x: border, y: border, width: canvas.width - border * 2, height: canvas.height - border * 2))
+            
+            // set image size
             var imageSize: CGRect {
                 if image.size.height > canvas.height {
                     return CGRect(
@@ -120,23 +139,6 @@ final class Data: NSObject, ObservableObject {
                     )
                 }
             }
-            
-            // begin image
-            UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
-            
-            // set frame material
-            let front = CGRect(x: 0, y: 0, width: canvas.width, height: canvas.height)
-            switch material {
-                case "Oak": UIImage(named: "material_oak")?.drawAsPattern(in: front)
-                case "Steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
-                case "Marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)
-                default: UIColor.white.setFill()
-            }
-            UIRectFill(front)
-            
-            // fill with dominant color in image
-            image.averageColor!.setFill()
-            UIRectFill(CGRect(x: border, y: border, width: canvas.width - border * 2, height: canvas.height - border * 2))
             
             // draw image on frame
             image.draw(in: imageSize)

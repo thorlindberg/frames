@@ -5,6 +5,7 @@ struct Editor: View {
     
     @ObservedObject var model: Data
     @Environment(\.colorScheme) var colorscheme
+    @State var color: Color = .red
     
     var body: some View {
         List {
@@ -80,11 +81,11 @@ struct Editor: View {
                                     model.data.frames[model.data.selected].border = CGFloat(value)
                                 }
                             }) {
-                                Text("\(value) cm")
+                                Text("\(value, specifier: "%.2f") cm")
                             }
                         }
                     } label: {
-                        Text("\(model.data.frames[model.data.selected].border) cm")
+                        Text("\(model.data.frames[model.data.selected].border, specifier: "%.2f") cm")
                     }
                 }
             }
@@ -110,7 +111,7 @@ struct Editor: View {
                         .buttonStyle(PlainButtonStyle())
                     }
                 }
-                .padding(.vertical, 10)
+                .padding(.vertical, 14)
             }
             Section {
                 HStack {
@@ -147,7 +148,7 @@ struct Editor: View {
                         .buttonStyle(PlainButtonStyle())
                     }
                 }
-                .padding(.vertical, 10)
+                .padding(.vertical, 14)
             }
             Section {
                 Button(action: {
@@ -183,10 +184,12 @@ struct Editor: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button(action: {
-                    model.data.frames[model.data.selected].filter = "None"
-                    model.data.frames[model.data.selected].material = "Oak"
-                    model.data.frames[model.data.selected].width = 60
-                    model.data.frames[model.data.selected].height = 90
+                    withAnimation {
+                        model.data.frames[model.data.selected].filter = "None"
+                        model.data.frames[model.data.selected].material = "Oak"
+                        model.data.frames[model.data.selected].width = 60
+                        model.data.frames[model.data.selected].height = 90
+                    }
                 }) {
                     Text("Reset")
                 }

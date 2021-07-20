@@ -37,12 +37,12 @@ struct Window: View {
             Welcome(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
         }
+        .sheet(isPresented: $model.data.isImporting) {
+            ImagePicker(model: model, type: "import")
+                .modifier(DisableModalDismiss(disabled: true))
+        }
         .if (UIDevice.current.userInterfaceIdiom == .pad) { view in
             view
-                .sheet(isPresented: $model.data.isImporting) {
-                    ImagePicker(model: model, type: "import")
-                        .modifier(DisableModalDismiss(disabled: true))
-                }
                 .sheet(isPresented: $model.data.isCapturing) {
                     ImagePicker(model: model, type: "capture")
                         .modifier(DisableModalDismiss(disabled: true))
@@ -50,10 +50,6 @@ struct Window: View {
         }
         .if (UIDevice.current.userInterfaceIdiom != .pad) { view in
             view
-                .fullScreenCover(isPresented: $model.data.isImporting) {
-                    ImagePicker(model: model, type: "import")
-                        .modifier(DisableModalDismiss(disabled: true))
-                }
                 .fullScreenCover(isPresented: $model.data.isCapturing) {
                     ImagePicker(model: model, type: "capture")
                         .modifier(DisableModalDismiss(disabled: true))
