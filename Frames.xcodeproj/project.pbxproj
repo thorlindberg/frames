@@ -161,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				7E13BDEB269991E700B1D78B /* FramesApp.swift */,
+				7E13BE412699946100B1D78B /* Data.swift */,
 				7EEFDCDA26999594006D4984 /* Views */,
 				7EEFDCDB269995A2006D4984 /* Dependencies */,
 			);
@@ -228,7 +229,6 @@
 		7EEFDCDB269995A2006D4984 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
-				7E13BE412699946100B1D78B /* Data.swift */,
 				7EBE116C26A5787F00BA6993 /* ScrollStack.swift */,
 				7E13BE462699946100B1D78B /* AverageColor.swift */,
 				7EEFDCDC26999729006D4984 /* Email validation.swift */,

@@ -14,62 +14,21 @@ struct Window: View {
 
     var body: some View {
         NavigationView {
-            // BREAKS IPHONE VERSION WHEN FALSE
             if UIDevice.current.userInterfaceIdiom == .pad {
                 Editor(model: model)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationBarTitle("Frame")
-            }
-            //
-            ZStack {
-                if model.data.reload {
-                    Browse(model: model)
-                } else {
-                    Browse(model: model)
-                }
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Button(action: {
-                        model.data.welcome.toggle()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            model.data.isEditing = false
-                        }
-                    }) {
-                        Text("Augmented Frames")
-                            .bold()
-                    }
-                    .accentColor(colorscheme == .dark ? .white : .black)
-                }
-                ToolbarItem(placement: .cancellationAction) {
-                    Menu {
-                        Button(action: {
-                            model.data.isImporting.toggle()
-                        }) {
-                            Label("Choose Photo", systemImage: "photo")
-                        }
-                        Button(action: {
-                            model.data.isCapturing.toggle()
-                        }) {
-                            Label("Capture Photo", systemImage: "camera")
-                        }
-                        Button(action: {
-                            UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                .first?.rootViewController?
-                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                        }) {
-                            Label("Scan Photo", systemImage: "viewfinder")
-                        }
-                    } label: {
-                        Image(systemName: "camera.fill")
+                ZStack {
+                    if model.data.reload {
+                        Browse(model: model)
+                    } else {
+                        Browse(model: model)
                     }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
-                        model.data.isAugmenting.toggle()
-                    }) {
-                        Text("AR")
+            } else {
+                ZStack {
+                    if model.data.reload {
+                        Browse(model: model)
+                    } else {
+                        Browse(model: model)
                     }
                 }
             }
@@ -78,21 +37,27 @@ struct Window: View {
             Welcome(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
         }
-        .sheet(isPresented: $model.data.isEditing) {
-            NavigationView {
-                Editor(model: model)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationBarTitle("Frame")
-            }
-            .modifier(DisableModalDismiss(disabled: true))
+        .if (UIDevice.current.userInterfaceIdiom == .pad) { view in
+            view
+                .sheet(isPresented: $model.data.isImporting) {
+                    ImagePicker(model: model, type: "import")
+                        .modifier(DisableModalDismiss(disabled: true))
+                }
+                .sheet(isPresented: $model.data.isCapturing) {
+                    ImagePicker(model: model, type: "capture")
+                        .modifier(DisableModalDismiss(disabled: true))
+                }
         }
-        .fullScreenCover(isPresented: $model.data.isImporting) {
-            ImagePicker(model: model, type: "import")
-                .modifier(DisableModalDismiss(disabled: true))
-        }
-        .fullScreenCover(isPresented: $model.data.isCapturing) {
-            ImagePicker(model: model, type: "capture")
-                .modifier(DisableModalDismiss(disabled: true))
+        .if (UIDevice.current.userInterfaceIdiom != .pad) { view in
+            view
+                .fullScreenCover(isPresented: $model.data.isImporting) {
+                    ImagePicker(model: model, type: "import")
+                        .modifier(DisableModalDismiss(disabled: true))
+                }
+                .fullScreenCover(isPresented: $model.data.isCapturing) {
+                    ImagePicker(model: model, type: "capture")
+                        .modifier(DisableModalDismiss(disabled: true))
+                }
         }
         .fullScreenCover(isPresented: $model.data.isAugmenting) {
             Augment(model: model)

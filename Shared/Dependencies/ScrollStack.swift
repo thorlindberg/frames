@@ -9,6 +9,7 @@ struct ScrollStack<Content: View>: View {
     var size: CGFloat = 280
     var spacing: CGFloat = 28
     @Binding var selection: Int
+    @Binding var scrolling: Bool
     @ViewBuilder var content: Content
     
     // computed properties
@@ -52,12 +53,24 @@ struct ScrollStack<Content: View>: View {
             scrollOffset = initialOffset
         }
         .offset(x: direction == .horizontal ? scrollOffset + dragOffset : 0, y: direction == .horizontal ? 0 : scrollOffset + dragOffset)
+        .onChange(of: selection, perform: { value in
+            // Provide haptic feedback
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                UIImpactFeedbackGenerator(style: .medium)
+                    .impactOccurred()
+            }
+        })
         .gesture(
             DragGesture()
                 .onChanged({ event in
+                    if !scrolling {
+                        scrolling = true // disable NavigationLinks
+                    }
                     dragOffset = direction == .horizontal ? event.translation.width : event.translation.height
                 })
                 .onEnded({ event in
+                    
+                    scrolling = false // re-enable NavigationLinks
                     
                     if direction == .horizontal {
                         

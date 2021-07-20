@@ -3,49 +3,84 @@ import SwiftUI
 struct Browse: View {
     
     @ObservedObject var model: Data
+    @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        ScrollStack(items: model.data.frames.count, direction: UIDevice.current.userInterfaceIdiom == .pad ? .horizontal : .vertical, size: 480, selection: $model.data.selected) {
+        ScrollStack(items: model.data.frames.count, direction: UIDevice.current.userInterfaceIdiom == .pad ? .horizontal : .vertical, size: 480, selection: $model.data.selected, scrolling: $model.data.isBrowsing) {
             ForEach(Array(model.data.frames.indices), id: \.self) { index in
-                Image(uiImage: model.data.frames[index].transform)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(
-                        width: UIDevice.current.userInterfaceIdiom == .pad ? 480 : nil,
-                        height: UIDevice.current.userInterfaceIdiom == .pad ? nil : 480
-                    )
-                    .padding(UIDevice.current.userInterfaceIdiom == .pad ? .vertical : .horizontal, 28)
-                    .opacity(model.data.welcome ? 1 : index == model.data.selected ? 1 : 0.3)
-                    .onAppear {
-                        model.transformImage(index: index)
-                    }
-                    .contextMenu {
-                        if !model.data.welcome && index == model.data.selected {
-                            Button(action: {
-                                UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                    .first?
-                                    .rootViewController?
-                                    .present(UIActivityViewController(activityItems: [model.data.frames[index].transform], applicationActivities: nil), animated: true)
-                            }) {
-                                Label("Share", systemImage: "square.and.arrow.up")
-                            }
-                            if model.data.frames.count > 1 {
+                NavigationLink(destination: Editor(model: model)) {
+                    Image(uiImage: model.data.frames[index].transform)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(
+                            width: UIDevice.current.userInterfaceIdiom == .pad ? 480 : nil,
+                            height: UIDevice.current.userInterfaceIdiom == .pad ? nil : 480
+                        )
+                        .padding(UIDevice.current.userInterfaceIdiom == .pad ? .vertical : .horizontal, 28)
+                        .opacity(model.data.welcome ? 1 : index == model.data.selected ? 1 : 0.3)
+                        .contextMenu {
+                            if !model.data.welcome && index == model.data.selected {
                                 Button(action: {
-                                    model.removeImage(index: index)
+                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                        .first?
+                                        .rootViewController?
+                                        .present(UIActivityViewController(activityItems: [model.data.frames[index].transform], applicationActivities: nil), animated: true)
                                 }) {
-                                    Label("Delete", systemImage: "delete.left")
+                                    Label("Share", systemImage: "square.and.arrow.up")
+                                }
+                                if model.data.frames.count > 1 {
+                                    Button(action: {
+                                        model.removeImage(index: index)
+                                    }) {
+                                        Label("Delete", systemImage: "delete.left")
+                                    }
                                 }
                             }
                         }
+                }
+                .disabled(UIDevice.current.userInterfaceIdiom == .pad || index != model.data.selected || model.data.isBrowsing)
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Button(action: {
+                    model.data.welcome.toggle()
+                }) {
+                    Text("Augmented Frames")
+                        .bold()
+                }
+                .accentColor(colorscheme == .dark ? .white : .black)
+            }
+            ToolbarItem(placement: .cancellationAction) {
+                Menu {
+                    Button(action: {
+                        model.data.isImporting.toggle()
+                    }) {
+                        Label("Choose Photo", systemImage: "photo")
                     }
-                    .onTapGesture {
-                        if model.data.welcome {
-                            model.data.guide = "customize"
-                        }
-                        if UIDevice.current.userInterfaceIdiom != .pad && index == model.data.selected {
-                            model.data.isEditing.toggle()
-                        }
+                    Button(action: {
+                        model.data.isCapturing.toggle()
+                    }) {
+                        Label("Capture Photo", systemImage: "camera")
                     }
+                    Button(action: {
+                        UIApplication.shared.windows.filter({$0.isKeyWindow})
+                            .first?.rootViewController?
+                            .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                    }) {
+                        Label("Scan Photo", systemImage: "viewfinder")
+                    }
+                } label: {
+                    Image(systemName: "camera.fill")
+                }
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    model.data.isAugmenting.toggle()
+                }) {
+                    Text("AR")
+                }
             }
         }
     }

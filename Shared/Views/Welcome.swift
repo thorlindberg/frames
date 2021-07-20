@@ -81,7 +81,6 @@ struct Welcome: View {
                 frames = model.data.frames
                 model.data.frames = [Data.Frame(
                     image: UIImage(imageLiteralResourceName: "sample"),
-                    transform: UIImage(imageLiteralResourceName: "sample"),
                     size: Data.Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak"
                 )]
             }

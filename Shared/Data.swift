@@ -14,9 +14,9 @@ final class Data: NSObject, ObservableObject {
         var welcome: Bool
         var guide: String
         var reload: Bool
+        var isBrowsing: Bool
         var isImporting: Bool
         var isCapturing: Bool
-        var isEditing: Bool
         var isAugmenting: Bool
         var isFlashlight: Bool
         var selected: Int
@@ -26,7 +26,97 @@ final class Data: NSObject, ObservableObject {
     
     struct Frame: Hashable {
         var image: UIImage
-        var transform: UIImage
+        var transform: UIImage {
+            
+            // resource: https://stackoverflow.com/a/39987845/15072454
+            
+            var transformation = image
+            
+            // convert image to JPEG
+            if let jpegData = transformation.jpegData(compressionQuality: 1.0) {
+                transformation = UIImage(data: jpegData)!
+            }
+            
+            // filter image
+            // resource: https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html
+            // source: https://stackoverflow.com/questions/40178846/convert-uiimage-to-grayscale-keeping-image-quality
+            if filter != "None" {
+                let context = CIContext(options: nil)
+                var currentFilter = CIFilter(name: "CIPhotoEffectNoir")
+                switch filter {
+                    case "Noir": currentFilter = CIFilter(name: "CIPhotoEffectNoir")
+                    case "Mono": currentFilter = CIFilter(name: "CIPhotoEffectMono")
+                    case "Invert": currentFilter = CIFilter(name: "CIColorInvert")
+                    default: return image
+                }
+                currentFilter!.setValue(CIImage(image: transformation), forKey: kCIInputImageKey)
+                if let output = currentFilter?.outputImage,
+                    let cgImage = context.createCGImage(output, from: output.extent) {
+                    transformation = UIImage(cgImage: cgImage)
+                }
+            }
+            
+            // set frame size
+            let canvas = CGSize(
+                width: transformation.size.width,
+                height: transformation.size.width*(size.height/size.width)
+            )
+            
+            // set image size
+            let border = canvas.width*border/2
+            var imageSize = CGRect(
+                x: border,
+                y: border + (canvas.height - canvas.width*(transformation.size.height/transformation.size.width)) / 2,
+                width: canvas.width-canvas.width*border,
+                height: canvas.width*(transformation.size.height/transformation.size.width)-canvas.width*border
+            )
+            if transformation.size.height > canvas.height {
+                imageSize = CGRect(
+                    x: border + (canvas.width - canvas.height*(transformation.size.width/transformation.size.height)) / 2,
+                    y: border,
+                    width: canvas.height*(transformation.size.width/transformation.size.height)-canvas.width*border,
+                    height: canvas.height-canvas.width*border
+                )
+            }
+            
+            // begin transformation
+            UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
+            
+            // set frame material
+            let front = CGRect(
+                x: 0, y: 0,
+                width: canvas.width,
+                height: canvas.height
+            )
+            switch material {
+                case "Oak": UIImage(named: "material_oak")?.drawAsPattern(in: front)
+                case "Steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
+                case "Marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)
+                default: UIColor.white.setFill()
+            }
+            UIRectFill(front)
+            
+            // fill with dominant color in image
+            // source: https://www.hackingwithswift.com/example-code/media/how-to-read-the-average-color-of-a-uiimage-using-ciareaaverage
+            
+            image.averageColor!.setFill()
+            UIRectFill(CGRect(
+                x: border, y: border,
+                width: canvas.width - border * 2,
+                height: canvas.height - border * 2
+            ))
+            
+            // draw image on frame
+            transformation.draw(in: imageSize)
+            
+            // end transformation
+            let newImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            // update transformed image
+            return newImage!
+            
+        }
         var size: Size
         var border: CGFloat
         var filter: String
@@ -49,18 +139,14 @@ final class Data: NSObject, ObservableObject {
     }
     
     @Published var data: Format = Format(
-        welcome: !UserDefaults.standard.bool(forKey: "v1.0"), guide: "",
-        reload: false, isImporting: false, isCapturing: false, isEditing: false,
-        isAugmenting: false, isFlashlight: false,
-        selected: 0,
-        frames: [
+        welcome: !UserDefaults.standard.bool(forKey: "v1.0"), guide: "", reload: false,
+        isBrowsing: false, isImporting: false, isCapturing: false, isAugmenting: false, isFlashlight: false,
+        selected: 0, frames: [
             Frame(
                 image: UIImage(imageLiteralResourceName: "sample"),
-                transform: UIImage(imageLiteralResourceName: "sample"),
                 size: Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak"
             ), Frame(
                 image: UIImage(imageLiteralResourceName: "sample2"),
-                transform: UIImage(imageLiteralResourceName: "sample2"),
                 size: Size(width: 60, height: 90), border: 0.05, filter: "None", material: "Oak"
             )
         ],
@@ -88,7 +174,7 @@ final class Data: NSObject, ObservableObject {
     let filters: [String] = ["None", "Noir", "Mono", "Invert"]
     let materials: [String] = ["Oak", "Steel", "Marble"]
     
-    let sizes: [Size] = [
+    let sizes: [Size] = [ // deprecated
         Size(width: 60, height: 90),
         Size(width: 50, height: 70),
         Size(width: 45, height: 60),
@@ -114,7 +200,7 @@ final class Data: NSObject, ObservableObject {
         let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
         
         // set scene background
-        scene.background.contents = data.colorscheme == .dark ? UIColor.systemGray5 : UIColor.white
+        scene.background.contents = data.colorscheme == .dark ? UIColor.systemGray6 : UIColor.white
         
         // define materials
         let front = SCNMaterial()
@@ -159,7 +245,7 @@ final class Data: NSObject, ObservableObject {
     func addImage(image: UIImage) {
         data.frames.insert(
             Frame(
-                image: image, transform: image,
+                image: image,
                 size: Size(width: 60, height: 90), border: 0.05,
                 filter: "None", material: "Oak"
             ),
@@ -203,6 +289,102 @@ final class Data: NSObject, ObservableObject {
         
     }
     
+    /*
+    var transformSelected: UIImage {
+        
+        // resource: https://stackoverflow.com/a/39987845/15072454
+        
+        let index = data.selected
+        var image = data.frames[index].image
+        
+        // convert image to JPEG
+        if let jpegData = image.jpegData(compressionQuality: 1.0) {
+            image = UIImage(data: jpegData)!
+        }
+        
+        // filter image
+        // resource: https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html
+        // source: https://stackoverflow.com/questions/40178846/convert-uiimage-to-grayscale-keeping-image-quality
+        if data.frames[index].filter != "None" {
+            let context = CIContext(options: nil)
+            var currentFilter = CIFilter(name: "CIPhotoEffectNoir")
+            switch data.frames[index].filter {
+                case "Noir": currentFilter = CIFilter(name: "CIPhotoEffectNoir")
+                case "Mono": currentFilter = CIFilter(name: "CIPhotoEffectMono")
+                case "Invert": currentFilter = CIFilter(name: "CIColorInvert")
+                default: return image
+            }
+            currentFilter!.setValue(CIImage(image: image), forKey: kCIInputImageKey)
+            if let output = currentFilter?.outputImage,
+                let cgImage = context.createCGImage(output, from: output.extent) {
+                image = UIImage(cgImage: cgImage)
+            }
+        }
+        
+        // set frame size
+        let canvas = CGSize(
+            width: image.size.width,
+            height: image.size.width*(data.frames[index].size.height/data.frames[index].size.width)
+        )
+        
+        // set image size
+        let border = canvas.width*data.frames[index].border/2
+        var imageSize = CGRect(
+            x: border,
+            y: border + (canvas.height - canvas.width*(image.size.height/image.size.width)) / 2,
+            width: canvas.width-canvas.width*data.frames[index].border,
+            height: canvas.width*(image.size.height/image.size.width)-canvas.width*data.frames[index].border
+        )
+        if image.size.height > canvas.height {
+            imageSize = CGRect(
+                x: border + (canvas.width - canvas.height*(image.size.width/image.size.height)) / 2,
+                y: border,
+                width: canvas.height*(image.size.width/image.size.height)-canvas.width*data.frames[index].border,
+                height: canvas.height-canvas.width*data.frames[index].border
+            )
+        }
+        
+        // begin transformation
+        UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
+        
+        // set frame material
+        let front = CGRect(
+            x: 0, y: 0,
+            width: canvas.width,
+            height: canvas.height
+        )
+        switch data.frames[index].material {
+            case "Oak": UIImage(named: "material_oak")?.drawAsPattern(in: front)
+            case "Steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
+            case "Marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)
+            default: UIColor.white.setFill()
+        }
+        UIRectFill(front)
+        
+        // fill with dominant color in image
+        // source: https://www.hackingwithswift.com/example-code/media/how-to-read-the-average-color-of-a-uiimage-using-ciareaaverage
+        
+        image.averageColor!.setFill()
+        UIRectFill(CGRect(
+            x: border, y: border,
+            width: canvas.width - border * 2,
+            height: canvas.height - border * 2
+        ))
+        
+        // draw image on frame
+        image.draw(in: imageSize)
+        
+        // end transformation
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        // update transformed image
+        return newImage!
+        
+    }
+    */
+    
+    /*
     func transformImage(index: Int) {
         
         // resource: https://stackoverflow.com/a/39987845/15072454
@@ -296,6 +478,7 @@ final class Data: NSObject, ObservableObject {
         data.frames[index].transform = newImage!
         
     }
+    */
     
 }
 
