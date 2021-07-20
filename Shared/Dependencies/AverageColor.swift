@@ -1,3 +1,5 @@
+// source: https://www.hackingwithswift.com/example-code/media/how-to-read-the-average-color-of-a-uiimage-using-ciareaaverage
+
 import SwiftUI
 
 extension UIImage {

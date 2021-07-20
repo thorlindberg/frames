@@ -16,8 +16,8 @@ struct Editor: View {
                 }
                 .opacity(0.3)
                 SceneView(
-                    scene: model.scene,
-                    pointOfView: model.camera,
+                    scene: model.data.scene,
+                    pointOfView: model.data.camera,
                     options: [.allowsCameraControl]
                 )
                 .frame(height: 230)
@@ -36,64 +36,21 @@ struct Editor: View {
                     Image(systemName: "selection.pin.in.out")
                 }
                 .opacity(0.3)
-                /*
-                ZStack {
-                    Rectangle()
-                        .opacity(0.5)
-                        .frame(width: 160, height: 120)
-                    HStack {
-                        Spacer()
-                        Menu {
-                            ForEach(10...200, id: \.self) { value in
-                                Button(action: {
-                                    model.data.frames[model.data.selected].size.height = CGFloat(value)
-                                    model.transformImage(index: model.data.selected)
-                                }) {
-                                    Text("\(value) cm")
-                                }
-                            }
-                        } label: {
-                            Text("\(Int(model.data.frames[model.data.selected].size.height)) cm")
-                        }
-                    }
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Spacer()
-                            Menu {
-                                ForEach(10...200, id: \.self) { value in
-                                    Button(action: {
-                                        model.data.frames[model.data.selected].size.width = CGFloat(value)
-                                        model.transformImage(index: model.data.selected)
-                                    }) {
-                                        Text("\(value) cm")
-                                    }
-                                }
-                            } label: {
-                                Text("\(Int(model.data.frames[model.data.selected].size.width)) cm")
-                            }
-                            Spacer()
-                        }
-                    }
-                }
-                .frame(height: 200)
-                .padding(.vertical, -6)
-                .padding(.horizontal, -16)
-                .padding(16)
-                */
                 HStack {
                     Text("Width")
                     Spacer()
                     Menu {
                         ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
                             Button(action: {
-                                model.data.frames[model.data.selected].size.width = CGFloat(value)
+                                withAnimation {
+                                    model.data.frames[model.data.selected].width = CGFloat(value)
+                                }
                             }) {
                                 Text("\(value) cm")
                             }
                         }
                     } label: {
-                        Text("\(Int(model.data.frames[model.data.selected].size.width)) cm")
+                        Text("\(Int(model.data.frames[model.data.selected].width)) cm")
                     }
                 }
                 HStack {
@@ -102,13 +59,32 @@ struct Editor: View {
                     Menu {
                         ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
                             Button(action: {
-                                model.data.frames[model.data.selected].size.height = CGFloat(value)
+                                withAnimation {
+                                    model.data.frames[model.data.selected].height = CGFloat(value)
+                                }
                             }) {
                                 Text("\(value) cm")
                             }
                         }
                     } label: {
-                        Text("\(Int(model.data.frames[model.data.selected].size.height)) cm")
+                        Text("\(Int(model.data.frames[model.data.selected].height)) cm")
+                    }
+                }
+                HStack {
+                    Text("Border")
+                    Spacer()
+                    Menu {
+                        ForEach(Array(stride(from: 0.01, to: 0.21, by: 0.01)), id: \.self) { value in
+                            Button(action: {
+                                withAnimation {
+                                    model.data.frames[model.data.selected].border = CGFloat(value)
+                                }
+                            }) {
+                                Text("\(value) cm")
+                            }
+                        }
+                    } label: {
+                        Text("\(model.data.frames[model.data.selected].border) cm")
                     }
                 }
             }
@@ -209,11 +185,14 @@ struct Editor: View {
                 Button(action: {
                     model.data.frames[model.data.selected].filter = "None"
                     model.data.frames[model.data.selected].material = "Oak"
-                    model.data.frames[model.data.selected].size = Data.Size(width: 60, height: 90)
+                    model.data.frames[model.data.selected].width = 60
+                    model.data.frames[model.data.selected].height = 90
                 }) {
                     Text("Reset")
                 }
-                .disabled(model.data.frames[model.data.selected].filter == "None" && model.data.frames[model.data.selected].material == "Oak" && model.data.frames[model.data.selected].size == Data.Size(width: 60, height: 90))
+                .disabled(
+                    model.data.frames[model.data.selected].filter == "None" && model.data.frames[model.data.selected].material == "Oak" && model.data.frames[model.data.selected].width == 60 && model.data.frames[model.data.selected].height == 90
+                )
             }
         }
         .onAppear {

@@ -143,8 +143,8 @@ class ARView: UIViewController, ARSCNViewDelegate {
         
         // frame size
         imageHolder.scale = SCNVector3(
-            Float(model.data.frames[model.data.selected].size.width/100),
-            Float(model.data.frames[model.data.selected].size.height/100),
+            Float(model.data.frames[model.data.selected].width/100),
+            Float(model.data.frames[model.data.selected].height/100),
             1
         )
         
