@@ -598,6 +598,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = thorskjold.Frames;
 				PRODUCT_NAME = Frames;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -622,6 +623,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = thorskjold.Frames;
 				PRODUCT_NAME = Frames;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

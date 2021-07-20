@@ -189,12 +189,13 @@ struct Editor: View {
                         model.data.frames[model.data.selected].material = "Oak"
                         model.data.frames[model.data.selected].width = 60
                         model.data.frames[model.data.selected].height = 90
+                        model.data.frames[model.data.selected].border = 0.05
                     }
                 }) {
                     Text("Reset")
                 }
                 .disabled(
-                    model.data.frames[model.data.selected].filter == "None" && model.data.frames[model.data.selected].material == "Oak" && model.data.frames[model.data.selected].width == 60 && model.data.frames[model.data.selected].height == 90
+                    model.data.frames[model.data.selected].filter == "None" && model.data.frames[model.data.selected].material == "Oak" && model.data.frames[model.data.selected].width == 60 && model.data.frames[model.data.selected].height == 90 && model.data.frames[model.data.selected].border == 0.05
                 )
             }
         }
