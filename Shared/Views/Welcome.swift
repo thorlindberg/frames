@@ -79,9 +79,8 @@ struct Welcome: View {
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 frames = model.data.frames
-                model.data.frames = [Model.Frame(
-                    image: UIImage(imageLiteralResourceName: "sample"),
-                    width: 60, height: 90, border: 0.05, filter: "None", material: "Oak"
+                model.data.frames = [
+                    Model.Frame(image: UIImage(imageLiteralResourceName: "sample")
                 )]
             }
         }

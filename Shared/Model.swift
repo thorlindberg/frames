@@ -18,13 +18,8 @@ final class Model: NSObject, ObservableObject {
         var isFlashlight: Bool = false
         var selected: Int = 0
         var frames: [Frame] = [
-            Frame(
-                image: UIImage(imageLiteralResourceName: "sample"),
-                width: 60, height: 90, border: 0.05, filter: "None", material: "Oak"
-            ), Frame(
-                image: UIImage(imageLiteralResourceName: "sample2"),
-                width: 60, height: 90, border: 0.05, filter: "None", material: "Oak"
-            )
+            Frame(image: UIImage(imageLiteralResourceName: "sample")),
+            Frame(image: UIImage(imageLiteralResourceName: "sample2"))
         ]
         var feedback: Contact = Contact(
             category: "", issue: "", description: "", email: "", focus: "",
@@ -50,12 +45,7 @@ final class Model: NSObject, ObservableObject {
             front.diffuse.contents = frames[selected].transform
             
             let frame = SCNMaterial()
-            switch frames[selected].material {
-                case "Oak": frame.diffuse.contents = UIImage(named: "material_oak")
-                case "Steel": frame.diffuse.contents = UIImage(named: "material_steel")
-                case "Marble": frame.diffuse.contents = UIImage(named: "material_marble")
-                default: frame.diffuse.contents = UIColor.white
-            }
+            frame.diffuse.contents = frames[selected].material
             frame.diffuse.wrapT = SCNWrapMode.repeat
             frame.diffuse.wrapS = SCNWrapMode.repeat
             
@@ -82,31 +72,16 @@ final class Model: NSObject, ObservableObject {
     
     struct Frame: Hashable {
         var image: UIImage
-        var width: CGFloat
-        var height: CGFloat
-        var border: CGFloat
-        var filter: String
-        var material: String
+        var width: CGFloat = 60
+        var height: CGFloat = 90
+        var border: CGFloat = 0.05
+        var filter: CIFilter?
+        var filtered: Bool = false
+        var material: UIImage = UIImage(named: "material_oak")!
         var transform: UIImage {
             
-            var image = image
-            
             // filter image
-            if filter != "None" {
-                let context = CIContext(options: nil)
-                var currentFilter = CIFilter(name: "CIPhotoEffectNoir")
-                switch filter {
-                    case "Noir": currentFilter = CIFilter(name: "CIPhotoEffectNoir")
-                    case "Mono": currentFilter = CIFilter(name: "CIPhotoEffectMono")
-                    case "Invert": currentFilter = CIFilter(name: "CIColorInvert")
-                    default: return image
-                }
-                currentFilter!.setValue(CIImage(image: image), forKey: kCIInputImageKey)
-                if let output = currentFilter?.outputImage,
-                    let cgImage = context.createCGImage(output, from: output.extent) {
-                    image = UIImage(cgImage: cgImage)
-                }
-            }
+            let image = filtered ? filterImage(filter: filter, image: image) : image
             
             // set frame size
             let canvas = CGSize(
@@ -119,12 +94,7 @@ final class Model: NSObject, ObservableObject {
             
             // set frame material
             let front = CGRect(x: 0, y: 0, width: canvas.width, height: canvas.height)
-            switch material {
-                case "Oak": UIImage(named: "material_oak")?.drawAsPattern(in: front)
-                case "Steel": UIImage(named: "material_steel")?.drawAsPattern(in: front)
-                case "Marble": UIImage(named: "material_marble")?.drawAsPattern(in: front)
-                default: UIColor.white.setFill()
-            }
+            material.drawAsPattern(in: front)
             UIRectFill(front)
             
             // set border size
@@ -183,13 +153,7 @@ final class Model: NSObject, ObservableObject {
     }
     
     func addImage(image: UIImage) {
-        data.frames.insert(
-            Frame(
-                image: image, width: 60, height: 90, border: 0.05,
-                filter: "None", material: "Oak"
-            ),
-            at: 0
-        )
+        data.frames.insert(Frame(image: image), at: 0)
         reloadStack()
     }
     
@@ -206,24 +170,19 @@ final class Model: NSObject, ObservableObject {
         }
     }
     
-    func filterImage(filter: String) -> UIImage {
-        var image = data.frames[data.selected].image
+}
+
+func filterImage(filter: CIFilter?, image: UIImage) -> UIImage {
+    var image = image
+    if let filter = filter {
         let context = CIContext(options: nil)
-        var currentFilter = CIFilter(name: "CIPhotoEffectNoir")
-        switch filter {
-            case "Noir": currentFilter = CIFilter(name: "CIPhotoEffectNoir")
-            case "Mono": currentFilter = CIFilter(name: "CIPhotoEffectMono")
-            case "Invert": currentFilter = CIFilter(name: "CIColorInvert")
-            default: return image
-        }
-        currentFilter!.setValue(CIImage(image: image), forKey: kCIInputImageKey)
-        if let output = currentFilter?.outputImage,
+        filter.setValue(CIImage(image: image), forKey: kCIInputImageKey)
+        if let output = filter.outputImage,
             let cgImage = context.createCGImage(output, from: output.extent) {
             image = UIImage(cgImage: cgImage)
         }
-        return image
     }
-    
+    return image
 }
 
 extension Model: VNDocumentCameraViewControllerDelegate {

@@ -129,12 +129,7 @@ class ARView: UIViewController, ARSCNViewDelegate {
         front.diffuse.contents = model.data.frames[model.data.selected].transform
         
         let frame = SCNMaterial()
-        switch model.data.frames[model.data.selected].material {
-            case "Oak": frame.diffuse.contents = UIImage(named: "material_oak")
-            case "Steel": frame.diffuse.contents = UIImage(named: "material_steel")
-            case "Marble": frame.diffuse.contents = UIImage(named: "material_marble")
-            default: frame.diffuse.contents = UIColor.white
-        }
+        frame.diffuse.contents = model.data.frames[model.data.selected].material
         frame.diffuse.wrapT = SCNWrapMode.repeat
         frame.diffuse.wrapS = SCNWrapMode.repeat
         

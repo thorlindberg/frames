@@ -89,6 +89,7 @@ struct Editor: View {
                     }
                 }
             }
+            /*
             Section {
                 HStack {
                     Text("Filters")
@@ -97,11 +98,23 @@ struct Editor: View {
                 }
                 .opacity(0.3)
                 LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
-                    ForEach(["None", "Noir", "Mono", "Invert"], id: \.self) { filter in
+                    Button(action: {
+                        model.data.frames[model.data.selected].filtered = false
+                    }) {
+                        Image(uiImage: model.data.frames[model.data.selected].image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .if (!model.data.frames[model.data.selected].filtered) { view in
+                                view.border(Color.accentColor, width: 4)
+                            }
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    ForEach([CIFilter(name: "CIPhotoEffectNoir"), CIFilter(name: "CIPhotoEffectMono"), CIFilter(name: "CIColorInvert")], id: \.self) { filter in
                         Button(action: {
                             model.data.frames[model.data.selected].filter = filter
+                            model.data.frames[model.data.selected].filtered = true
                         }) {
-                            Image(uiImage: model.filterImage(filter: filter))
+                            Image(uiImage: filterImage(filter: filter, image: model.data.frames[model.data.selected].image))
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .if (model.data.frames[model.data.selected].filter == filter) { view in
@@ -113,6 +126,7 @@ struct Editor: View {
                 }
                 .padding(.vertical, 14)
             }
+            */
             Section {
                 HStack {
                     Text("Materials")
@@ -121,26 +135,13 @@ struct Editor: View {
                 }
                 .opacity(0.3)
                 LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
-                    ForEach(["Oak", "Steel", "Marble"], id: \.self) { material in
+                    ForEach([UIImage(named: "material_oak"), UIImage(named: "material_steel"), UIImage(named: "material_marble")], id: \.self) { material in
                         Button(action: {
-                            model.data.frames[model.data.selected].material = material
+                            model.data.frames[model.data.selected].material = material!
                         }) {
-                            ZStack {
-                                switch material {
-                                    case "Oak": Image("material_oak")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                    case "Steel": Image("material_steel")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                    case "Marble": Image("material_marble")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                    default: Image("Oak")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                }
-                            }
+                            Image(uiImage: material!)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
                             .if (model.data.frames[model.data.selected].material == material) { view in
                                 view.border(Color.accentColor, width: 4)
                             }
@@ -185,18 +186,12 @@ struct Editor: View {
             ToolbarItem(placement: .primaryAction) {
                 Button(action: {
                     withAnimation {
-                        model.data.frames[model.data.selected].filter = "None"
-                        model.data.frames[model.data.selected].material = "Oak"
-                        model.data.frames[model.data.selected].width = 60
-                        model.data.frames[model.data.selected].height = 90
-                        model.data.frames[model.data.selected].border = 0.05
+                        // add reset values
                     }
                 }) {
                     Text("Reset")
                 }
-                .disabled(
-                    model.data.frames[model.data.selected].filter == "None" && model.data.frames[model.data.selected].material == "Oak" && model.data.frames[model.data.selected].width == 60 && model.data.frames[model.data.selected].height == 90 && model.data.frames[model.data.selected].border == 0.05
-                )
+                // add disable
             }
         }
         .onAppear {
