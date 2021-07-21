@@ -3,7 +3,6 @@ import SwiftUI
 struct ScrollStack<Content: View>: View {
     
     // input properties
-    
     var items: Int
     var direction: Edge.Set = .horizontal
     var size: CGFloat = 280
@@ -12,7 +11,6 @@ struct ScrollStack<Content: View>: View {
     @ViewBuilder var content: Content
     
     // computed properties
-    
     var contentSize: CGFloat {
         CGFloat(items) * size + CGFloat(items - 1) * spacing
     }
@@ -31,7 +29,6 @@ struct ScrollStack<Content: View>: View {
     }
     
     // states
-    
     @State var scrollOffset: CGFloat = 0
     @State var dragOffset: CGFloat = 0
     
@@ -52,12 +49,10 @@ struct ScrollStack<Content: View>: View {
             scrollOffset = initialOffset
         }
         .offset(x: direction == .horizontal ? scrollOffset + dragOffset : 0, y: direction == .horizontal ? 0 : scrollOffset + dragOffset)
-        .onChange(of: selection, perform: { value in
+        .onChange(of: selection, perform: { _ in
             // Provide haptic feedback
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                UIImpactFeedbackGenerator(style: .medium)
-                    .impactOccurred()
-            }
+            UIImpactFeedbackGenerator(style: .heavy)
+                .impactOccurred()
         })
         .gesture(
             DragGesture()
@@ -102,8 +97,10 @@ struct ScrollStack<Content: View>: View {
                         }
                         
                         // Update selection
-                        withAnimation {
-                            selection = items - Int(index) - 1
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.27) {
+                            withAnimation {
+                                selection = items - Int(index) - 1
+                            }
                         }
                         
                     } else {
@@ -142,8 +139,10 @@ struct ScrollStack<Content: View>: View {
                         }
                         
                         // Update selection
-                        withAnimation {
-                            selection = items - Int(index) - 1
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.27) {
+                            withAnimation {
+                                selection = items - Int(index) - 1
+                            }
                         }
                         
                     }

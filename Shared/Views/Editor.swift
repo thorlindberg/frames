@@ -168,7 +168,7 @@ struct Editor: View {
                     UIApplication.shared.windows.filter({$0.isKeyWindow})
                         .first?
                         .rootViewController?
-                        .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].transform], applicationActivities: nil), animated: true)
+                        .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].framed], applicationActivities: nil), animated: true)
                 }) {
                     HStack {
                         Text("Share")
@@ -198,17 +198,17 @@ struct Editor: View {
             ToolbarItem(placement: .primaryAction) {
                 Button(action: {
                     withAnimation {
-                        model.data.frames[model.data.selected].filtered = true
+                        model.data.frames[model.data.selected].filtered = false
                         model.data.frames[model.data.selected].material = UIImage(named: "material_oak")!
-                        model.data.frames[model.data.selected].width = 60
-                        model.data.frames[model.data.selected].height = 90
+                        model.data.frames[model.data.selected].width = 50
+                        model.data.frames[model.data.selected].height = 70
                         model.data.frames[model.data.selected].border = 0.05
                     }
                 }) {
                     Text("Reset")
                 }
                 .disabled(
-                     !model.data.frames[model.data.selected].filtered && model.data.frames[model.data.selected].material == UIImage(named: "material_oak") && model.data.frames[model.data.selected].width == 60 && model.data.frames[model.data.selected].height == 90 && model.data.frames[model.data.selected].border == 0.05
+                     !model.data.frames[model.data.selected].filtered && model.data.frames[model.data.selected].material == UIImage(named: "material_oak") && model.data.frames[model.data.selected].width == 50 && model.data.frames[model.data.selected].height == 70 && model.data.frames[model.data.selected].border == 0.05
                  )
             }
         }

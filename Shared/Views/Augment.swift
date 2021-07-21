@@ -119,14 +119,14 @@ class ARView: UIViewController, ARSCNViewDelegate {
 
         // let width = CGFloat(planeAnchor.extent.x)
         // let height = CGFloat(planeAnchor.extent.z)
-        // if width < model.data.frames[model.data.selected].transform.size.width/1000 || height < model.data.frames[model.data.selected].transform.size.height/1000 { return }
+        // if width < model.data.frames[model.data.selected].framed.size.width/1000 || height < model.data.frames[model.data.selected].framed.size.height/1000 { return }
         
         let imageHolder = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
         imageHolder.eulerAngles.x = -.pi/2
         
         // define materials
         let front = SCNMaterial()
-        front.diffuse.contents = model.data.frames[model.data.selected].transform
+        front.diffuse.contents = model.data.frames[model.data.selected].framed
         
         let frame = SCNMaterial()
         frame.diffuse.contents = model.data.frames[model.data.selected].material

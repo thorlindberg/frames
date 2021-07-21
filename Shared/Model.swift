@@ -42,7 +42,7 @@ final class Model: NSObject, ObservableObject {
             
             // define materials
             let front = SCNMaterial()
-            front.diffuse.contents = frames[selected].transform
+            front.diffuse.contents = frames[selected].framed
             
             let frame = SCNMaterial()
             frame.diffuse.contents = frames[selected].material
@@ -72,13 +72,13 @@ final class Model: NSObject, ObservableObject {
     
     struct Frame: Hashable {
         var image: UIImage
-        var width: CGFloat = 60
-        var height: CGFloat = 90
+        var width: CGFloat = 50
+        var height: CGFloat = 70
         var border: CGFloat = 0.05
         var filter: CIFilter?
         var filtered: Bool = false
         var material: UIImage = UIImage(named: "material_oak")!
-        var transform: UIImage {
+        var framed: UIImage {
             
             // filter image
             let image = filtered ? filterImage(filter: filter, image: image) : image

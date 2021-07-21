@@ -7,25 +7,28 @@ struct Browse: View {
     @State var isActive: Bool = false
     
     var body: some View {
-        NavigationLink(destination: Editor(model: model), isActive: $isActive, label: { })
+        if !model.data.welcome {
+            NavigationLink(destination: Editor(model: model), isActive: $isActive, label: { })
+        }
         ScrollStack(items: model.data.frames.count, direction: UIDevice.current.userInterfaceIdiom == .pad ? .horizontal : .vertical, size: 480, selection: $model.data.selected) {
             ForEach(Array(model.data.frames.indices), id: \.self) { index in
-                Image(uiImage: model.data.frames[index].transform)
+                Image(uiImage: model.data.frames[index].framed)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(
                         width: UIDevice.current.userInterfaceIdiom == .pad ? 480 : nil,
                         height: UIDevice.current.userInterfaceIdiom == .pad ? nil : 480
                     )
-                    .padding(UIDevice.current.userInterfaceIdiom == .pad ? .vertical : .horizontal, 28)
-                    .opacity(model.data.welcome ? 1 : index == model.data.selected ? 1 : 0.3)
+                    .padding(.horizontal, UIDevice.current.userInterfaceIdiom == .pad ? nil : 28)
+                    .padding(.vertical, UIDevice.current.userInterfaceIdiom == .pad ? 56 : nil)
+                    .opacity(index == model.data.selected ? 1 : 0.3)
                     .contextMenu {
                         if !model.data.welcome && index == model.data.selected {
                             Button(action: {
                                 UIApplication.shared.windows.filter({$0.isKeyWindow})
                                     .first?
                                     .rootViewController?
-                                    .present(UIActivityViewController(activityItems: [model.data.frames[index].transform], applicationActivities: nil), animated: true)
+                                    .present(UIActivityViewController(activityItems: [model.data.frames[index].framed], applicationActivities: nil), animated: true)
                             }) {
                                 Label("Share", systemImage: "square.and.arrow.up")
                             }
