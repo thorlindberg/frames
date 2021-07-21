@@ -3,20 +3,33 @@ import SceneKit
 import VisionKit
 import AVFoundation
 
-final class Data: NSObject, ObservableObject {
+final class Model: NSObject, ObservableObject {
+    
+    @Published var data: Format = Format()
     
     struct Format: Hashable {
         var colorscheme: ColorScheme?
-        var welcome: Bool
-        var guide: String
-        var reload: Bool
-        var isImporting: Bool
-        var isCapturing: Bool
-        var isAugmenting: Bool
-        var isFlashlight: Bool
-        var selected: Int
-        var frames: [Frame]
-        var feedback: Contact
+        var welcome: Bool = !UserDefaults.standard.bool(forKey: "v1.0")
+        var guide: String = ""
+        var reload: Bool = false
+        var isImporting: Bool = false
+        var isCapturing: Bool = false
+        var isAugmenting: Bool = false
+        var isFlashlight: Bool = false
+        var selected: Int = 0
+        var frames: [Frame] = [
+            Frame(
+                image: UIImage(imageLiteralResourceName: "sample"),
+                width: 60, height: 90, border: 0.05, filter: "None", material: "Oak"
+            ), Frame(
+                image: UIImage(imageLiteralResourceName: "sample2"),
+                width: 60, height: 90, border: 0.05, filter: "None", material: "Oak"
+            )
+        ]
+        var feedback: Contact = Contact(
+            category: "", issue: "", description: "", email: "", focus: "",
+            invalid: false, success: false
+        )
         var camera: SCNNode? {
             let node = SCNNode()
             node.camera = SCNCamera()
@@ -163,32 +176,6 @@ final class Data: NSObject, ObservableObject {
         var success: Bool
     }
     
-    @Published var data: Format = Format(
-        welcome: !UserDefaults.standard.bool(forKey: "v1.0"), guide: "", reload: false,
-        isImporting: false, isCapturing: false, isAugmenting: false, isFlashlight: false,
-        selected: 0, frames: [
-            Frame(
-                image: UIImage(imageLiteralResourceName: "sample"),
-                width: 60, height: 90, border: 0.05, filter: "None", material: "Oak"
-            ), Frame(
-                image: UIImage(imageLiteralResourceName: "sample2"),
-                width: 60, height: 90, border: 0.05, filter: "None", material: "Oak"
-            )
-        ],
-        feedback: Contact(
-            category: "", issue: "", description: "", email: "", focus: "",
-            invalid: false, success: false
-        )
-    )
-    
-    let feedbackreset = Contact(
-        category: "", issue: "", description: "", email: "", focus: "",
-        invalid: false, success: false
-    )
-    
-    let filters: [String] = ["None", "Noir", "Mono", "Invert"]
-    let materials: [String] = ["Oak", "Steel", "Marble"]
-    
     func getDocumentCameraViewController() -> VNDocumentCameraViewController {
         let vc = VNDocumentCameraViewController()
         vc.delegate = self
@@ -239,7 +226,7 @@ final class Data: NSObject, ObservableObject {
     
 }
 
-extension Data: VNDocumentCameraViewControllerDelegate {
+extension Model: VNDocumentCameraViewControllerDelegate {
     func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
         controller.dismiss(animated: true, completion: nil)
     }
@@ -257,7 +244,7 @@ extension Data: VNDocumentCameraViewControllerDelegate {
 struct Model_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Data())
+            Window(model: Model())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")

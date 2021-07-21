@@ -5,7 +5,7 @@ import ARKit
 
 struct Augment: View {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
     
     var body: some View {
         NavigationView {
@@ -48,7 +48,7 @@ struct Augment: View {
 
 struct ARViewContainer: UIViewControllerRepresentable {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
     
     typealias UIViewControllerType = ARView
     
@@ -63,9 +63,9 @@ struct ARViewContainer: UIViewControllerRepresentable {
 
 class ARView: UIViewController, ARSCNViewDelegate {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
 
-    init(_ model: Data) {
+    init(_ model: Model) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }
@@ -188,7 +188,7 @@ extension ARView: ARCoachingOverlayViewDelegate {
 struct Augment_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Data())
+            Window(model: Model())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct Browse: View {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
     @Environment(\.colorScheme) var colorscheme
     @State var isActive: Bool = false
     
@@ -94,7 +94,7 @@ struct Browse: View {
 struct Browse_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Data())
+            Window(model: Model())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12")

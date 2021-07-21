@@ -4,7 +4,7 @@ import SwiftUI
 
 struct ImagePicker: UIViewControllerRepresentable {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
     var type: String
     @Environment(\.presentationMode) var presentationMode
 

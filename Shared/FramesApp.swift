@@ -7,7 +7,7 @@ struct FramesApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Window(model: Data())
+            Window(model: Model())
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

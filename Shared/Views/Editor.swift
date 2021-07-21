@@ -3,7 +3,7 @@ import SceneKit
 
 struct Editor: View {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
     @Environment(\.colorScheme) var colorscheme
     @State var color: Color = .red
     
@@ -97,7 +97,7 @@ struct Editor: View {
                 }
                 .opacity(0.3)
                 LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
-                    ForEach(model.filters, id: \.self) { filter in
+                    ForEach(["None", "Noir", "Mono", "Invert"], id: \.self) { filter in
                         Button(action: {
                             model.data.frames[model.data.selected].filter = filter
                         }) {
@@ -121,7 +121,7 @@ struct Editor: View {
                 }
                 .opacity(0.3)
                 LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
-                    ForEach(model.materials, id: \.self) { material in
+                    ForEach(["Oak", "Steel", "Marble"], id: \.self) { material in
                         Button(action: {
                             model.data.frames[model.data.selected].material = material
                         }) {
@@ -209,7 +209,7 @@ struct Editor: View {
 struct Editor_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Editor(model: Data())
+            Editor(model: Model())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12")

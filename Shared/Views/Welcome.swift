@@ -2,9 +2,9 @@ import SwiftUI
 
 struct Welcome: View {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
     @Environment(\.colorScheme) var colorscheme
-    @State var frames: [Data.Frame] = []
+    @State var frames: [Model.Frame] = []
     
     var body: some View {
         NavigationView {
@@ -79,7 +79,7 @@ struct Welcome: View {
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 frames = model.data.frames
-                model.data.frames = [Data.Frame(
+                model.data.frames = [Model.Frame(
                     image: UIImage(imageLiteralResourceName: "sample"),
                     width: 60, height: 90, border: 0.05, filter: "None", material: "Oak"
                 )]
@@ -102,7 +102,7 @@ struct Premium: View {
 
 struct Contact: View {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
@@ -266,7 +266,10 @@ struct Contact: View {
                                             Text("OK"),
                                             action: {
                                                 presentationMode.wrappedValue.dismiss()
-                                                model.data.feedback = model.feedbackreset
+                                                model.data.feedback = Model.Contact(
+                                                    category: "", issue: "", description: "", email: "", focus: "",
+                                                    invalid: false, success: false
+                                                )
                                             }
                                         )
                                     )
@@ -297,7 +300,10 @@ struct Contact: View {
                                             Text("OK"),
                                             action: {
                                                 presentationMode.wrappedValue.dismiss()
-                                                model.data.feedback = model.feedbackreset
+                                                model.data.feedback = Model.Contact(
+                                                    category: "", issue: "", description: "", email: "", focus: "",
+                                                    invalid: false, success: false
+                                                )
                                             }
                                         )
                                     )
@@ -328,7 +334,7 @@ extension UIApplication {
 
 struct First: View {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
     
     var body: some View {
         ScrollViewReader { proxy in
@@ -465,7 +471,7 @@ struct First: View {
 
 struct Second: View {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
     
     var body: some View {
         ScrollViewReader { proxy in
@@ -533,7 +539,7 @@ struct Second: View {
 
 struct Third: View {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
     
     var body: some View {
         ScrollViewReader { proxy in
@@ -622,7 +628,7 @@ struct Third: View {
 struct Welcome_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Data())
+            Window(model: Model())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")

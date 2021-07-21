@@ -3,7 +3,7 @@ import CoreData
 
 struct Window: View {
     
-    @ObservedObject var model: Data
+    @ObservedObject var model: Model
     @Environment(\.colorScheme) var colorscheme
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
@@ -119,7 +119,7 @@ private let itemFormatter: DateFormatter = {
 struct Window_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Data())
+            Window(model: Model())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")
