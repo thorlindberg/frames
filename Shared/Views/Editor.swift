@@ -89,7 +89,6 @@ struct Editor: View {
                     }
                 }
             }
-            /*
             Section {
                 HStack {
                     Text("Filters")
@@ -104,29 +103,42 @@ struct Editor: View {
                         Image(uiImage: model.data.frames[model.data.selected].image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .if (!model.data.frames[model.data.selected].filtered) { view in
-                                view.border(Color.accentColor, width: 4)
-                            }
+                            .border(Color.accentColor, width: !model.data.frames[model.data.selected].filtered ? 4 : 0)
                     }
                     .buttonStyle(PlainButtonStyle())
-                    ForEach([CIFilter(name: "CIPhotoEffectNoir"), CIFilter(name: "CIPhotoEffectMono"), CIFilter(name: "CIColorInvert")], id: \.self) { filter in
-                        Button(action: {
-                            model.data.frames[model.data.selected].filter = filter
-                            model.data.frames[model.data.selected].filtered = true
-                        }) {
-                            Image(uiImage: filterImage(filter: filter, image: model.data.frames[model.data.selected].image))
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .if (model.data.frames[model.data.selected].filter == filter) { view in
-                                    view.border(Color.accentColor, width: 4)
-                                }
-                        }
-                        .buttonStyle(PlainButtonStyle())
+                    Button(action: {
+                        model.data.frames[model.data.selected].filter = CIFilter(name: "CIPhotoEffectNoir")
+                        model.data.frames[model.data.selected].filtered = true
+                    }) {
+                        Image(uiImage: filterImage(filter: CIFilter(name: "CIPhotoEffectNoir"), image: model.data.frames[model.data.selected].image)) // "filter" causes crash
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .border(Color.accentColor, width: model.data.frames[model.data.selected].filter == CIFilter(name: "CIPhotoEffectNoir") ? 4 : 0)
                     }
+                    .buttonStyle(PlainButtonStyle())
+                    Button(action: {
+                        model.data.frames[model.data.selected].filter = CIFilter(name: "CIPhotoEffectMono")
+                        model.data.frames[model.data.selected].filtered = true
+                    }) {
+                        Image(uiImage: filterImage(filter: CIFilter(name: "CIPhotoEffectMono"), image: model.data.frames[model.data.selected].image)) // "filter" causes crash
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .border(Color.accentColor, width: model.data.frames[model.data.selected].filter == CIFilter(name: "CIPhotoEffectMono") ? 4 : 0)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    Button(action: {
+                        model.data.frames[model.data.selected].filter = CIFilter(name: "CIColorInvert")
+                        model.data.frames[model.data.selected].filtered = true
+                    }) {
+                        Image(uiImage: filterImage(filter: CIFilter(name: "CIColorInvert"), image: model.data.frames[model.data.selected].image)) // "filter" causes crash
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .border(Color.accentColor, width: model.data.frames[model.data.selected].filter == CIFilter(name: "CIColorInvert") ? 4 : 0)
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
                 .padding(.vertical, 14)
             }
-            */
             Section {
                 HStack {
                     Text("Materials")
@@ -186,12 +198,18 @@ struct Editor: View {
             ToolbarItem(placement: .primaryAction) {
                 Button(action: {
                     withAnimation {
-                        // add reset values
+                        model.data.frames[model.data.selected].filtered = true
+                        model.data.frames[model.data.selected].material = UIImage(named: "material_oak")!
+                        model.data.frames[model.data.selected].width = 60
+                        model.data.frames[model.data.selected].height = 90
+                        model.data.frames[model.data.selected].border = 0.05
                     }
                 }) {
                     Text("Reset")
                 }
-                // add disable
+                .disabled(
+                     !model.data.frames[model.data.selected].filtered && model.data.frames[model.data.selected].material == UIImage(named: "material_oak") && model.data.frames[model.data.selected].width == 60 && model.data.frames[model.data.selected].height == 90 && model.data.frames[model.data.selected].border == 0.05
+                 )
             }
         }
         .onAppear {
