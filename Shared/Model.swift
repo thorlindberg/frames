@@ -98,11 +98,16 @@ final class Model: NSObject, ObservableObject {
             UIRectFill(front)
             
             // set border size
-            let border = canvas.width*border/2
+            let border = canvas.width * border / 2
             
             // fill with dominant color in image
             image.averageColor!.setFill()
-            UIRectFill(CGRect(x: border, y: border, width: canvas.width - border * 2, height: canvas.height - border * 2))
+            UIRectFill(
+                CGRect(
+                    x: border, y: border,
+                    width: canvas.width - border * 2, height: canvas.height - border * 2
+                )
+            )
             
             // set image size
             var imageSize: CGRect {
@@ -110,15 +115,15 @@ final class Model: NSObject, ObservableObject {
                     return CGRect(
                         x: border + (canvas.width - canvas.height*(image.size.width/image.size.height)) / 2,
                         y: border,
-                        width: canvas.height*(image.size.width/image.size.height)-canvas.width*border,
-                        height: canvas.height-canvas.width*border
+                        width: canvas.height * (image.size.width/image.size.height) - border * 2,
+                        height: canvas.height - border * 2
                     )
                 } else {
                     return CGRect(
                         x: border,
                         y: border + (canvas.height - canvas.width*(image.size.height/image.size.width)) / 2,
-                        width: canvas.width-canvas.width*border,
-                        height: canvas.width*(image.size.height/image.size.width)-canvas.width*border
+                        width: canvas.width - border * 2,
+                        height: canvas.width * (image.size.height/image.size.width) - border * 2
                     )
                 }
             }
