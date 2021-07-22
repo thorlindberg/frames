@@ -186,6 +186,8 @@
 			dependencies = (
 			);
 			name = "Frames (iOS)";
+			packageProductDependencies = (
+			);
 			productName = "Frames (iOS)";
 			productReference = 7E13BDF3269991E900B1D78B /* Frames.app */;
 			productType = "com.apple.product-type.application";
@@ -235,6 +237,8 @@
 				Base,
 			);
 			mainGroup = 7E13BDE3269991E700B1D78B;
+			packageReferences = (
+			);
 			productRefGroup = 7E13BDF4269991E900B1D78B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";

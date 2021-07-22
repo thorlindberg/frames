@@ -76,14 +76,16 @@ struct Welcome: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarHidden(true)
         }
+        /*
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 frames = model.data.frames
                 model.data.frames = [
-                    Model.Frame(image: UIImage(imageLiteralResourceName: "sample")
+                    Model.Frame(source: UIImage(imageLiteralResourceName: "sample")
                 )]
             }
         }
+        */
     }
     
 }

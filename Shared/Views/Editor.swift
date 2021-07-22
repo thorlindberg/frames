@@ -97,28 +97,16 @@ struct Editor: View {
                 }
                 .opacity(0.3)
                 LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
-                    Button(action: {
-                        model.data.frames[model.data.selected].filter = ""
-                    }) {
-                        Image(uiImage: model.data.frames[model.data.selected].image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .border(
-                                Color.accentColor,
-                                width: model.data.frames[model.data.selected].filter == "" ? 4 : 0
-                            )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    ForEach(["noir", "mono", "invert"], id: \.self) { filter in
+                    ForEach(Array(model.data.frames[model.data.selected].image.keys.sorted(by: >)), id: \.self) { key in
                         Button(action: {
-                            model.data.frames[model.data.selected].filter = filter
+                            model.data.frames[model.data.selected].filter = key
                         }) {
-                            Image(uiImage: model.data.frames[model.data.selected].filters.noir)
+                            Image(uiImage: model.data.frames[model.data.selected].image[key]!)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .border(
                                     Color.accentColor,
-                                    width: model.data.frames[model.data.selected].filter == filter ? 4 : 0
+                                    width: model.data.frames[model.data.selected].filter == key ? 4 : 0
                                 )
                         }
                         .buttonStyle(PlainButtonStyle())

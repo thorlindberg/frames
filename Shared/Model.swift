@@ -17,8 +17,8 @@ final class Model: NSObject, ObservableObject {
         var isFlashlight: Bool = false
         var selected: Int = 0
         var frames: [Frame] = [
-            Frame(image: UIImage(imageLiteralResourceName: "sample")),
-            Frame(image: UIImage(imageLiteralResourceName: "sample2"))
+            Frame(source: UIImage(imageLiteralResourceName: "sample")),
+            Frame(source: UIImage(imageLiteralResourceName: "sample2"))
         ]
         var feedback: Contact = Contact(
             category: "", issue: "", description: "", email: "", focus: "",
@@ -32,23 +32,14 @@ final class Model: NSObject, ObservableObject {
         }
     }
     
-    struct Filters: Hashable {
-        var noir: UIImage
-        var mono: UIImage
-        var invert: UIImage
-    }
-    
     struct Frame: Hashable {
         var colorscheme: ColorScheme?
-        var image: UIImage
-        var width: CGFloat = 50
-        var height: CGFloat = 70
-        var border: CGFloat = 0.05
+        var source: UIImage
         var filter: String = ""
-        var filters: Filters {
+        var image: [String:UIImage] {
             
             var noir: UIImage {
-                var image = image
+                var image = source
                 let filter = CIFilter(name: "CIPhotoEffectNoir")
                 if let filter = filter {
                     let context = CIContext(options: nil)
@@ -62,7 +53,7 @@ final class Model: NSObject, ObservableObject {
             }
             
             var mono: UIImage {
-                var image = image
+                var image = source
                 let filter = CIFilter(name: "CIPhotoEffectMono")
                 if let filter = filter {
                     let context = CIContext(options: nil)
@@ -76,7 +67,7 @@ final class Model: NSObject, ObservableObject {
             }
             
             var invert: UIImage {
-                var image = image
+                var image = source
                 let filter = CIFilter(name: "CIColorInvert")
                 if let filter = filter {
                     let context = CIContext(options: nil)
@@ -89,9 +80,16 @@ final class Model: NSObject, ObservableObject {
                 return image
             }
             
-            return Filters(noir: noir, mono: mono, invert: invert)
-            
+            return [
+                "original" : source,
+                "noir" : noir,
+                "mono" : mono,
+                "invert" : invert
+            ]
         }
+        var width: CGFloat = 50
+        var height: CGFloat = 70
+        var border: CGFloat = 0.05
         var material: UIImage = UIImage(named: "material_oak")!
         var framed: UIImage {
             
@@ -99,13 +97,13 @@ final class Model: NSObject, ObservableObject {
             var image: UIImage {
                 switch filter {
                     case "noir":
-                        return filters.noir
+                        return self.image["noir"]!
                     case "mono":
-                        return filters.mono
+                        return self.image["mono"]!
                     case "invert":
-                        return filters.invert
+                        return self.image["invert"]!
                     default:
-                        return self.image
+                        return self.source
                 }
             }
             
@@ -221,7 +219,7 @@ final class Model: NSObject, ObservableObject {
     }
     
     func addImage(image: UIImage) {
-        data.frames.insert(Frame(image: image), at: 0)
+        data.frames.insert(Frame(source: image), at: 0)
         reloadStack()
     }
     
