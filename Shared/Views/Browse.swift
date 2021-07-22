@@ -5,13 +5,18 @@ struct Browse: View {
     @ObservedObject var model: Model
     @Environment(\.colorScheme) var colorscheme
     @State var isActive: Bool = false
-    var size: CGFloat = 430
+    var size: CGFloat = 480
     
     var body: some View {
+        /*
         if !model.data.welcome {
             NavigationLink(destination: Editor(model: model), isActive: $isActive, label: { })
         }
-        ScrollStack(items: model.data.frames.count, direction: UIDevice.current.userInterfaceIdiom == .pad ? .horizontal : .vertical, size: size, spacing: 14, selection: $model.data.selected) {
+        */
+        ScrollStack(
+            items: model.data.frames.count, direction: UIDevice.current.userInterfaceIdiom == .pad ? .horizontal : .vertical,
+            size: size, spacing: 14, selection: $model.data.selected
+        ) {
             ForEach(Array(model.data.frames.indices), id: \.self) { index in
                 Image(uiImage: model.data.frames[index].framed)
                     .resizable()
@@ -44,7 +49,8 @@ struct Browse: View {
                     }
                     .onTapGesture {
                         if UIDevice.current.userInterfaceIdiom != .pad && index == model.data.selected {
-                            isActive.toggle()
+                            // isActive.toggle()
+                            model.data.isEditing.toggle()
                         }
                     }
             }

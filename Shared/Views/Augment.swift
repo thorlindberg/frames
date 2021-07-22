@@ -1,5 +1,6 @@
 import SwiftUI
 import SceneKit
+import AVFoundation
 import Foundation
 import ARKit
 
@@ -27,9 +28,7 @@ struct Augment: View {
                         }) {
                             HStack {
                                 Text("Flash")
-                                    .if (model.data.isFlashlight) { view in
-                                        view.bold()
-                                    }
+                                    .fontWeight(model.data.isFlashlight ? .bold : .regular)
                                 Image(systemName: model.data.isFlashlight ? "bolt.fill" : "bolt.slash")
                             }
                         }
@@ -40,6 +39,28 @@ struct Augment: View {
         .navigationViewStyle(StackNavigationViewStyle()) // disables split view on iPad
     }
     
+}
+
+func toggleTorch(on: Bool) {
+    guard let device = AVCaptureDevice.default(for: .video) else { return }
+
+    if device.hasTorch {
+        do {
+            try device.lockForConfiguration()
+
+            if on == true {
+                device.torchMode = .on
+            } else {
+                device.torchMode = .off
+            }
+
+            device.unlockForConfiguration()
+        } catch {
+            print("Torch could not be used")
+        }
+    } else {
+        print("Torch is not available")
+    }
 }
 
 // resource: https://developer.apple.com/documentation/arkit/content_anchors/tracking_and_visualizing_planes

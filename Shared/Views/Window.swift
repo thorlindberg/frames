@@ -5,12 +5,14 @@ struct Window: View {
     
     @ObservedObject var model: Model
     @Environment(\.colorScheme) var colorscheme
+    /*
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Form.timestamp, ascending: true)],
         animation: .default
     )
-    private var items: FetchedResults<Item>
+    private var items: FetchedResults<Form>
+    */
 
     var body: some View {
         NavigationView {
@@ -37,23 +39,19 @@ struct Window: View {
             Welcome(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
         }
+        .sheet(isPresented: $model.data.isEditing) {
+            NavigationView {
+                Editor(model: model)
+            }
+            .modifier(DisableModalDismiss(disabled: true))
+        }
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model, type: "import")
                 .modifier(DisableModalDismiss(disabled: true))
         }
-        .if (UIDevice.current.userInterfaceIdiom == .pad) { view in
-            view
-                .sheet(isPresented: $model.data.isCapturing) {
-                    ImagePicker(model: model, type: "capture")
-                        .modifier(DisableModalDismiss(disabled: true))
-                }
-        }
-        .if (UIDevice.current.userInterfaceIdiom != .pad) { view in
-            view
-                .fullScreenCover(isPresented: $model.data.isCapturing) {
-                    ImagePicker(model: model, type: "capture")
-                        .modifier(DisableModalDismiss(disabled: true))
-                }
+        .sheet(isPresented: $model.data.isCapturing) {
+            ImagePicker(model: model, type: "capture")
+                .modifier(DisableModalDismiss(disabled: true))
         }
         .fullScreenCover(isPresented: $model.data.isAugmenting) {
             Augment(model: model)
@@ -77,10 +75,11 @@ struct Window: View {
         */
     }
 
+    /*
     private func addItem() {
         withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+            let newItem = Form(context: viewContext)
+            // newItem.timestamp = Date()
 
             do {
                 try viewContext.save()
@@ -107,14 +106,17 @@ struct Window: View {
             }
         }
     }
+    */
 }
 
+/*
 private let itemFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .short
     formatter.timeStyle = .medium
     return formatter
-}()
+} ()
+*/
 
 struct Window_Previews: PreviewProvider {
     static var previews: some View {

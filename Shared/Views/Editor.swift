@@ -129,9 +129,7 @@ struct Editor: View {
                             Image(uiImage: material!)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                            .if (model.data.frames[model.data.selected].material == material) { view in
-                                view.border(Color.accentColor, width: 4)
-                            }
+                                .border(Color.accentColor, width: model.data.frames[model.data.selected].material == material ? 4 : 0)
                         }
                         .buttonStyle(PlainButtonStyle())
                     }
@@ -170,20 +168,29 @@ struct Editor: View {
         .listStyle(InsetGroupedListStyle())
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                if UIDevice.current.userInterfaceIdiom != .pad {
+                    Button(action: {
+                        model.data.isEditing.toggle()
+                    }) {
+                        Text("Close")
+                    }
+                }
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button(action: {
                     withAnimation {
-                        model.data.frames[model.data.selected].filter = ""
+                        model.data.frames[model.data.selected].filter = "original"
                         model.data.frames[model.data.selected].material = UIImage(named: "material_oak")!
-                        model.data.frames[model.data.selected].width = 50
-                        model.data.frames[model.data.selected].height = 70
+                        model.data.frames[model.data.selected].width = 60
+                        model.data.frames[model.data.selected].height = 90
                         model.data.frames[model.data.selected].border = 0.05
                     }
                 }) {
                     Text("Reset")
                 }
                 .disabled(
-                     model.data.frames[model.data.selected].filter == "" && model.data.frames[model.data.selected].material == UIImage(named: "material_oak") && model.data.frames[model.data.selected].width == 50 && model.data.frames[model.data.selected].height == 70 && model.data.frames[model.data.selected].border == 0.05
+                     model.data.frames[model.data.selected].filter == "original" && model.data.frames[model.data.selected].material == UIImage(named: "material_oak") && model.data.frames[model.data.selected].width == 60 && model.data.frames[model.data.selected].height == 90 && model.data.frames[model.data.selected].border == 0.05
                  )
             }
         }

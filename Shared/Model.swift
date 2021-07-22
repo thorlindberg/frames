@@ -11,19 +11,13 @@ final class Model: NSObject, ObservableObject {
         var welcome: Bool = !UserDefaults.standard.bool(forKey: "v1.0")
         var guide: String = ""
         var reload: Bool = false
+        var isEditing: Bool = false
         var isImporting: Bool = false
         var isCapturing: Bool = false
         var isAugmenting: Bool = false
         var isFlashlight: Bool = false
         var selected: Int = 0
-        var frames: [Frame] = [
-            Frame(source: UIImage(imageLiteralResourceName: "sample")),
-            Frame(source: UIImage(imageLiteralResourceName: "sample2"))
-        ]
-        var feedback: Contact = Contact(
-            category: "", issue: "", description: "", email: "", focus: "",
-            invalid: false, success: false
-        )
+        var frames: [Frame] = [Frame(source: UIImage(imageLiteralResourceName: "sample"))]
         var camera: SCNNode? {
             let node = SCNNode()
             node.camera = SCNCamera()
@@ -35,62 +29,39 @@ final class Model: NSObject, ObservableObject {
     struct Frame: Hashable {
         var colorscheme: ColorScheme?
         var source: UIImage
-        var filter: String = ""
-        var image: [String:UIImage] {
-            
-            var noir: UIImage {
-                var image = source
-                let filter = CIFilter(name: "CIPhotoEffectNoir")
-                if let filter = filter {
-                    let context = CIContext(options: nil)
-                    filter.setValue(CIImage(image: image), forKey: kCIInputImageKey)
-                    if let output = filter.outputImage,
-                        let cgImage = context.createCGImage(output, from: output.extent) {
-                        image = UIImage(cgImage: cgImage)
-                    }
-                }
-                return image
-            }
-            
-            var mono: UIImage {
-                var image = source
-                let filter = CIFilter(name: "CIPhotoEffectMono")
-                if let filter = filter {
-                    let context = CIContext(options: nil)
-                    filter.setValue(CIImage(image: image), forKey: kCIInputImageKey)
-                    if let output = filter.outputImage,
-                        let cgImage = context.createCGImage(output, from: output.extent) {
-                        image = UIImage(cgImage: cgImage)
-                    }
-                }
-                return image
-            }
-            
-            var invert: UIImage {
-                var image = source
-                let filter = CIFilter(name: "CIColorInvert")
-                if let filter = filter {
-                    let context = CIContext(options: nil)
-                    filter.setValue(CIImage(image: image), forKey: kCIInputImageKey)
-                    if let output = filter.outputImage,
-                        let cgImage = context.createCGImage(output, from: output.extent) {
-                        image = UIImage(cgImage: cgImage)
-                    }
-                }
-                return image
-            }
-            
-            return [
-                "original" : source,
-                "noir" : noir,
-                "mono" : mono,
-                "invert" : invert
-            ]
-        }
-        var width: CGFloat = 50
-        var height: CGFloat = 70
+        var width: CGFloat = 60
+        var height: CGFloat = 90
         var border: CGFloat = 0.05
         var material: UIImage = UIImage(named: "material_oak")!
+        var filter: String = "original"
+        var image: [String:UIImage] {
+            var images: [String:UIImage] = [:]
+            for name in ["original", "noir", "mono", "invert"] {
+                var image = source
+                var filter: CIFilter? {
+                    switch name {
+                        case "noir":
+                            return CIFilter(name: "CIPhotoEffectNoir")!
+                        case "mono":
+                            return CIFilter(name: "CIPhotoEffectMono")!
+                        case "invert":
+                            return CIFilter(name: "CIColorInvert")!
+                        default:
+                            return nil
+                    }
+                }
+                if let filter = filter {
+                    let context = CIContext(options: nil)
+                    filter.setValue(CIImage(image: image), forKey: kCIInputImageKey)
+                    if let output = filter.outputImage,
+                        let cgImage = context.createCGImage(output, from: output.extent) {
+                        image = UIImage(cgImage: cgImage)
+                    }
+                }
+                images[name] = image
+            }
+            return images
+        }
         var framed: UIImage {
             
             // filter image
@@ -103,7 +74,7 @@ final class Model: NSObject, ObservableObject {
                     case "invert":
                         return self.image["invert"]!
                     default:
-                        return self.source
+                        return self.image["original"]!
                 }
             }
             
@@ -202,16 +173,6 @@ final class Model: NSObject, ObservableObject {
         }
     }
     
-    struct Contact: Hashable {
-        var category: String
-        var issue: String
-        var description: String
-        var email: String
-        var focus: String
-        var invalid: Bool
-        var success: Bool
-    }
-    
     func getDocumentCameraViewController() -> VNDocumentCameraViewController {
         let vc = VNDocumentCameraViewController()
         vc.delegate = self
@@ -250,6 +211,56 @@ extension Model: VNDocumentCameraViewControllerDelegate {
             addImage(image: scan.imageOfPage(at:i))
         }
         controller.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension UIImage {
+    var averageColor: UIColor? {
+        guard let inputImage = CIImage(image: self) else { return nil }
+        let extentVector = CIVector(x: inputImage.extent.origin.x, y: inputImage.extent.origin.y, z: inputImage.extent.size.width, w: inputImage.extent.size.height)
+        guard let filter = CIFilter(name: "CIAreaAverage", parameters: [kCIInputImageKey: inputImage, kCIInputExtentKey: extentVector]) else { return nil }
+        guard let outputImage = filter.outputImage else { return nil }
+        var bitmap = [UInt8](repeating: 0, count: 4)
+        let context = CIContext(options: [.workingColorSpace: kCFNull as Any])
+        context.render(outputImage, toBitmap: &bitmap, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: nil)
+        return UIColor(red: CGFloat(bitmap[0]) / 255, green: CGFloat(bitmap[1]) / 255, blue: CGFloat(bitmap[2]) / 255, alpha: CGFloat(bitmap[3]) / 255)
+    }
+}
+
+// source: https://stackoverflow.com/a/60939207/15072454
+
+extension UIApplication {
+    func visibleViewController() -> UIViewController? {
+        guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) else { return nil }
+        guard let rootViewController = window.rootViewController else { return nil }
+        return UIApplication.getVisibleViewControllerFrom(vc: rootViewController)
+    }
+    private static func getVisibleViewControllerFrom(vc:UIViewController) -> UIViewController {
+        if let navigationController = vc as? UINavigationController,
+            let visibleController = navigationController.visibleViewController  {
+            return UIApplication.getVisibleViewControllerFrom( vc: visibleController )
+        } else if let tabBarController = vc as? UITabBarController,
+            let selectedTabController = tabBarController.selectedViewController {
+            return UIApplication.getVisibleViewControllerFrom(vc: selectedTabController )
+        } else {
+            if let presentedViewController = vc.presentedViewController {
+                return UIApplication.getVisibleViewControllerFrom(vc: presentedViewController)
+            } else {
+                return vc
+            }
+        }
+    }
+}
+
+struct DisableModalDismiss: ViewModifier {
+    let disabled: Bool
+    func body(content: Content) -> some View {
+        disableModalDismiss()
+        return AnyView(content)
+    }
+    func disableModalDismiss() {
+        guard let visibleController = UIApplication.shared.visibleViewController() else { return }
+        visibleController.isModalInPresentation = disabled
     }
 }
 

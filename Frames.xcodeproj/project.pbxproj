@@ -14,17 +14,12 @@
 		7E13BE1D269991E900B1D78B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E13BDEE269991E900B1D78B /* Assets.xcassets */; };
 		7E13BE392699944B00B1D78B /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE342699944B00B1D78B /* Welcome.swift */; };
 		7E13BE3B2699944B00B1D78B /* Augment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE352699944B00B1D78B /* Augment.swift */; };
-		7E13BE482699946100B1D78B /* Conditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE3F2699946100B1D78B /* Conditional.swift */; };
 		7E13BE4C2699946100B1D78B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE412699946100B1D78B /* Model.swift */; };
-		7E13BE4E2699946100B1D78B /* Modal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE422699946100B1D78B /* Modal.swift */; };
-		7E13BE562699946100B1D78B /* AverageColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE462699946100B1D78B /* AverageColor.swift */; };
-		7E13BE582699946100B1D78B /* Torch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE472699946100B1D78B /* Torch.swift */; };
 		7E3834B3269EC86F0058699C /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3834B2269EC86F0058699C /* ImagePicker.swift */; };
 		7EBE116A26A4C09200BA6993 /* Browse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE116926A4C09200BA6993 /* Browse.swift */; };
 		7EBE116D26A5787F00BA6993 /* ScrollStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE116C26A5787F00BA6993 /* ScrollStack.swift */; };
 		7EEFDCD62699950A006D4984 /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCD42699950A006D4984 /* Window.swift */; };
 		7EEFDCD82699950A006D4984 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCD52699950A006D4984 /* Persistence.swift */; };
-		7EEFDCDD26999729006D4984 /* Email validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCDC26999729006D4984 /* Email validation.swift */; };
 		7EEFDCE226999EE7006D4984 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEFDCE126999EE7006D4984 /* CloudKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -50,17 +45,12 @@
 		7E13BE09269991E900B1D78B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7E13BE342699944B00B1D78B /* Welcome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		7E13BE352699944B00B1D78B /* Augment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Augment.swift; sourceTree = "<group>"; };
-		7E13BE3F2699946100B1D78B /* Conditional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conditional.swift; sourceTree = "<group>"; };
 		7E13BE412699946100B1D78B /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
-		7E13BE422699946100B1D78B /* Modal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Modal.swift; sourceTree = "<group>"; };
-		7E13BE462699946100B1D78B /* AverageColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AverageColor.swift; sourceTree = "<group>"; };
-		7E13BE472699946100B1D78B /* Torch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Torch.swift; sourceTree = "<group>"; };
 		7E3834B2269EC86F0058699C /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		7EBE116926A4C09200BA6993 /* Browse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Browse.swift; sourceTree = "<group>"; };
 		7EBE116C26A5787F00BA6993 /* ScrollStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStack.swift; sourceTree = "<group>"; };
 		7EEFDCD42699950A006D4984 /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		7EEFDCD52699950A006D4984 /* Persistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		7EEFDCDC26999729006D4984 /* Email validation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Email validation.swift"; sourceTree = "<group>"; };
 		7EEFDCDF26999ED3006D4984 /* Frames.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Frames.entitlements; sourceTree = "<group>"; };
 		7EEFDCE126999EE7006D4984 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -103,8 +93,8 @@
 			children = (
 				7E13BDEB269991E700B1D78B /* FramesApp.swift */,
 				7E13BE412699946100B1D78B /* Model.swift */,
+				7EEFDCD52699950A006D4984 /* Persistence.swift */,
 				7EEFDCDA26999594006D4984 /* Views */,
-				7EEFDCDB269995A2006D4984 /* Dependencies */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -144,22 +134,9 @@
 				7E053C01269D7CCE00138400 /* Editor.swift */,
 				7E13BE352699944B00B1D78B /* Augment.swift */,
 				7EBE116C26A5787F00BA6993 /* ScrollStack.swift */,
+				7E3834B2269EC86F0058699C /* ImagePicker.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		7EEFDCDB269995A2006D4984 /* Dependencies */ = {
-			isa = PBXGroup;
-			children = (
-				7EEFDCD52699950A006D4984 /* Persistence.swift */,
-				7E13BE462699946100B1D78B /* AverageColor.swift */,
-				7EEFDCDC26999729006D4984 /* Email validation.swift */,
-				7E13BE3F2699946100B1D78B /* Conditional.swift */,
-				7E3834B2269EC86F0058699C /* ImagePicker.swift */,
-				7E13BE422699946100B1D78B /* Modal.swift */,
-				7E13BE472699946100B1D78B /* Torch.swift */,
-			);
-			path = Dependencies;
 			sourceTree = "<group>";
 		};
 		7EEFDCE026999EE7006D4984 /* Frameworks */ = {
@@ -272,20 +249,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E13BE482699946100B1D78B /* Conditional.swift in Sources */,
 				7EBE116D26A5787F00BA6993 /* ScrollStack.swift in Sources */,
-				7E13BE4E2699946100B1D78B /* Modal.swift in Sources */,
 				7E3834B3269EC86F0058699C /* ImagePicker.swift in Sources */,
 				7EBE116A26A4C09200BA6993 /* Browse.swift in Sources */,
 				7E13BE392699944B00B1D78B /* Welcome.swift in Sources */,
-				7EEFDCDD26999729006D4984 /* Email validation.swift in Sources */,
 				7E13BE15269991E900B1D78B /* Frames.xcdatamodeld in Sources */,
-				7E13BE562699946100B1D78B /* AverageColor.swift in Sources */,
 				7E13BE17269991E900B1D78B /* FramesApp.swift in Sources */,
 				7EEFDCD82699950A006D4984 /* Persistence.swift in Sources */,
 				7EEFDCD62699950A006D4984 /* Window.swift in Sources */,
 				7E13BE3B2699944B00B1D78B /* Augment.swift in Sources */,
-				7E13BE582699946100B1D78B /* Torch.swift in Sources */,
 				7E13BE4C2699946100B1D78B /* Model.swift in Sources */,
 				7E053C02269D7CCF00138400 /* Editor.swift in Sources */,
 			);
