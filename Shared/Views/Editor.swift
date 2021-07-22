@@ -17,8 +17,8 @@ struct Editor: View {
                 }
                 .opacity(0.3)
                 SceneView(
-                    scene: model.data.scene,
-                    pointOfView: model.data.camera,
+                    scene: model.data.frames[model.data.selected].model,
+                    // pointOfView: model.data.camera,
                     options: [.allowsCameraControl]
                 )
                 .frame(height: 230)
@@ -26,7 +26,7 @@ struct Editor: View {
                 .padding(.vertical, -6)
                 .onChange(of: colorscheme) { value in
                     withAnimation {
-                        model.data.colorscheme = value
+                        model.data.frames[model.data.selected].colorscheme = value
                     }
                 }
             }
@@ -98,44 +98,31 @@ struct Editor: View {
                 .opacity(0.3)
                 LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
                     Button(action: {
-                        model.data.frames[model.data.selected].filtered = false
+                        model.data.frames[model.data.selected].filter = ""
                     }) {
                         Image(uiImage: model.data.frames[model.data.selected].image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .border(Color.accentColor, width: !model.data.frames[model.data.selected].filtered ? 4 : 0)
+                            .border(
+                                Color.accentColor,
+                                width: model.data.frames[model.data.selected].filter == "" ? 4 : 0
+                            )
                     }
                     .buttonStyle(PlainButtonStyle())
-                    Button(action: {
-                        model.data.frames[model.data.selected].filter = CIFilter(name: "CIPhotoEffectNoir")
-                        model.data.frames[model.data.selected].filtered = true
-                    }) {
-                        Image(uiImage: filterImage(filter: CIFilter(name: "CIPhotoEffectNoir"), image: model.data.frames[model.data.selected].image)) // "filter" causes crash
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .border(Color.accentColor, width: model.data.frames[model.data.selected].filter == CIFilter(name: "CIPhotoEffectNoir") ? 4 : 0)
+                    ForEach(["noir", "mono", "invert"], id: \.self) { filter in
+                        Button(action: {
+                            model.data.frames[model.data.selected].filter = filter
+                        }) {
+                            Image(uiImage: model.data.frames[model.data.selected].filters.noir)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .border(
+                                    Color.accentColor,
+                                    width: model.data.frames[model.data.selected].filter == filter ? 4 : 0
+                                )
+                        }
+                        .buttonStyle(PlainButtonStyle())
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    Button(action: {
-                        model.data.frames[model.data.selected].filter = CIFilter(name: "CIPhotoEffectMono")
-                        model.data.frames[model.data.selected].filtered = true
-                    }) {
-                        Image(uiImage: filterImage(filter: CIFilter(name: "CIPhotoEffectMono"), image: model.data.frames[model.data.selected].image)) // "filter" causes crash
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .border(Color.accentColor, width: model.data.frames[model.data.selected].filter == CIFilter(name: "CIPhotoEffectMono") ? 4 : 0)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    Button(action: {
-                        model.data.frames[model.data.selected].filter = CIFilter(name: "CIColorInvert")
-                        model.data.frames[model.data.selected].filtered = true
-                    }) {
-                        Image(uiImage: filterImage(filter: CIFilter(name: "CIColorInvert"), image: model.data.frames[model.data.selected].image)) // "filter" causes crash
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .border(Color.accentColor, width: model.data.frames[model.data.selected].filter == CIFilter(name: "CIColorInvert") ? 4 : 0)
-                    }
-                    .buttonStyle(PlainButtonStyle())
                 }
                 .padding(.vertical, 14)
             }
@@ -198,7 +185,7 @@ struct Editor: View {
             ToolbarItem(placement: .primaryAction) {
                 Button(action: {
                     withAnimation {
-                        model.data.frames[model.data.selected].filtered = false
+                        model.data.frames[model.data.selected].filter = ""
                         model.data.frames[model.data.selected].material = UIImage(named: "material_oak")!
                         model.data.frames[model.data.selected].width = 50
                         model.data.frames[model.data.selected].height = 70
@@ -208,12 +195,12 @@ struct Editor: View {
                     Text("Reset")
                 }
                 .disabled(
-                     !model.data.frames[model.data.selected].filtered && model.data.frames[model.data.selected].material == UIImage(named: "material_oak") && model.data.frames[model.data.selected].width == 50 && model.data.frames[model.data.selected].height == 70 && model.data.frames[model.data.selected].border == 0.05
+                     model.data.frames[model.data.selected].filter == "" && model.data.frames[model.data.selected].material == UIImage(named: "material_oak") && model.data.frames[model.data.selected].width == 50 && model.data.frames[model.data.selected].height == 70 && model.data.frames[model.data.selected].border == 0.05
                  )
             }
         }
         .onAppear {
-            model.data.colorscheme = colorscheme
+            model.data.frames[model.data.selected].colorscheme = colorscheme
         }
     }
     

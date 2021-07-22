@@ -19,7 +19,7 @@ struct Welcome: View {
                                 .frame(width: 145)
                                 .opacity(0.2)
                                 .padding(.top, -6)
-                                .padding(.horizontal, -16)
+                                .padding(.horizontal, -20)
                                 .padding(.bottom, -100)
                         }
                         Spacer()

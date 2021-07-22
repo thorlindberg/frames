@@ -8,7 +8,6 @@ final class Model: NSObject, ObservableObject {
     @Published var data: Format = Format()
     
     struct Format: Hashable {
-        var colorscheme: ColorScheme?
         var welcome: Bool = !UserDefaults.standard.bool(forKey: "v1.0")
         var guide: String = ""
         var reload: Bool = false
@@ -31,57 +30,84 @@ final class Model: NSObject, ObservableObject {
             node.position = SCNVector3Make(0, 0, 1.3)
             return node
         }
-        var scene: SCNScene? {
-            
-            // create scene and box
-            let scene = SCNScene()
-            let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
-            
-            // set scene background
-            scene.background.contents = colorscheme == .dark ? UIColor.systemGray6 : UIColor.white
-            
-            // define materials
-            let front = SCNMaterial()
-            front.diffuse.contents = frames[selected].framed
-            
-            let frame = SCNMaterial()
-            frame.diffuse.contents = frames[selected].material
-            frame.diffuse.wrapT = SCNWrapMode.repeat
-            frame.diffuse.wrapS = SCNWrapMode.repeat
-            
-            // add materials to sides
-            node.geometry?.materials = [front, frame, frame, frame, frame, frame]
-            
-            // frame size
-            node.scale = SCNVector3(
-                Float(frames[selected].width/100),
-                Float(frames[selected].height/100),
-                1
-            )
-            
-            // rotate frame
-            node.rotation = SCNVector4(1, 0, 0, 350 * Double.pi / 180)
-            
-            // add frame to scene
-            scene.rootNode.addChildNode(node)
-            
-            return scene
-            
-        }
+    }
+    
+    struct Filters: Hashable {
+        var noir: UIImage
+        var mono: UIImage
+        var invert: UIImage
     }
     
     struct Frame: Hashable {
+        var colorscheme: ColorScheme?
         var image: UIImage
         var width: CGFloat = 50
         var height: CGFloat = 70
         var border: CGFloat = 0.05
-        var filter: CIFilter?
-        var filtered: Bool = false
+        var filter: String = ""
+        var filters: Filters {
+            
+            var noir: UIImage {
+                var image = image
+                let filter = CIFilter(name: "CIPhotoEffectNoir")
+                if let filter = filter {
+                    let context = CIContext(options: nil)
+                    filter.setValue(CIImage(image: image), forKey: kCIInputImageKey)
+                    if let output = filter.outputImage,
+                        let cgImage = context.createCGImage(output, from: output.extent) {
+                        image = UIImage(cgImage: cgImage)
+                    }
+                }
+                return image
+            }
+            
+            var mono: UIImage {
+                var image = image
+                let filter = CIFilter(name: "CIPhotoEffectMono")
+                if let filter = filter {
+                    let context = CIContext(options: nil)
+                    filter.setValue(CIImage(image: image), forKey: kCIInputImageKey)
+                    if let output = filter.outputImage,
+                        let cgImage = context.createCGImage(output, from: output.extent) {
+                        image = UIImage(cgImage: cgImage)
+                    }
+                }
+                return image
+            }
+            
+            var invert: UIImage {
+                var image = image
+                let filter = CIFilter(name: "CIColorInvert")
+                if let filter = filter {
+                    let context = CIContext(options: nil)
+                    filter.setValue(CIImage(image: image), forKey: kCIInputImageKey)
+                    if let output = filter.outputImage,
+                        let cgImage = context.createCGImage(output, from: output.extent) {
+                        image = UIImage(cgImage: cgImage)
+                    }
+                }
+                return image
+            }
+            
+            return Filters(noir: noir, mono: mono, invert: invert)
+            
+        }
         var material: UIImage = UIImage(named: "material_oak")!
         var framed: UIImage {
             
             // filter image
-            let image = filtered ? filterImage(filter: filter, image: image) : image
+            var image: UIImage {
+                switch filter {
+                    case "noir":
+                        return filters.noir
+                    case "mono":
+                        return filters.mono
+                    case "invert":
+                        return filters.invert
+                    default:
+                        return self.image
+                }
+            }
             
             // set frame size
             let canvas = CGSize(
@@ -137,6 +163,43 @@ final class Model: NSObject, ObservableObject {
             
             // update transformed image
             return newImage!
+            
+        }
+        var model: SCNScene? {
+            
+            // create scene and box
+            let scene = SCNScene()
+            let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
+            
+            // set scene background
+            scene.background.contents = colorscheme == .dark ? UIColor.systemGray6 : UIColor.white
+            
+            // define materials
+            let front = SCNMaterial()
+            front.diffuse.contents = framed
+            
+            let frame = SCNMaterial()
+            frame.diffuse.contents = material
+            frame.diffuse.wrapT = SCNWrapMode.repeat
+            frame.diffuse.wrapS = SCNWrapMode.repeat
+            
+            // add materials to sides
+            node.geometry?.materials = [front, frame, frame, frame, frame, frame]
+            
+            // frame size
+            node.scale = SCNVector3(
+                Float(width/100),
+                Float(height/100),
+                1
+            )
+            
+            // rotate frame
+            node.rotation = SCNVector4(1, 0, 0, 350 * Double.pi / 180)
+            
+            // add frame to scene
+            scene.rootNode.addChildNode(node)
+            
+            return scene
             
         }
     }
