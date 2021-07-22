@@ -5,7 +5,7 @@ struct ScrollStack<Content: View>: View {
     // input properties
     var items: Int
     var direction: Edge.Set = .horizontal
-    var size: CGFloat = 280
+    var size: CGFloat
     var spacing: CGFloat = 28
     @Binding var selection: Int
     @ViewBuilder var content: Content
@@ -97,7 +97,7 @@ struct ScrollStack<Content: View>: View {
                         }
                         
                         // Update selection
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.27) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             withAnimation {
                                 selection = items - Int(index) - 1
                             }
@@ -139,7 +139,7 @@ struct ScrollStack<Content: View>: View {
                         }
                         
                         // Update selection
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.27) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             withAnimation {
                                 selection = items - Int(index) - 1
                             }

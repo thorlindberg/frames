@@ -5,19 +5,20 @@ struct Browse: View {
     @ObservedObject var model: Model
     @Environment(\.colorScheme) var colorscheme
     @State var isActive: Bool = false
+    var size: CGFloat = 430
     
     var body: some View {
         if !model.data.welcome {
             NavigationLink(destination: Editor(model: model), isActive: $isActive, label: { })
         }
-        ScrollStack(items: model.data.frames.count, direction: UIDevice.current.userInterfaceIdiom == .pad ? .horizontal : .vertical, size: 480, selection: $model.data.selected) {
+        ScrollStack(items: model.data.frames.count, direction: UIDevice.current.userInterfaceIdiom == .pad ? .horizontal : .vertical, size: size, spacing: 14, selection: $model.data.selected) {
             ForEach(Array(model.data.frames.indices), id: \.self) { index in
                 Image(uiImage: model.data.frames[index].framed)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(
-                        width: UIDevice.current.userInterfaceIdiom == .pad ? 480 : nil,
-                        height: UIDevice.current.userInterfaceIdiom == .pad ? nil : 480
+                        width: UIDevice.current.userInterfaceIdiom == .pad ? size : nil,
+                        height: UIDevice.current.userInterfaceIdiom == .pad ? nil : size
                     )
                     .padding(.horizontal, UIDevice.current.userInterfaceIdiom == .pad ? nil : 28)
                     .padding(.vertical, UIDevice.current.userInterfaceIdiom == .pad ? 56 : nil)
