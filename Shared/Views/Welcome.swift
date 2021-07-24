@@ -3,8 +3,6 @@ import SwiftUI
 struct Welcome: View {
     
     @ObservedObject var model: Model
-    @Environment(\.colorScheme) var colorscheme
-    @State var frames: [Model.Frame] = []
     
     var body: some View {
         NavigationView {
@@ -62,7 +60,6 @@ struct Welcome: View {
                 }
                 Button(action: {
                     UserDefaults.standard.set(true, forKey: "v1.0")
-                    model.data.frames = frames
                     model.data.welcome.toggle()
                 }) {
                     HStack {
@@ -76,16 +73,6 @@ struct Welcome: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarHidden(true)
         }
-        /*
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                frames = model.data.frames
-                model.data.frames = [
-                    Model.Frame(source: UIImage(imageLiteralResourceName: "sample")
-                )]
-            }
-        }
-        */
     }
     
 }
@@ -383,7 +370,7 @@ struct First: View {
                             Spacer()
                         }
                     }
-                    Browse(model: model)
+                    Select(model: model)
                         .padding(56)
                         .frame(height: 420)
                         .padding(.vertical, -6)
@@ -500,7 +487,7 @@ struct Second: View {
                         }
                     }
                     .opacity(0.2)
-                    Browse(model: model)
+                    Select(model: model)
                         .padding(56)
                         .frame(height: 420)
                         .padding(.vertical, -6)
@@ -516,7 +503,7 @@ struct Second: View {
                                     model.data.guide = ""
                                 }
                             }
-                        Editor(model: model)
+                        Edit(model: model)
                             .frame(height: 530)
                             .padding(.top, -115)
                             .padding(.bottom, -6)
@@ -574,7 +561,7 @@ struct Third: View {
                             Spacer()
                         }
                     }
-                    Browse(model: model)
+                    Select(model: model)
                         .padding(56)
                         .frame(height: 420)
                         .padding(.vertical, -6)

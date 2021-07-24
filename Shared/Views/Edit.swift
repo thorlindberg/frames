@@ -1,35 +1,12 @@
 import SwiftUI
 import SceneKit
 
-struct Editor: View {
+struct Edit: View {
     
     @ObservedObject var model: Model
-    @Environment(\.colorScheme) var colorscheme
-    @State var color: Color = .red
     
     var body: some View {
         List {
-            Section {
-                HStack {
-                    Text("3D model")
-                    Spacer()
-                    Image(systemName: "move.3d")
-                }
-                .opacity(0.3)
-                SceneView(
-                    scene: model.data.frames[model.data.selected].model,
-                    // pointOfView: model.data.camera,
-                    options: [.allowsCameraControl]
-                )
-                .frame(height: 230)
-                .padding(.horizontal, -16)
-                .padding(.vertical, -6)
-                .onChange(of: colorscheme) { value in
-                    withAnimation {
-                        model.data.frames[model.data.selected].colorscheme = value
-                    }
-                }
-            }
             Section {
                 HStack {
                     Text("Size")
@@ -97,16 +74,16 @@ struct Editor: View {
                 }
                 .opacity(0.3)
                 LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
-                    ForEach(Array(model.data.frames[model.data.selected].image.keys.sorted(by: >)), id: \.self) { key in
+                    ForEach(["", "noir", "mono", "invert"], id: \.self) { filter in
                         Button(action: {
-                            model.data.frames[model.data.selected].filter = key
+                            model.data.frames[model.data.selected].filter = filter
                         }) {
-                            Image(uiImage: model.data.frames[model.data.selected].image[key]!)
+                            Image(uiImage: filterImage(image: model.data.frames[model.data.selected].image, filter: filter))
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .border(
                                     Color.accentColor,
-                                    width: model.data.frames[model.data.selected].filter == key ? 4 : 0
+                                    width: model.data.frames[model.data.selected].filter == filter ? 4 : 0
                                 )
                         }
                         .buttonStyle(PlainButtonStyle())
@@ -194,17 +171,14 @@ struct Editor: View {
                  )
             }
         }
-        .onAppear {
-            model.data.frames[model.data.selected].colorscheme = colorscheme
-        }
     }
     
 }
 
-struct Editor_Previews: PreviewProvider {
+struct Edit_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Editor(model: Model())
+            Window(model: Model())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12")

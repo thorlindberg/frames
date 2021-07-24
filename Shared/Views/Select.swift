@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct Browse: View {
+struct Select: View {
     
     @ObservedObject var model: Model
     @Environment(\.colorScheme) var colorscheme
@@ -8,13 +8,9 @@ struct Browse: View {
     var size: CGFloat = 480
     
     var body: some View {
-        /*
-        if !model.data.welcome {
-            NavigationLink(destination: Editor(model: model), isActive: $isActive, label: { })
-        }
-        */
         ScrollStack(
-            items: model.data.frames.count, direction: UIDevice.current.userInterfaceIdiom == .pad ? .horizontal : .vertical,
+            items: model.data.frames.count,
+            direction: UIDevice.current.userInterfaceIdiom == .pad ? .horizontal : .vertical,
             size: size, spacing: 14, selection: $model.data.selected
         ) {
             ForEach(Array(model.data.frames.indices), id: \.self) { index in
@@ -27,7 +23,6 @@ struct Browse: View {
                     )
                     .padding(.horizontal, UIDevice.current.userInterfaceIdiom == .pad ? nil : 28)
                     .padding(.vertical, UIDevice.current.userInterfaceIdiom == .pad ? 56 : nil)
-                    .opacity(index == model.data.selected ? 1 : 0.3)
                     .contextMenu {
                         if !model.data.welcome && index == model.data.selected {
                             Button(action: {
@@ -49,7 +44,6 @@ struct Browse: View {
                     }
                     .onTapGesture {
                         if UIDevice.current.userInterfaceIdiom != .pad && index == model.data.selected {
-                            // isActive.toggle()
                             model.data.isEditing.toggle()
                         }
                     }
@@ -101,7 +95,7 @@ struct Browse: View {
     
 }
 
-struct Browse_Previews: PreviewProvider {
+struct Select_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
             Window(model: Model())

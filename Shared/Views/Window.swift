@@ -4,7 +4,6 @@ import CoreData
 struct Window: View {
     
     @ObservedObject var model: Model
-    @Environment(\.colorScheme) var colorscheme
     /*
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
@@ -17,22 +16,10 @@ struct Window: View {
     var body: some View {
         NavigationView {
             if UIDevice.current.userInterfaceIdiom == .pad {
-                Editor(model: model)
-                ZStack {
-                    if model.data.reload {
-                        Browse(model: model)
-                    } else {
-                        Browse(model: model)
-                    }
-                }
+                Edit(model: model)
+                Select(model: model)
             } else {
-                ZStack {
-                    if model.data.reload {
-                        Browse(model: model)
-                    } else {
-                        Browse(model: model)
-                    }
-                }
+                Select(model: model)
             }
         }
         .sheet(isPresented: $model.data.welcome) {
@@ -41,17 +28,15 @@ struct Window: View {
         }
         .sheet(isPresented: $model.data.isEditing) {
             NavigationView {
-                Editor(model: model)
+                Edit(model: model)
             }
             .modifier(DisableModalDismiss(disabled: true))
         }
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model, type: "import")
-                .modifier(DisableModalDismiss(disabled: true))
         }
         .sheet(isPresented: $model.data.isCapturing) {
             ImagePicker(model: model, type: "capture")
-                .modifier(DisableModalDismiss(disabled: true))
         }
         .fullScreenCover(isPresented: $model.data.isAugmenting) {
             Augment(model: model)
@@ -117,6 +102,43 @@ private let itemFormatter: DateFormatter = {
     return formatter
 } ()
 */
+
+// source: https://stackoverflow.com/a/60939207/15072454
+
+extension UIApplication {
+    func visibleViewController() -> UIViewController? {
+        guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) else { return nil }
+        guard let rootViewController = window.rootViewController else { return nil }
+        return UIApplication.getVisibleViewControllerFrom(vc: rootViewController)
+    }
+    private static func getVisibleViewControllerFrom(vc:UIViewController) -> UIViewController {
+        if let navigationController = vc as? UINavigationController,
+            let visibleController = navigationController.visibleViewController  {
+            return UIApplication.getVisibleViewControllerFrom( vc: visibleController )
+        } else if let tabBarController = vc as? UITabBarController,
+            let selectedTabController = tabBarController.selectedViewController {
+            return UIApplication.getVisibleViewControllerFrom(vc: selectedTabController )
+        } else {
+            if let presentedViewController = vc.presentedViewController {
+                return UIApplication.getVisibleViewControllerFrom(vc: presentedViewController)
+            } else {
+                return vc
+            }
+        }
+    }
+}
+
+struct DisableModalDismiss: ViewModifier {
+    let disabled: Bool
+    func body(content: Content) -> some View {
+        disableModalDismiss()
+        return AnyView(content)
+    }
+    func disableModalDismiss() {
+        guard let visibleController = UIApplication.shared.visibleViewController() else { return }
+        visibleController.isModalInPresentation = disabled
+    }
+}
 
 struct Window_Previews: PreviewProvider {
     static var previews: some View {

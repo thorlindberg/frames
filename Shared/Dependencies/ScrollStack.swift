@@ -49,11 +49,6 @@ struct ScrollStack<Content: View>: View {
             scrollOffset = initialOffset
         }
         .offset(x: direction == .horizontal ? scrollOffset + dragOffset : 0, y: direction == .horizontal ? 0 : scrollOffset + dragOffset)
-        .onChange(of: selection, perform: { _ in
-            // Provide haptic feedback
-            UIImpactFeedbackGenerator(style: .heavy)
-                .impactOccurred()
-        })
         .gesture(
             DragGesture()
                 .onChanged({ event in
@@ -97,7 +92,7 @@ struct ScrollStack<Content: View>: View {
                         }
                         
                         // Update selection
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                             withAnimation {
                                 selection = items - Int(index) - 1
                             }
@@ -139,7 +134,7 @@ struct ScrollStack<Content: View>: View {
                         }
                         
                         // Update selection
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                             withAnimation {
                                 selection = items - Int(index) - 1
                             }
