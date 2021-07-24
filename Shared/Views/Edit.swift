@@ -9,6 +9,17 @@ struct Edit: View {
         List {
             Section {
                 HStack {
+                    Spacer()
+                    Image(uiImage: model.data.frames[model.data.selected].framed)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 150)
+                        .padding(.vertical, 10)
+                    Spacer()
+                }
+            }
+            Section {
+                HStack {
                     Text("Size")
                     Spacer()
                     Image(systemName: "selection.pin.in.out")
