@@ -370,7 +370,7 @@ struct First: View {
                             Spacer()
                         }
                     }
-                    Select(model: model)
+                    Editor(model: model)
                         .padding(56)
                         .frame(height: 420)
                         .padding(.vertical, -6)
@@ -487,7 +487,7 @@ struct Second: View {
                         }
                     }
                     .opacity(0.2)
-                    Select(model: model)
+                    Editor(model: model)
                         .padding(56)
                         .frame(height: 420)
                         .padding(.vertical, -6)
@@ -503,7 +503,7 @@ struct Second: View {
                                     model.data.guide = ""
                                 }
                             }
-                        Edit(model: model)
+                        Editor(model: model)
                             .frame(height: 530)
                             .padding(.top, -115)
                             .padding(.bottom, -6)
@@ -561,7 +561,7 @@ struct Third: View {
                             Spacer()
                         }
                     }
-                    Select(model: model)
+                    Editor(model: model)
                         .padding(56)
                         .frame(height: 420)
                         .padding(.vertical, -6)

@@ -4,6 +4,8 @@ import CoreData
 struct Window: View {
     
     @ObservedObject var model: Model
+    @Environment(\.colorScheme) var colorscheme
+    
     /*
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
@@ -15,22 +17,55 @@ struct Window: View {
 
     var body: some View {
         NavigationView {
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                Edit(model: model)
-                Select(model: model)
-            } else {
-                Select(model: model)
-            }
+            Editor(model: model)
+                .listStyle(InsetGroupedListStyle())
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Button(action: {
+                            model.data.welcome.toggle()
+                        }) {
+                            Text("Augmented Frames")
+                                .bold()
+                        }
+                        .accentColor(colorscheme == .dark ? .white : .black)
+                    }
+                    ToolbarItem(placement: .cancellationAction) {
+                        Menu {
+                            Button(action: {
+                                model.data.isImporting.toggle()
+                            }) {
+                                Label("Choose Photo", systemImage: "photo")
+                            }
+                            Button(action: {
+                                model.data.isCapturing.toggle()
+                            }) {
+                                Label("Capture Photo", systemImage: "camera")
+                            }
+                            Button(action: {
+                                UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                    .first?.rootViewController?
+                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                            }) {
+                                Label("Scan Photo", systemImage: "viewfinder")
+                            }
+                        } label: {
+                            Image(systemName: "camera.fill")
+                        }
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(action: {
+                            model.data.isAugmenting.toggle()
+                        }) {
+                            Text("AR")
+                        }
+                    }
+                }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $model.data.welcome) {
             Welcome(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
-        }
-        .sheet(isPresented: $model.data.isEditing) {
-            NavigationView {
-                Edit(model: model)
-            }
-            .modifier(DisableModalDismiss(disabled: true))
         }
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model, type: "import")

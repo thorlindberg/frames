@@ -16,7 +16,10 @@ final class Model: NSObject, ObservableObject {
         var isAugmenting: Bool = false
         var isFlashlight: Bool = false
         var selected: Int = 0
-        var frames: [Frame] = [Frame(image: UIImage(imageLiteralResourceName: "sample"))]
+        var frames: [Frame] = [
+            Frame(image: UIImage(imageLiteralResourceName: "sample")),
+            Frame(image: UIImage(imageLiteralResourceName: "sample2"))
+        ]
     }
     
     struct Frame: Hashable {
