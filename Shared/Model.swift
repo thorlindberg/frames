@@ -11,8 +11,6 @@ final class Model: NSObject, ObservableObject {
         var colorscheme: ColorScheme?
         var welcome: Bool = !UserDefaults.standard.bool(forKey: "v1.0")
         var guide: String = ""
-        var isFocused: Int = -1
-        var isCreating: Bool = false
         var isEditing: Bool = false
         var isImporting: Bool = false
         var isCapturing: Bool = false
@@ -21,8 +19,7 @@ final class Model: NSObject, ObservableObject {
         var selected: Int = 0
         var container: Frame?
         var frames: [Frame] = [
-            Frame(image: UIImage(imageLiteralResourceName: "sample")),
-            Frame(image: UIImage(imageLiteralResourceName: "sample2"))
+            Frame(image: UIImage(imageLiteralResourceName: "sample"))
         ]
         var scene: SCNScene? {
                     
@@ -65,7 +62,6 @@ final class Model: NSObject, ObservableObject {
     
     struct Frame: Hashable {
         var image: UIImage
-        var favorited: Bool = false
         var width: CGFloat = 60
         var height: CGFloat = 90
         var border: CGFloat = 0.05
@@ -153,10 +149,13 @@ final class Model: NSObject, ObservableObject {
     
     func addImage(image: UIImage) {
         data.frames.insert(Frame(image: image), at: 0)
+        data.selected = 0
+        data.isEditing = true
     }
     
     func removeImage(index: Int) {
         data.frames.remove(at: index)
+        data.isEditing = false
     }
     
 }
