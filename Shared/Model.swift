@@ -11,12 +11,15 @@ final class Model: NSObject, ObservableObject {
         var colorscheme: ColorScheme?
         var welcome: Bool = !UserDefaults.standard.bool(forKey: "v1.0")
         var guide: String = ""
-        var isActive: Bool = true
+        var isFocused: Int = -1
+        var isCreating: Bool = false
+        var isEditing: Bool = false
         var isImporting: Bool = false
         var isCapturing: Bool = false
         var isAugmenting: Bool = false
         var isFlashlight: Bool = false
         var selected: Int = 0
+        var container: Frame?
         var frames: [Frame] = [
             Frame(image: UIImage(imageLiteralResourceName: "sample")),
             Frame(image: UIImage(imageLiteralResourceName: "sample2"))
@@ -62,6 +65,7 @@ final class Model: NSObject, ObservableObject {
     
     struct Frame: Hashable {
         var image: UIImage
+        var favorited: Bool = false
         var width: CGFloat = 60
         var height: CGFloat = 90
         var border: CGFloat = 0.05

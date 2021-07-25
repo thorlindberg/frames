@@ -5,6 +5,7 @@ struct Window: View {
     
     @ObservedObject var model: Model
     @Environment(\.colorScheme) var colorscheme
+    @Namespace private var animation
     
     /*
     @Environment(\.managedObjectContext) private var viewContext
@@ -17,95 +18,125 @@ struct Window: View {
 
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
-                ScrollView {
-                    LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 0), count: 3), spacing: 0) {
-                        ForEach(model.data.frames.indices, id: \.self) { index in
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(colorscheme == .dark ? .white : .black)
-                                    .opacity(index % 2 == 0 ? 0 : 0.05)
-                                NavigationLink(
-                                    destination: Editor(model: model),
-                                    isActive: Binding(
-                                        get: { model.data.isActive },
-                                        set: { model.data.isActive = $0 ; model.data.selected = index }
-                                    ),
-                                    label: {
-                                        ZStack {
-                                            Rectangle()
-                                                .foregroundColor(colorscheme == .dark ? .white : .black)
-                                                .opacity(index % 2 == 0 ? 0.05 : 0.1)
-                                            Image(uiImage: model.data.frames[index].framed)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .padding()
-                                        }
-                                        .frame(height: geometry.size.width / 3)
+            ZStack {
+                if model.data.isFocused != -1 {
+                    Image(uiImage: model.data.frames[model.data.isFocused].framed)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .matchedGeometryEffect(id: model.data.isFocused, in: animation)
+                        .padding()
+                } else {
+                    GeometryReader { geometry in
+                        ScrollView {
+                            LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 0), count: 3), spacing: 0) {
+                                Button(action: {
+                                    model.data.isCreating.toggle()
+                                    model.data.isEditing.toggle()
+                                }) {
+                                    ZStack {
+                                        Rectangle()
+                                            .foregroundColor(colorscheme == .dark ? .black : .white)
+                                        Image(systemName: "plus")
+                                            .font(.system(size: geometry.size.width / 15))
                                     }
-                                )
-                                .contextMenu {
-                                    Button(action: {
-                                        UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                            .first?
-                                            .rootViewController?
-                                            .present(UIActivityViewController(activityItems: [model.data.frames[index].framed], applicationActivities: nil), animated: true)
-                                    }) {
-                                        Label("Share", systemImage: "square.and.arrow.up")
-                                    }
-                                    if model.data.frames.count > 1 {
+                                    .frame(height: geometry.size.width / 3)
+                                }
+                                ForEach(0...max(model.data.frames.count, Int(geometry.size.height / 55)), id: \.self) { index in
+                                    if index < model.data.frames.count {
                                         Button(action: {
-                                            model.removeImage(index: index)
+                                            withAnimation {
+                                                model.data.isFocused = index
+                                            }
                                         }) {
-                                            Label("Delete", systemImage: "delete.left")
+                                            ZStack {
+                                                Rectangle()
+                                                    .foregroundColor(colorscheme == .dark ? .white : .black)
+                                                    .opacity(index % 2 != 0 ? 0 : colorscheme == .dark ? 0.07 : 0.03)
+                                                Image(uiImage: model.data.frames[index].framed)
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .matchedGeometryEffect(id: index, in: animation)
+                                                    .padding()
+                                                if model.data.frames[index].favorited {
+                                                    VStack {
+                                                        Spacer()
+                                                        HStack {
+                                                            Spacer()
+                                                            Image(systemName: "heart.fill")
+                                                                .foregroundColor(.red)
+                                                                .font(.system(size: geometry.size.width / 20))
+                                                                .padding(8)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            .frame(height: geometry.size.width / 3)
                                         }
+                                    } else {
+                                        Rectangle()
+                                            .foregroundColor(colorscheme == .dark ? .white : .black)
+                                            .opacity(index % 2 != 0 ? 0 : colorscheme == .dark ? 0.07 : 0.03)
+                                            .frame(height: geometry.size.width / 3)
                                     }
                                 }
                             }
-                            .frame(height: geometry.size.width / 3)
                         }
                     }
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitle("Augmented Frames")
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Button(action: {
-                        model.data.welcome.toggle()
-                    }) {
-                        Text("Augmented Frames")
-                            .bold()
-                    }
-                    .accentColor(colorscheme == .dark ? .white : .black)
-                }
                 ToolbarItem(placement: .cancellationAction) {
-                    Menu {
+                    if model.data.isFocused != -1 {
                         Button(action: {
-                            model.data.isImporting.toggle()
+                            withAnimation {
+                                model.data.isFocused = -1
+                            }
                         }) {
-                            Label("Choose Photo", systemImage: "photo")
+                            Image(systemName: "chevron.left")
                         }
+                    } else {
                         Button(action: {
-                            model.data.isCapturing.toggle()
+                            withAnimation {
+                                model.data.welcome.toggle()
+                            }
                         }) {
-                            Label("Capture Photo", systemImage: "camera")
+                            Image(systemName: "rectangle")
                         }
-                        Button(action: {
-                            UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                .first?.rootViewController?
-                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                        }) {
-                            Label("Scan Photo", systemImage: "viewfinder")
-                        }
-                    } label: {
-                        Image(systemName: "camera.fill")
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
-                        model.data.isAugmenting.toggle()
-                    }) {
-                        Text("AR")
+                    if model.data.isFocused != -1 {
+                        Button(action: {
+                            model.data.isAugmenting.toggle()
+                        }) {
+                            Text("AR")
+                        }
+                    }
+                }
+                ToolbarItem(placement: .bottomBar) {
+                    if model.data.isFocused != -1 {
+                        HStack {
+                            Button(action: {
+                                model.data.isEditing.toggle()
+                            }) {
+                                Text("Edit")
+                            }
+                            Spacer()
+                            Button(action: {
+                                model.data.frames[model.data.selected].favorited.toggle()
+                            }) {
+                                Image(systemName: model.data.frames[model.data.selected].favorited ? "heart.fill" : "heart")
+                            }
+                            Spacer()
+                            Button(action: {
+                                model.removeImage(index: model.data.selected)
+                                model.data.isFocused = -1
+                            }) {
+                                Image(systemName: "trash")
+                            }
+                        }
                     }
                 }
             }
@@ -114,6 +145,10 @@ struct Window: View {
         .sheet(isPresented: $model.data.welcome) {
             Welcome(model: model)
                 .modifier(DisableModalDismiss(disabled: true))
+        }
+        .sheet(isPresented: $model.data.isEditing) {
+            Editor(model: model)
+                .modifier(DisableModalDismiss(disabled: model.data.isCreating ? true : false))
         }
         .sheet(isPresented: $model.data.isImporting) {
             ImagePicker(model: model, type: "import")
