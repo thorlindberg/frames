@@ -17,50 +17,98 @@ struct Window: View {
 
     var body: some View {
         NavigationView {
-            Editor(model: model)
-                .listStyle(InsetGroupedListStyle())
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Button(action: {
-                            model.data.welcome.toggle()
-                        }) {
-                            Text("Augmented Frames")
-                                .bold()
-                        }
-                        .accentColor(colorscheme == .dark ? .white : .black)
-                    }
-                    ToolbarItem(placement: .cancellationAction) {
-                        Menu {
-                            Button(action: {
-                                model.data.isImporting.toggle()
-                            }) {
-                                Label("Choose Photo", systemImage: "photo")
+            GeometryReader { geometry in
+                ScrollView {
+                    LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 0), count: 3), spacing: 0) {
+                        ForEach(model.data.frames.indices, id: \.self) { index in
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(colorscheme == .dark ? .white : .black)
+                                    .opacity(index % 2 == 0 ? 0 : 0.05)
+                                NavigationLink(
+                                    destination: Editor(model: model),
+                                    isActive: Binding(
+                                        get: { model.data.isActive },
+                                        set: { model.data.isActive = $0 ; model.data.selected = index }
+                                    ),
+                                    label: {
+                                        ZStack {
+                                            Rectangle()
+                                                .foregroundColor(colorscheme == .dark ? .white : .black)
+                                                .opacity(index % 2 == 0 ? 0.05 : 0.1)
+                                            Image(uiImage: model.data.frames[index].framed)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .padding()
+                                        }
+                                        .frame(height: geometry.size.width / 3)
+                                    }
+                                )
+                                .contextMenu {
+                                    Button(action: {
+                                        UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                            .first?
+                                            .rootViewController?
+                                            .present(UIActivityViewController(activityItems: [model.data.frames[index].framed], applicationActivities: nil), animated: true)
+                                    }) {
+                                        Label("Share", systemImage: "square.and.arrow.up")
+                                    }
+                                    if model.data.frames.count > 1 {
+                                        Button(action: {
+                                            model.removeImage(index: index)
+                                        }) {
+                                            Label("Delete", systemImage: "delete.left")
+                                        }
+                                    }
+                                }
                             }
-                            Button(action: {
-                                model.data.isCapturing.toggle()
-                            }) {
-                                Label("Capture Photo", systemImage: "camera")
-                            }
-                            Button(action: {
-                                UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                    .first?.rootViewController?
-                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                            }) {
-                                Label("Scan Photo", systemImage: "viewfinder")
-                            }
-                        } label: {
-                            Image(systemName: "camera.fill")
-                        }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            model.data.isAugmenting.toggle()
-                        }) {
-                            Text("AR")
+                            .frame(height: geometry.size.width / 3)
                         }
                     }
                 }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Button(action: {
+                        model.data.welcome.toggle()
+                    }) {
+                        Text("Augmented Frames")
+                            .bold()
+                    }
+                    .accentColor(colorscheme == .dark ? .white : .black)
+                }
+                ToolbarItem(placement: .cancellationAction) {
+                    Menu {
+                        Button(action: {
+                            model.data.isImporting.toggle()
+                        }) {
+                            Label("Choose Photo", systemImage: "photo")
+                        }
+                        Button(action: {
+                            model.data.isCapturing.toggle()
+                        }) {
+                            Label("Capture Photo", systemImage: "camera")
+                        }
+                        Button(action: {
+                            UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                .first?.rootViewController?
+                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                        }) {
+                            Label("Scan Photo", systemImage: "viewfinder")
+                        }
+                    } label: {
+                        Image(systemName: "camera.fill")
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        model.data.isAugmenting.toggle()
+                    }) {
+                        Text("AR")
+                    }
+                }
+            }
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $model.data.welcome) {

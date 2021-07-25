@@ -1,183 +1,173 @@
 import SwiftUI
+import SceneKit
 
 struct Editor: View {
     
     @ObservedObject var model: Model
+    @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
         GeometryReader { geometry in
-            ScrollViewReader { proxy in
-                List {
-                    Section {
-                        Button(action: {
-                            withAnimation {
-                                model.data.isBrowsing.toggle()
-                            }
-                        }) {
-                            HStack {
-                                Text("Browse")
-                                Spacer()
-                                Image(systemName: "photo.on.rectangle.angled")
-                            }
+            List {
+                Section {
+                    HStack {
+                        Text("3D model")
+                        Spacer()
+                        Image(systemName: "move.3d")
+                    }
+                    .opacity(0.3)
+                    SceneView(
+                        scene: model.data.scene,
+                        options: [.allowsCameraControl]
+                    )
+                    .frame(height: geometry.size.height - 420)
+                    .padding(.horizontal, -16)
+                    .padding(.vertical, -6)
+                    .onChange(of: colorscheme) { value in
+                        withAnimation {
+                            model.data.colorscheme = value
                         }
-                        if model.data.isBrowsing {
-                            LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 2)) {
-                                ForEach(model.data.frames.indices, id: \.self) { index in
-                                    Button(action: {
-                                        withAnimation {
-                                            model.data.selected = index
-                                            model.data.isBrowsing.toggle()
-                                        }
-                                    }) {
-                                        Image(uiImage: model.data.frames[index].framed)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(height: geometry.size.height - 385)
-                                            .padding(.vertical)
+                    }
+                }
+                Section {
+                    HStack {
+                        Text("Size")
+                        Spacer()
+                        Image(systemName: "selection.pin.in.out")
+                    }
+                    .opacity(0.3)
+                    HStack {
+                        Text("Width")
+                        Spacer()
+                        Menu {
+                            ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.frames[model.data.selected].width = CGFloat(value)
                                     }
-                                    .buttonStyle(PlainButtonStyle())
+                                }) {
+                                    Text("\(value) cm")
                                 }
                             }
-                            .padding(.vertical, 14)
-                        } else {
-                            HStack {
-                                Spacer()
-                                Image(uiImage: model.data.frames[model.data.selected].framed)
+                        } label: {
+                            Text("\(Int(model.data.frames[model.data.selected].width)) cm")
+                        }
+                    }
+                    HStack {
+                        Text("Height")
+                        Spacer()
+                        Menu {
+                            ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.frames[model.data.selected].height = CGFloat(value)
+                                    }
+                                }) {
+                                    Text("\(value) cm")
+                                }
+                            }
+                        } label: {
+                            Text("\(Int(model.data.frames[model.data.selected].height)) cm")
+                        }
+                    }
+                    HStack {
+                        Text("Border")
+                        Spacer()
+                        Menu {
+                            ForEach(Array(stride(from: 0.01, to: 0.21, by: 0.01)), id: \.self) { value in
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.frames[model.data.selected].border = CGFloat(value)
+                                    }
+                                }) {
+                                    Text("\(value, specifier: "%.2f") cm")
+                                }
+                            }
+                        } label: {
+                            Text("\(model.data.frames[model.data.selected].border, specifier: "%.2f") cm")
+                        }
+                    }
+                }
+                Section {
+                    HStack {
+                        Text("Filters")
+                        Spacer()
+                        Image(systemName: "camera.filters")
+                    }
+                    .opacity(0.3)
+                    LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
+                        ForEach(["", "noir", "mono", "invert"], id: \.self) { filter in
+                            Button(action: {
+                                model.data.frames[model.data.selected].filter = filter
+                            }) {
+                                Image(uiImage: filterImage(image: model.data.frames[model.data.selected].image, filter: filter))
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(height: geometry.size.height - 385)
-                                    .padding(.vertical)
-                                Spacer()
+                                    .border(
+                                        Color.accentColor,
+                                        width: model.data.frames[model.data.selected].filter == filter ? 4 : 0
+                                    )
                             }
+                            .buttonStyle(PlainButtonStyle())
                         }
                     }
-                    Section {
-                        HStack {
-                            Text("Size")
-                            Spacer()
-                            Image(systemName: "selection.pin.in.out")
-                        }
-                        HStack {
-                            Text("Width")
-                            Spacer()
-                            Menu {
-                                ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
-                                    Button(action: {
-                                        withAnimation {
-                                            model.data.frames[model.data.selected].width = CGFloat(value)
-                                        }
-                                    }) {
-                                        Text("\(value) cm")
-                                    }
-                                }
-                            } label: {
-                                Text("\(Int(model.data.frames[model.data.selected].width)) cm")
-                            }
-                        }
-                        HStack {
-                            Text("Height")
-                            Spacer()
-                            Menu {
-                                ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
-                                    Button(action: {
-                                        withAnimation {
-                                            model.data.frames[model.data.selected].height = CGFloat(value)
-                                        }
-                                    }) {
-                                        Text("\(value) cm")
-                                    }
-                                }
-                            } label: {
-                                Text("\(Int(model.data.frames[model.data.selected].height)) cm")
-                            }
-                        }
-                        HStack {
-                            Text("Border")
-                            Spacer()
-                            Menu {
-                                ForEach(Array(stride(from: 0.01, to: 0.21, by: 0.01)), id: \.self) { value in
-                                    Button(action: {
-                                        withAnimation {
-                                            model.data.frames[model.data.selected].border = CGFloat(value)
-                                        }
-                                    }) {
-                                        Text("\(value, specifier: "%.2f") cm")
-                                    }
-                                }
-                            } label: {
-                                Text("\(model.data.frames[model.data.selected].border, specifier: "%.2f") cm")
-                            }
-                        }
+                    .padding(.vertical, 14)
+                }
+                Section {
+                    HStack {
+                        Text("Materials")
+                        Spacer()
+                        Image(systemName: "cube")
                     }
-                    .disabled(model.data.isBrowsing)
-                    .id("size")
-                    Section {
-                        HStack {
-                            Text("Filters")
-                            Spacer()
-                            Image(systemName: "camera.filters")
-                        }
-                        LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
-                            ForEach(["", "noir", "mono", "invert"], id: \.self) { filter in
-                                Button(action: {
-                                    model.data.frames[model.data.selected].filter = filter
-                                }) {
-                                    Image(uiImage: filterImage(image: model.data.frames[model.data.selected].image, filter: filter))
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .border(
-                                            Color.accentColor,
-                                            width: model.data.frames[model.data.selected].filter == filter ? 4 : 0
-                                        )
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
-                        }
-                        .padding(.vertical, 14)
-                    }
-                    .disabled(model.data.isBrowsing)
-                    Section {
-                        HStack {
-                            Text("Materials")
-                            Spacer()
-                            Image(systemName: "cube")
-                        }
-                        LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
-                            ForEach([UIImage(named: "material_oak"), UIImage(named: "material_steel"), UIImage(named: "material_marble")], id: \.self) { material in
-                                Button(action: {
-                                    model.data.frames[model.data.selected].material = material!
-                                }) {
-                                    Image(uiImage: material!)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .border(Color.accentColor, width: model.data.frames[model.data.selected].material == material ? 4 : 0)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
-                        }
-                        .padding(.vertical, 14)
-                    }
-                    .disabled(model.data.isBrowsing)
-                    if model.data.frames.count > 1 {
-                        Section {
+                    .opacity(0.3)
+                    LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
+                        ForEach([UIImage(named: "material_oak"), UIImage(named: "material_steel"), UIImage(named: "material_marble")], id: \.self) { material in
                             Button(action: {
-                                model.removeImage(index: model.data.selected)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { // might have to increase delay to 0.1+
-                                    withAnimation {
-                                        proxy.scrollTo("size", anchor: .bottom)
-                                    }
-                                }
+                                model.data.frames[model.data.selected].material = material!
                             }) {
-                                HStack {
-                                    Text("Delete")
-                                    Spacer()
-                                    Image(systemName: "delete.left")
-                                }
+                                Image(uiImage: material!)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .border(Color.accentColor, width: model.data.frames[model.data.selected].material == material ? 4 : 0)
                             }
-                            .accentColor(.red)
+                            .buttonStyle(PlainButtonStyle())
                         }
-                        .disabled(model.data.isBrowsing)
                     }
+                    .padding(.vertical, 14)
+                }
+                if model.data.frames.count > 1 {
+                    Section {
+                        Button(action: {
+                            model.removeImage(index: model.data.selected)
+                            model.data.isActive = false
+                        }) {
+                            HStack {
+                                Text("Delete")
+                                Spacer()
+                                Image(systemName: "delete.left")
+                            }
+                        }
+                        .accentColor(.red)
+                    }
+                }
+            }
+            .listStyle(InsetGroupedListStyle())
+        }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Button(action: {
+                    model.data.welcome.toggle()
+                }) {
+                    Text("Augmented Frames")
+                        .bold()
+                }
+                .accentColor(colorscheme == .dark ? .white : .black)
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    model.data.isAugmenting.toggle()
+                }) {
+                    Text("AR")
                 }
             }
         }

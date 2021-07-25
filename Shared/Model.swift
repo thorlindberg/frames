@@ -8,9 +8,10 @@ final class Model: NSObject, ObservableObject {
     @Published var data: Format = Format()
     
     struct Format: Hashable {
+        var colorscheme: ColorScheme?
         var welcome: Bool = !UserDefaults.standard.bool(forKey: "v1.0")
         var guide: String = ""
-        var isBrowsing: Bool = false
+        var isActive: Bool = true
         var isImporting: Bool = false
         var isCapturing: Bool = false
         var isAugmenting: Bool = false
@@ -20,6 +21,43 @@ final class Model: NSObject, ObservableObject {
             Frame(image: UIImage(imageLiteralResourceName: "sample")),
             Frame(image: UIImage(imageLiteralResourceName: "sample2"))
         ]
+        var scene: SCNScene? {
+                    
+            // create scene and box
+            let scene = SCNScene()
+            let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
+            
+            // set scene background
+            scene.background.contents = colorscheme == .dark ? UIColor.systemGray6 : UIColor.white
+            
+            // define materials
+            let front = SCNMaterial()
+            front.diffuse.contents = frames[selected].framed
+            
+            let frame = SCNMaterial()
+            frame.diffuse.contents = frames[selected].material
+            frame.diffuse.wrapT = SCNWrapMode.repeat
+            frame.diffuse.wrapS = SCNWrapMode.repeat
+            
+            // add materials to sides
+            node.geometry?.materials = [front, frame, frame, frame, frame, frame]
+            
+            // frame size
+            node.scale = SCNVector3(
+                Float(frames[selected].width/100),
+                Float(frames[selected].height/100),
+                1
+            )
+            
+            // rotate frame
+            node.rotation = SCNVector4(1, 0, 0, 350 * Double.pi / 180)
+            
+            // add frame to scene
+            scene.rootNode.addChildNode(node)
+            
+            return scene
+            
+        }
     }
     
     struct Frame: Hashable {
@@ -169,6 +207,51 @@ extension UIImage {
         return UIColor(red: CGFloat(bitmap[0]) / 255, green: CGFloat(bitmap[1]) / 255, blue: CGFloat(bitmap[2]) / 255, alpha: CGFloat(bitmap[3]) / 255)
     }
 }
+
+// source: https://www.hackingwithswift.com/books/ios-swiftui/importing-an-image-into-swiftui-using-uiimagepickercontroller
+
+struct ImagePicker: UIViewControllerRepresentable {
+    
+    @ObservedObject var model: Model
+    var type: String
+    @Environment(\.presentationMode) var presentationMode
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.delegate = context.coordinator
+        if type == "import" {
+            picker.sourceType = .photoLibrary
+        }
+        if type == "capture" {
+            picker.sourceType = .camera
+        }
+        return picker
+    }
+    
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) { }
+    
+    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        let parent: ImagePicker
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+            if let uiImage = info[.originalImage] as? UIImage {
+                parent.model.addImage(image: uiImage)
+            }
+            if parent.model.data.welcome {
+                withAnimation {
+                    parent.model.data.guide = ""
+                }
+            } else {
+                parent.presentationMode.wrappedValue.dismiss()
+            }
+        }
+    }
+    
+}
+
 
 struct Model_Previews: PreviewProvider {
     static var previews: some View {
