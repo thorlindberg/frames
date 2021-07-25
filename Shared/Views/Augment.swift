@@ -36,7 +36,7 @@ struct Augment: View {
                 }
                 .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationViewStyle(StackNavigationViewStyle()) // disables split view on iPad
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
 }

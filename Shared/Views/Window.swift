@@ -20,16 +20,36 @@ struct Window: View {
             Browse(model: model)
                 .ignoresSafeArea(edges: /*@START_MENU_TOKEN@*/.bottom/*@END_MENU_TOKEN@*/)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationBarTitle("Frames")
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            withAnimation {
+                        Menu {
+                            Button(action: {
+                                model.data.isImporting.toggle()
+                            }) {
+                                Label("Choose Photo", systemImage: "photo")
+                            }
+                            Button(action: {
+                                model.data.isCapturing.toggle()
+                            }) {
+                                Label("Capture Photo", systemImage: "camera")
+                            }
+                            Button(action: {
+                                UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                    .first?.rootViewController?
+                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                            }) {
+                                Label("Scan Photo", systemImage: "viewfinder")
+                            }
+                        } label: {
+                            Image(systemName: "camera.fill")
+                        }
+                    }
+                    ToolbarItem(placement: .principal) {
+                        Text("Augmented frames")
+                            .bold()
+                            .onTapGesture {
                                 model.data.welcome.toggle()
                             }
-                        }) {
-                            Image(systemName: "list.bullet.rectangle")
-                        }
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
@@ -56,9 +76,7 @@ struct Window: View {
             Augment(model: model)
         }
         .onAppear {
-            withAnimation {
-                model.data.colorscheme = colorscheme
-            }
+            model.data.colorscheme = colorscheme
         }
         .onChange(of: colorscheme) { value in
             withAnimation {

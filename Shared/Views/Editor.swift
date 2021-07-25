@@ -129,23 +129,44 @@ struct Editor: View {
                 }
                 .padding(.vertical, 14)
             }
-            if model.data.frames.count > 1 {
+            Section {
                 Button(action: {
-                    withAnimation {
-                        model.removeImage(index: model.data.selected)
-                    }
+                    UIApplication.shared.windows.filter({$0.isKeyWindow})
+                        .first?
+                        .rootViewController?
+                        .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].framed], applicationActivities: nil), animated: true)
                 }) {
                     HStack {
-                        Text("Delete")
+                        Text("Share")
                         Spacer()
-                        Image(systemName: "delete.left")
+                        Image(systemName: "square.and.arrow.up")
                     }
                 }
-                .accentColor(.red)
+                if model.data.frames.count > 1 {
+                    Button(action: {
+                        withAnimation {
+                            model.removeImage(index: model.data.selected)
+                        }
+                    }) {
+                        HStack {
+                            Text("Delete")
+                            Spacer()
+                            Image(systemName: "delete.left")
+                        }
+                    }
+                    .accentColor(.red)
+                }
             }
         }
         .listStyle(InsetGroupedListStyle())
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Augmented frames")
+                    .bold()
+                    .onTapGesture {
+                        model.data.welcome.toggle()
+                    }
+            }
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     model.data.isAugmenting.toggle()

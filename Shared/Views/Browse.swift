@@ -9,34 +9,7 @@ struct Browse: View {
         GeometryReader { geometry in
             ScrollView {
                 LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 2), count: 2), spacing: 2) {
-                    Menu {
-                        Button(action: {
-                            model.data.isImporting.toggle()
-                        }) {
-                            Label("Choose Photo", systemImage: "photo")
-                        }
-                        Button(action: {
-                            model.data.isCapturing.toggle()
-                        }) {
-                            Label("Capture Photo", systemImage: "camera")
-                        }
-                        Button(action: {
-                            UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                .first?.rootViewController?
-                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                        }) {
-                            Label("Scan Photo", systemImage: "viewfinder")
-                        }
-                    } label: {
-                        ZStack {
-                            Rectangle()
-                                .foregroundColor(colorscheme == .dark ? .black : .white)
-                            Image(systemName: "plus")
-                                .font(.system(size: geometry.size.width / 15))
-                        }
-                        .frame(height: geometry.size.width / 2)
-                    }
-                    ForEach(0...max(model.data.frames.count, 6), id: \.self) { index in
+                    ForEach(0...max(model.data.frames.count, 7), id: \.self) { index in
                         if index < model.data.frames.count {
                             NavigationLink(
                                 destination: Editor(model: model),
@@ -52,29 +25,29 @@ struct Browse: View {
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                             .padding()
+                                            .contextMenu {
+                                                if !model.data.welcome && index == model.data.selected {
+                                                    Button(action: {
+                                                        UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                                            .first?
+                                                            .rootViewController?
+                                                            .present(UIActivityViewController(activityItems: [model.data.frames[index].framed], applicationActivities: nil), animated: true)
+                                                    }) {
+                                                        Label("Share", systemImage: "square.and.arrow.up")
+                                                    }
+                                                    if model.data.frames.count > 1 {
+                                                        Button(action: {
+                                                            model.removeImage(index: index)
+                                                        }) {
+                                                            Label("Delete", systemImage: "delete.left")
+                                                        }
+                                                    }
+                                                }
+                                            }
                                     }
                                     .frame(height: geometry.size.width / 2)
                                 }
                             )
-                            .contextMenu {
-                                if !model.data.welcome && index == model.data.selected {
-                                    Button(action: {
-                                        UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                            .first?
-                                            .rootViewController?
-                                            .present(UIActivityViewController(activityItems: [model.data.frames[index].framed], applicationActivities: nil), animated: true)
-                                    }) {
-                                        Label("Share", systemImage: "square.and.arrow.up")
-                                    }
-                                    if model.data.frames.count > 1 {
-                                        Button(action: {
-                                            model.removeImage(index: index)
-                                        }) {
-                                            Label("Delete", systemImage: "delete.left")
-                                        }
-                                    }
-                                }
-                            }
                         } else {
                             Rectangle()
                                 .foregroundColor(colorscheme == .dark ? .black : .white)

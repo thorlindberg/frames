@@ -18,11 +18,9 @@ final class Model: NSObject, ObservableObject {
         var isFlashlight: Bool = false
         var selected: Int = 0
         var container: Frame?
-        var frames: [Frame] = [
-            Frame(image: UIImage(imageLiteralResourceName: "sample"))
-        ]
+        var frames: [Frame] = [Frame(image: UIImage(imageLiteralResourceName: "sample"))]
         var scene: SCNScene? {
-                    
+
             // create scene and box
             let scene = SCNScene()
             let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
