@@ -39,6 +39,7 @@ struct ImagePicker: UIViewControllerRepresentable {
             } else {
                 parent.presentationMode.wrappedValue.dismiss()
             }
+            parent.model.data.isBrowsing = false
         }
     }
     

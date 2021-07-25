@@ -10,7 +10,7 @@ final class Model: NSObject, ObservableObject {
     struct Format: Hashable {
         var welcome: Bool = !UserDefaults.standard.bool(forKey: "v1.0")
         var guide: String = ""
-        var isEditing: Bool = false
+        var isBrowsing: Bool = false
         var isImporting: Bool = false
         var isCapturing: Bool = false
         var isAugmenting: Bool = false

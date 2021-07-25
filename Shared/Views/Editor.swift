@@ -3,7 +3,6 @@ import SwiftUI
 struct Editor: View {
     
     @ObservedObject var model: Model
-    @State var isBrowsing: Bool = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -11,7 +10,7 @@ struct Editor: View {
                 Section {
                     Button(action: {
                         withAnimation {
-                            isBrowsing.toggle()
+                            model.data.isBrowsing.toggle()
                         }
                     }) {
                         HStack {
@@ -20,12 +19,14 @@ struct Editor: View {
                             Image(systemName: "photo.on.rectangle.angled")
                         }
                     }
-                    if isBrowsing {
+                    if model.data.isBrowsing {
                         LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 2)) {
                             ForEach(model.data.frames.indices, id: \.self) { index in
                                 Button(action: {
-                                    model.data.selected = index
-                                    isBrowsing.toggle()
+                                    withAnimation {
+                                        model.data.selected = index
+                                        model.data.isBrowsing.toggle()
+                                    }
                                 }) {
                                     Image(uiImage: model.data.frames[index].framed)
                                         .resizable()
@@ -107,7 +108,7 @@ struct Editor: View {
                         }
                     }
                 }
-                .disabled(isBrowsing)
+                .disabled(model.data.isBrowsing)
                 Section {
                     HStack {
                         Text("Filters")
@@ -132,7 +133,7 @@ struct Editor: View {
                     }
                     .padding(.vertical, 14)
                 }
-                .disabled(isBrowsing)
+                .disabled(model.data.isBrowsing)
                 Section {
                     HStack {
                         Text("Materials")
@@ -154,7 +155,7 @@ struct Editor: View {
                     }
                     .padding(.vertical, 14)
                 }
-                .disabled(isBrowsing)
+                .disabled(model.data.isBrowsing)
                 if model.data.frames.count > 1 {
                     Section {
                         Button(action: {
@@ -170,7 +171,7 @@ struct Editor: View {
                         }
                         .accentColor(.red)
                     }
-                    .disabled(isBrowsing)
+                    .disabled(model.data.isBrowsing)
                 }
             }
         }
