@@ -57,7 +57,7 @@ struct Window: View {
                         }
                     }
                     ToolbarItem(placement: .principal) {
-                        Text("Frames")
+                        Text(UIDevice.current.userInterfaceIdiom == .pad ? "Augmented Frames" : "Frames")
                             .bold()
                             .onTapGesture {
                                 model.data.welcome.toggle()
