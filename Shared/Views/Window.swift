@@ -17,35 +17,47 @@ struct Window: View {
 
     var body: some View {
         NavigationView {
-            Browse(model: model)
-                .ignoresSafeArea(edges: /*@START_MENU_TOKEN@*/.bottom/*@END_MENU_TOKEN@*/)
+            Editor(model: model)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Menu {
+                        if model.data.isEditing {
                             Button(action: {
-                                model.data.isImporting.toggle()
+                                withAnimation {
+                                    model.data.isEditing.toggle()
+                                }
                             }) {
-                                Label("Choose Photo", systemImage: "photo")
+                                HStack(spacing: 5) {
+                                    Image(systemName: "chevron.left")
+                                    Text("Back")
+                                }
                             }
-                            Button(action: {
-                                model.data.isCapturing.toggle()
-                            }) {
-                                Label("Capture Photo", systemImage: "camera")
+                        } else {
+                            Menu {
+                                Button(action: {
+                                    model.data.isImporting.toggle()
+                                }) {
+                                    Label("Choose Photo", systemImage: "photo")
+                                }
+                                Button(action: {
+                                    model.data.isCapturing.toggle()
+                                }) {
+                                    Label("Capture Photo", systemImage: "camera")
+                                }
+                                Button(action: {
+                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                        .first?.rootViewController?
+                                        .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                                }) {
+                                    Label("Scan Photo", systemImage: "viewfinder")
+                                }
+                            } label: {
+                                Image(systemName: "camera.fill")
                             }
-                            Button(action: {
-                                UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                    .first?.rootViewController?
-                                    .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                            }) {
-                                Label("Scan Photo", systemImage: "viewfinder")
-                            }
-                        } label: {
-                            Image(systemName: "camera.fill")
                         }
                     }
                     ToolbarItem(placement: .principal) {
-                        Text("Augmented frames")
+                        Text("Frames")
                             .bold()
                             .onTapGesture {
                                 model.data.welcome.toggle()
@@ -57,7 +69,7 @@ struct Window: View {
                         }) {
                             Text("AR")
                         }
-                        .disabled(true)
+                        .disabled(!model.data.isEditing)
                     }
                 }
         }
