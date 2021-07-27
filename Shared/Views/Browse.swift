@@ -8,7 +8,7 @@ struct Browse: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 2), count: 2), spacing: 2) {
+                LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 7), count: 2), spacing: 7) {
                     ForEach(0...max(model.data.frames.count, 7), id: \.self) { index in
                         if index < model.data.frames.count {
                             NavigationLink(
@@ -56,7 +56,7 @@ struct Browse: View {
                     }
                 }
             }
-            .background(colorscheme == .dark ? Color(red: 1, green: 1, blue: 1, opacity: 0.1) : Color(red: 0, green: 0, blue: 0, opacity: 0.05))
+            .background(colorscheme == .dark ? Color(red: 1, green: 1, blue: 1, opacity: 0.6) : Color(red: 0, green: 0, blue: 0, opacity: 0.03))
         }
     }
     

@@ -1,6 +1,21 @@
 import SwiftUI
 import SceneKit
 
+struct RoundedCornersShape: Shape {
+    let corners: UIRectCorner
+    let radius: CGFloat
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
+        return Path(path.cgPath)
+    }
+}
+ 
+
 struct Editor: View {
     
     @ObservedObject var model: Model
@@ -19,9 +34,65 @@ struct Editor: View {
                     scene: model.data.scene,
                     options: [.allowsCameraControl]
                 )
-                .frame(height: 250)
+                .frame(height: 200)
                 .padding(.horizontal, -16)
                 .padding(.vertical, -6)
+            }
+            Section {
+                HStack {
+                    Button(action: {
+                        model.data.isWarned.toggle()
+                    }) {
+                        HStack {
+                            Text("Delete")
+                            Spacer()
+                            Image(systemName: "delete.left")
+                        }
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .foregroundColor(.red)
+                    .alert(isPresented: $model.data.isWarned) {
+                        Alert(
+                            title: Text("Delete your frame?"),
+                            message: Text("This action cannot be undone"),
+                            primaryButton: .destructive(Text("Delete")) {
+                                withAnimation {
+                                    model.removeImage(index: model.data.selected)
+                                }
+                            },
+                            secondaryButton: .cancel()
+                        )
+                    }
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(Color(UIColor.secondarySystemBackground))
+                        HStack {
+                            RoundedCornersShape(corners: [.topRight, .bottomRight], radius: 100)
+                                .foregroundColor(.white)
+                                .frame(width: 20)
+                            Spacer()
+                            RoundedCornersShape(corners: [.topLeft, .bottomLeft], radius: 100)
+                                .foregroundColor(.white)
+                                .frame(width: 20)
+                        }
+                    }
+                    .frame(width: 54)
+                    .padding(.vertical, -6)
+                    Button(action: {
+                        UIApplication.shared.windows.filter({$0.isKeyWindow})
+                            .first?
+                            .rootViewController?
+                            .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].framed], applicationActivities: nil), animated: true)
+                    }) {
+                        HStack {
+                            Text("Share")
+                            Spacer()
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .foregroundColor(.accentColor)
+                }
             }
             Section {
                 HStack {
@@ -129,34 +200,6 @@ struct Editor: View {
                 }
                 .padding(.vertical, 14)
             }
-            Section {
-                Button(action: {
-                    UIApplication.shared.windows.filter({$0.isKeyWindow})
-                        .first?
-                        .rootViewController?
-                        .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].framed], applicationActivities: nil), animated: true)
-                }) {
-                    HStack {
-                        Text("Share")
-                        Spacer()
-                        Image(systemName: "square.and.arrow.up")
-                    }
-                }
-                if model.data.frames.count > 1 {
-                    Button(action: {
-                        withAnimation {
-                            model.removeImage(index: model.data.selected)
-                        }
-                    }) {
-                        HStack {
-                            Text("Delete")
-                            Spacer()
-                            Image(systemName: "delete.left")
-                        }
-                    }
-                    .accentColor(.red)
-                }
-            }
         }
         .listStyle(InsetGroupedListStyle())
         .toolbar {
@@ -182,7 +225,7 @@ struct Editor: View {
 struct Editor_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Model())
+            Editor(model: Model())
                 .preferredColorScheme($0)
         }
         .previewDevice("iPhone 12 mini")
