@@ -56,7 +56,7 @@ struct Browse: View {
                     }
                 }
             }
-            .background(colorscheme == .dark ? Color(red: 1, green: 1, blue: 1, opacity: 0.6) : Color(red: 0, green: 0, blue: 0, opacity: 0.03))
+            .background(colorscheme == .dark ? Color(red: 1, green: 1, blue: 1, opacity: 0.06) : Color(red: 0, green: 0, blue: 0, opacity: 0.03))
         }
     }
     

@@ -65,14 +65,14 @@ struct Editor: View {
                     }
                     ZStack {
                         Rectangle()
-                            .foregroundColor(Color(UIColor.secondarySystemBackground))
+                            .foregroundColor(colorscheme == .dark ? .black : Color(UIColor.secondarySystemBackground))
                         HStack {
                             RoundedCornersShape(corners: [.topRight, .bottomRight], radius: 100)
-                                .foregroundColor(.white)
+                                .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
                                 .frame(width: 20)
                             Spacer()
                             RoundedCornersShape(corners: [.topLeft, .bottomLeft], radius: 100)
-                                .foregroundColor(.white)
+                                .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
                                 .frame(width: 20)
                         }
                     }
