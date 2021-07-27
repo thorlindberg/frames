@@ -45,18 +45,22 @@ struct Welcome: View {
                 NavigationLink(destination: Contact(model: model)) {
                     Label("Contact support", systemImage: "bubble.right")
                 }
+                .disabled(true) // disabled until page finalised
                 Section(header:
                             Text("quickstart guide")
                 ) {
                     NavigationLink(destination: First(model: model)) {
                         Label("Add photo", systemImage: "camera")
                     }
+                    .disabled(true) // disabled until page finalised
                     NavigationLink(destination: Second(model: model)) {
                         Label("Customize frame", systemImage: "cube")
                     }
+                    .disabled(true) // disabled until page finalised
                     NavigationLink(destination: Third(model: model)) {
                         Label("Augment Reality", systemImage: "move.3d")
                     }
+                    .disabled(true) // disabled until page finalised
                 }
                 Button(action: {
                     UserDefaults.standard.set(true, forKey: "v1.0")

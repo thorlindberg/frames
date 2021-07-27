@@ -18,6 +18,13 @@ struct Editor: View {
     
     @ObservedObject var model: Model
     @Environment(\.colorScheme) var colorscheme
+    var height: CGFloat {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return 400
+        } else {
+            return 200
+        }
+    }
     
     var body: some View {
         List {
@@ -37,7 +44,7 @@ struct Editor: View {
                         .foregroundColor(.red)
                         .alert(isPresented: $model.data.isWarned) {
                             Alert(
-                                title: Text("Delete your frame?"),
+                                title: Text("Delete this frame?"),
                                 message: Text("This action cannot be undone"),
                                 primaryButton: .destructive(Text("Delete")) {
                                     withAnimation {
@@ -94,7 +101,7 @@ struct Editor: View {
                         }
                     }
                 }
-                .frame(height: 200)
+                .frame(height: height)
                 Section {
                     HStack {
                         Text("Size")
@@ -228,16 +235,14 @@ struct Editor: View {
                             }) {
                                 Label("Share", systemImage: "square.and.arrow.up")
                             }
-                            if model.data.frames.count > 1 {
-                                Button(action: {
-                                    model.removeImage(index: index)
-                                }) {
-                                    Label("Delete", systemImage: "delete.left")
-                                }
+                            Button(action: {
+                                model.removeImage(index: index)
+                            }) {
+                                Label("Delete", systemImage: "delete.left")
                             }
                         }
                     }
-                    .frame(height: 200)
+                    .frame(height: height)
                 }
             }
         }
