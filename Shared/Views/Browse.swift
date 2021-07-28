@@ -3,7 +3,6 @@ import SwiftUI
 struct Browse: View {
     
     @ObservedObject var model: Model
-    @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
         NavigationView {
@@ -108,14 +107,6 @@ struct Browse: View {
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        .onAppear {
-            model.data.colorscheme = colorscheme
-        }
-        .onChange(of: colorscheme) { value in
-            withAnimation {
-                model.data.colorscheme = value
-            }
-        }
     }
     
 }

@@ -137,7 +137,11 @@ final class Model: NSObject, ObservableObject {
             UIGraphicsEndImageContext()
             
             // update transformed image
-            return newImage!
+            if let newImage = newImage {
+                return newImage
+            } else {
+                return self.image
+            }
             
         }
     }

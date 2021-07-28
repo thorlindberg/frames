@@ -3,6 +3,7 @@ import SwiftUI
 struct Window: View {
     
     @ObservedObject var model: Model
+    @Environment(\.colorScheme) var colorscheme
 
     var body: some View {
         Browse(model: model)
@@ -18,6 +19,14 @@ struct Window: View {
             }
             .fullScreenCover(isPresented: $model.data.isAugmenting) {
                 Augment(model: model)
+            }
+            .onAppear {
+                model.data.colorscheme = colorscheme
+            }
+            .onChange(of: colorscheme) { value in
+                withAnimation {
+                    model.data.colorscheme = value
+                }
             }
     }
     
