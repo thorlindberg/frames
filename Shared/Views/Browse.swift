@@ -22,6 +22,14 @@ struct Browse: View {
                             .background(
                                 NavigationLink(destination: Editor(model: model)) { }
                                     .opacity(0)
+                                /*
+                                NavigationLink(
+                                    destination: Editor(model: model),
+                                    isActive: $model.data.isEditing,
+                                    label: { }
+                                )
+                                .opacity(0)
+                                */
                             )
                             .frame(maxHeight: geometry.size.height / 2)
                             .contextMenu {
@@ -79,6 +87,14 @@ struct Browse: View {
                         }
                 }
                 */
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        model.data.isAugmenting.toggle()
+                    }) {
+                        Text("AR")
+                    }
+                    .disabled(true)
+                }
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())

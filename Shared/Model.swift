@@ -11,6 +11,7 @@ final class Model: NSObject, ObservableObject {
         var colorscheme: ColorScheme?
         var welcome: Bool = !UserDefaults.standard.bool(forKey: "beta82")
         var guide: String = ""
+        var isEditing: Bool = false
         var isImporting: Bool = false
         var isCapturing: Bool = false
         var isAugmenting: Bool = false
