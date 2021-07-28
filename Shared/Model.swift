@@ -9,7 +9,7 @@ final class Model: NSObject, ObservableObject {
     
     struct Format: Hashable {
         var colorscheme: ColorScheme?
-        var welcome: Bool = !UserDefaults.standard.bool(forKey: "v1.0")
+        var welcome: Bool = !UserDefaults.standard.bool(forKey: "beta82")
         var guide: String = ""
         var isImporting: Bool = false
         var isCapturing: Bool = false
