@@ -8,49 +8,57 @@ struct Browse: View {
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
-                List {
-                    ForEach(model.data.frames.indices, id: \.self) { index in
-                        Section {
-                            HStack {
-                                Spacer()
-                                Image(uiImage: model.data.frames[index].framed)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .padding()
-                                Spacer()
-                            }
-                            .background(
-                                NavigationLink(destination: Editor(model: model)) { }
-                                    .opacity(0)
-                                /*
-                                NavigationLink(
-                                    destination: Editor(model: model),
-                                    isActive: $model.data.isEditing,
-                                    label: { }
-                                )
-                                .opacity(0)
-                                */
-                            )
-                            .frame(maxHeight: geometry.size.height / 2)
-                            .contextMenu {
-                                Button(action: {
-                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                        .first?
-                                        .rootViewController?
-                                        .present(UIActivityViewController(activityItems: [model.data.frames[index].framed], applicationActivities: nil), animated: true)
-                                }) {
-                                    Label("Share", systemImage: "square.and.arrow.up")
+                ScrollViewReader { proxy in
+                    List {
+                        ForEach(model.data.frames.indices, id: \.self) { index in
+                            Section {
+                                HStack {
+                                    Spacer()
+                                    Image(uiImage: model.data.frames[index].framed)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .padding()
+                                    Spacer()
                                 }
-                                Button(action: {
-                                    model.removeImage(index: index)
-                                }) {
-                                    Label("Delete", systemImage: "delete.left")
+                                .background(
+                                    NavigationLink(destination: Editor(model: model)) { }
+                                        .opacity(0)
+                                    /*
+                                    NavigationLink(
+                                        destination: Editor(model: model),
+                                        isActive: $model.data.isEditing,
+                                        label: { }
+                                    )
+                                    .opacity(0)
+                                    */
+                                )
+                                .frame(maxHeight: geometry.size.height / 2)
+                                .id(index)
+                                .contextMenu {
+                                    Button(action: {
+                                        UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                            .first?
+                                            .rootViewController?
+                                            .present(UIActivityViewController(activityItems: [model.data.frames[index].framed], applicationActivities: nil), animated: true)
+                                    }) {
+                                        Label("Share", systemImage: "square.and.arrow.up")
+                                    }
+                                    Button(action: {
+                                        model.removeImage(index: index)
+                                    }) {
+                                        Label("Delete", systemImage: "delete.left")
+                                    }
                                 }
                             }
                         }
                     }
+                    .listStyle(InsetGroupedListStyle())
+                    .onChange(of: model.data.frames[0]) { _ in
+                        withAnimation {
+                            proxy.scrollTo(0, anchor: .bottom)
+                        }
+                    }
                 }
-                .listStyle(InsetGroupedListStyle())
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarTitle("Augmented Frames")
