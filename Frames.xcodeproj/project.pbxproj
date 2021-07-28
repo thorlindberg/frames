@@ -8,16 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		7E13BE08269991E900B1D78B /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE07269991E900B1D78B /* Tests_iOS.swift */; };
-		7E13BE15269991E900B1D78B /* Frames.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BDE9269991E700B1D78B /* Frames.xcdatamodeld */; };
 		7E13BE17269991E900B1D78B /* FramesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BDEB269991E700B1D78B /* FramesApp.swift */; };
 		7E13BE1D269991E900B1D78B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E13BDEE269991E900B1D78B /* Assets.xcassets */; };
 		7E13BE392699944B00B1D78B /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE342699944B00B1D78B /* Welcome.swift */; };
 		7E13BE3B2699944B00B1D78B /* Augment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE352699944B00B1D78B /* Augment.swift */; };
 		7E13BE4C2699946100B1D78B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE412699946100B1D78B /* Model.swift */; };
+		7E88617B26B16C5100AAF923 /* Browse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E88617A26B16C5100AAF923 /* Browse.swift */; };
 		7EEA2C0226AC94DB0070FE4C /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEA2C0126AC94DB0070FE4C /* Editor.swift */; };
 		7EEFDCD62699950A006D4984 /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCD42699950A006D4984 /* Window.swift */; };
-		7EEFDCD82699950A006D4984 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCD52699950A006D4984 /* Persistence.swift */; };
-		7EEFDCE226999EE7006D4984 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEFDCE126999EE7006D4984 /* CloudKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,7 +29,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7E13BDEA269991E700B1D78B /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
 		7E13BDEB269991E700B1D78B /* FramesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FramesApp.swift; sourceTree = "<group>"; };
 		7E13BDEE269991E900B1D78B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7E13BDF3269991E900B1D78B /* Frames.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Frames.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,9 +39,9 @@
 		7E13BE342699944B00B1D78B /* Welcome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		7E13BE352699944B00B1D78B /* Augment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Augment.swift; sourceTree = "<group>"; };
 		7E13BE412699946100B1D78B /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		7E88617A26B16C5100AAF923 /* Browse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Browse.swift; sourceTree = "<group>"; };
 		7EEA2C0126AC94DB0070FE4C /* Editor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
 		7EEFDCD42699950A006D4984 /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
-		7EEFDCD52699950A006D4984 /* Persistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		7EEFDCDF26999ED3006D4984 /* Frames.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Frames.entitlements; sourceTree = "<group>"; };
 		7EEFDCE126999EE7006D4984 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -54,7 +51,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7EEFDCE226999EE7006D4984 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,7 +69,6 @@
 			children = (
 				7EEFDCDF26999ED3006D4984 /* Frames.entitlements */,
 				7E13BDE8269991E700B1D78B /* Shared */,
-				7E13BDE9269991E700B1D78B /* Frames.xcdatamodeld */,
 				7E13BDEE269991E900B1D78B /* Assets.xcassets */,
 				7E13BDF5269991E900B1D78B /* iOS */,
 				7E13BE06269991E900B1D78B /* Tests iOS */,
@@ -87,7 +82,6 @@
 			children = (
 				7E13BDEB269991E700B1D78B /* FramesApp.swift */,
 				7E13BE412699946100B1D78B /* Model.swift */,
-				7EEFDCD52699950A006D4984 /* Persistence.swift */,
 				7EEFDCDA26999594006D4984 /* Views */,
 			);
 			path = Shared;
@@ -123,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				7EEFDCD42699950A006D4984 /* Window.swift */,
+				7E88617A26B16C5100AAF923 /* Browse.swift */,
 				7EEA2C0126AC94DB0070FE4C /* Editor.swift */,
 				7E13BE342699944B00B1D78B /* Welcome.swift */,
 				7E13BE352699944B00B1D78B /* Augment.swift */,
@@ -241,10 +236,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E13BE392699944B00B1D78B /* Welcome.swift in Sources */,
-				7E13BE15269991E900B1D78B /* Frames.xcdatamodeld in Sources */,
+				7E88617B26B16C5100AAF923 /* Browse.swift in Sources */,
 				7EEA2C0226AC94DB0070FE4C /* Editor.swift in Sources */,
 				7E13BE17269991E900B1D78B /* FramesApp.swift in Sources */,
-				7EEFDCD82699950A006D4984 /* Persistence.swift in Sources */,
 				7EEFDCD62699950A006D4984 /* Window.swift in Sources */,
 				7E13BE3B2699944B00B1D78B /* Augment.swift in Sources */,
 				7E13BE4C2699946100B1D78B /* Model.swift in Sources */,
@@ -388,7 +382,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Frames.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 82;
 				DEVELOPMENT_TEAM = VX5CR539N9;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -413,7 +407,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Frames.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 82;
 				DEVELOPMENT_TEAM = VX5CR539N9;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -508,19 +502,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		7E13BDE9269991E700B1D78B /* Frames.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				7E13BDEA269991E700B1D78B /* Shared.xcdatamodel */,
-			);
-			currentVersion = 7E13BDEA269991E700B1D78B /* Shared.xcdatamodel */;
-			path = Frames.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 7E13BDE4269991E700B1D78B /* Project object */;
 }

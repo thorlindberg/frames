@@ -11,8 +11,11 @@ final class Model: NSObject, ObservableObject {
         var colorscheme: ColorScheme?
         var welcome: Bool = !UserDefaults.standard.bool(forKey: "v1.0")
         var guide: String = ""
-        var isEditing: Bool = false, isImporting: Bool = false, isCapturing: Bool = false
-        var isAugmenting: Bool = false, isFlashlight: Bool = false, isWarned: Bool = false
+        var isImporting: Bool = false
+        var isCapturing: Bool = false
+        var isAugmenting: Bool = false
+        var isFlashlight: Bool = false
+        var isWarned: Bool = false
         var selected: Int = 0
         var frames: [Frame] = [
             Frame(image: UIImage(imageLiteralResourceName: "sample")),
@@ -147,12 +150,10 @@ final class Model: NSObject, ObservableObject {
     func addImage(image: UIImage) {
         data.frames.insert(Frame(image: image), at: 0)
         data.selected = 0
-        data.isEditing = true
     }
     
     func removeImage(index: Int) {
         data.frames.remove(at: index)
-        data.isEditing = false
     }
     
 }

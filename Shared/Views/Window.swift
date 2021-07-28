@@ -4,158 +4,25 @@ import CoreData
 struct Window: View {
     
     @ObservedObject var model: Model
-    @Environment(\.colorScheme) var colorscheme
-    
-    /*
-    @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Form.timestamp, ascending: true)],
-        animation: .default
-    )
-    private var items: FetchedResults<Form>
-    */
 
     var body: some View {
-        NavigationView {
-            Editor(model: model)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        if model.data.isEditing {
-                            Button(action: {
-                                withAnimation {
-                                    model.data.isEditing.toggle()
-                                }
-                            }) {
-                                HStack(spacing: 5) {
-                                    Image(systemName: "chevron.left")
-                                    Text("Back")
-                                }
-                            }
-                        } else {
-                            Menu {
-                                Button(action: {
-                                    model.data.isImporting.toggle()
-                                }) {
-                                    Label("Choose Photo", systemImage: "photo")
-                                }
-                                Button(action: {
-                                    model.data.isCapturing.toggle()
-                                }) {
-                                    Label("Capture Photo", systemImage: "camera")
-                                }
-                                Button(action: {
-                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                        .first?.rootViewController?
-                                        .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                                }) {
-                                    Label("Scan Photo", systemImage: "viewfinder")
-                                }
-                            } label: {
-                                Image(systemName: "camera.fill")
-                            }
-                        }
-                    }
-                    ToolbarItem(placement: .principal) {
-                        Text(UIDevice.current.userInterfaceIdiom == .pad ? "Augmented Frames" : "Frames")
-                            .bold()
-                            .onTapGesture {
-                                model.data.welcome.toggle()
-                            }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            model.data.isAugmenting.toggle()
-                        }) {
-                            Text("AR")
-                        }
-                        .disabled(!model.data.isEditing)
-                    }
-                }
-        }
-        .navigationViewStyle(StackNavigationViewStyle())
-        .sheet(isPresented: $model.data.welcome) {
-            Welcome(model: model)
-                .modifier(DisableModalDismiss(disabled: true))
-        }
-        .sheet(isPresented: $model.data.isImporting) {
-            ImagePicker(model: model, type: "import")
-        }
-        .sheet(isPresented: $model.data.isCapturing) {
-            ImagePicker(model: model, type: "capture")
-        }
-        .fullScreenCover(isPresented: $model.data.isAugmenting) {
-            Augment(model: model)
-        }
-        .onAppear {
-            model.data.colorscheme = colorscheme
-        }
-        .onChange(of: colorscheme) { value in
-            withAnimation {
-                model.data.colorscheme = value
+        Browse(model: model)
+            .sheet(isPresented: $model.data.welcome) {
+                Welcome(model: model)
+                    .modifier(DisableModalDismiss(disabled: true))
             }
-        }
-        /*
-        List {
-            ForEach(items) { item in
-                Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+            .sheet(isPresented: $model.data.isImporting) {
+                ImagePicker(model: model, type: "import")
             }
-            .onDelete(perform: deleteItems)
-        }
-        .toolbar {
-            #if os(iOS)
-            EditButton()
-            #endif
-
-            Button(action: addItem) {
-                Label("Add Item", systemImage: "plus")
+            .sheet(isPresented: $model.data.isCapturing) {
+                ImagePicker(model: model, type: "capture")
             }
-        }
-        */
+            .fullScreenCover(isPresented: $model.data.isAugmenting) {
+                Augment(model: model)
+            }
     }
-
-    /*
-    private func addItem() {
-        withAnimation {
-            let newItem = Form(context: viewContext)
-            // newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-    */
+    
 }
-
-/*
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-} ()
-*/
 
 // source: https://stackoverflow.com/a/60939207/15072454
 
