@@ -43,10 +43,12 @@ struct Browse: View {
                                     }) {
                                         Label("Share", systemImage: "square.and.arrow.up")
                                     }
-                                    Button(action: {
-                                        model.removeImage(index: index)
-                                    }) {
-                                        Label("Delete", systemImage: "delete.left")
+                                    if model.data.frames.count != 1 {
+                                        Button(action: {
+                                            model.removeImage(index: index)
+                                        }) {
+                                            Label("Delete", systemImage: "delete.left")
+                                        }
                                     }
                                 }
                             }

@@ -37,6 +37,7 @@ struct Editor: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .foregroundColor(.red)
+                        .disabled(model.data.frames.count == 1)
                         .alert(isPresented: $model.data.isWarned) {
                             Alert(
                                 title: Text("Delete this frame?"),
