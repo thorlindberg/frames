@@ -20,18 +20,17 @@ struct Browse: View {
                                     Spacer()
                                 }
                                 .background(
-                                    NavigationLink(destination: Editor(model: model)) { }
-                                        .opacity(0)
-                                    /*
                                     NavigationLink(
                                         destination: Editor(model: model),
-                                        isActive: $model.data.isEditing,
+                                        isActive: Binding(
+                                            get: { model.data.isEditing },
+                                            set: { model.data.isEditing = $0 ; model.data.selected = index }
+                                        ),
                                         label: { }
                                     )
                                     .opacity(0)
-                                    */
                                 )
-                                .frame(maxHeight: geometry.size.height / 2)
+                                .frame(maxHeight: geometry.size.height / 1.8)
                                 .id(index)
                                 .contextMenu {
                                     Button(action: {

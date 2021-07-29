@@ -1,7 +1,7 @@
 import SwiftUI
 import SceneKit
 
-struct RoundedCornersShape: Shape {
+struct RoundedRectangle: Shape {
     let corners: UIRectCorner
     let radius: CGFloat
     
@@ -15,6 +15,30 @@ struct RoundedCornersShape: Shape {
     }
 }
 
+struct SectionDivider: View {
+    
+    @Environment(\.colorScheme) var colorscheme
+    
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .foregroundColor(colorscheme == .dark ? .black : Color(UIColor.secondarySystemBackground))
+            HStack {
+                RoundedRectangle(corners: [.topRight, .bottomRight], radius: 100)
+                    .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
+                    .frame(width: 20)
+                Spacer()
+                RoundedRectangle(corners: [.topLeft, .bottomLeft], radius: 100)
+                    .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
+                    .frame(width: 20)
+            }
+        }
+        .frame(width: 54)
+        .padding(.vertical, -6)
+    }
+    
+}
+
 struct Editor: View {
     
     @ObservedObject var model: Model
@@ -23,6 +47,10 @@ struct Editor: View {
     var body: some View {
         GeometryReader { geometry in
             List {
+                Section {
+                    SceneView(scene: model.data.scene, options: [.allowsCameraControl])
+                        .frame(height: geometry.size.height / 2.5)
+                }
                 Section {
                     HStack(spacing: 0) {
                         Button(action: {
@@ -51,8 +79,7 @@ struct Editor: View {
                                 secondaryButton: .cancel()
                             )
                         }
-                        Divider()
-                            .padding(.horizontal)
+                        SectionDivider()
                         Button(action: {
                             UIApplication.shared.windows.filter({$0.isKeyWindow})
                                 .first?
@@ -69,18 +96,6 @@ struct Editor: View {
                         .buttonStyle(PlainButtonStyle())
                         .foregroundColor(.accentColor)
                     }
-                    /*
-                    HStack {
-                        Spacer()
-                        Image(uiImage: model.data.frames[model.data.selected].framed)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .padding()
-                        Spacer()
-                    }
-                    */
-                    SceneView(scene: model.data.scene, options: [.allowsCameraControl])
-                        .frame(height: geometry.size.height / 2.5)
                 }
                 Section {
                     HStack {

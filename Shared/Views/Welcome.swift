@@ -38,12 +38,6 @@ struct Welcome: View {
                     }
                     .padding()
                 }
-                /*
-                NavigationLink(destination: Browse(model: model)) {
-                    Label("Unlock premium", systemImage: "star.fill")
-                        .foregroundColor(.purple)
-                }
-                */
                 HStack(spacing: 14) {
                     Image(systemName: "bubble.right")
                         .foregroundColor(.accentColor)
