@@ -10,34 +10,33 @@ struct Browse: View {
                 ScrollViewReader { proxy in
                     List {
                         ForEach(model.data.frames.indices, id: \.self) { index in
-                            Section {
+                            Section(header: Text("framed \(model.data.frames[index].date)").padding(.top, index == 0 ? 20 : 0)) {
                                 HStack {
                                     Spacer()
                                     Image(uiImage: model.data.frames[index].framed)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
-                                        .padding()
                                     Spacer()
                                 }
+                                .padding(.horizontal, -18)
+                                .padding()
                                 .background(
-                                    NavigationLink(
-                                        destination: Editor(model: model),
-                                        isActive: Binding(
-                                            get: { model.data.isEditing },
-                                            set: { model.data.isEditing = $0 ; model.data.selected = index }
-                                        ),
-                                        label: { }
-                                    )
-                                    .opacity(0)
+                                    NavigationLink(destination: Editor(model: model, index: index)) { }
+                                        .opacity(0)
                                 )
-                                .frame(maxHeight: geometry.size.height / 1.8)
                                 .id(index)
                                 .contextMenu {
                                     Button(action: {
                                         UIApplication.shared.windows.filter({$0.isKeyWindow})
                                             .first?
                                             .rootViewController?
-                                            .present(UIActivityViewController(activityItems: [model.data.frames[index].framed], applicationActivities: nil), animated: true)
+                                            .present(
+                                                UIActivityViewController(
+                                                    activityItems: [model.data.frames[index].framed],
+                                                    applicationActivities: nil
+                                                ),
+                                                animated: true
+                                            )
                                     }) {
                                         Label("Share", systemImage: "square.and.arrow.up")
                                     }
@@ -54,8 +53,10 @@ struct Browse: View {
                     }
                     .listStyle(InsetGroupedListStyle())
                     .onChange(of: model.data.frames[0]) { _ in
-                        withAnimation {
-                            proxy.scrollTo(0, anchor: .bottom)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            withAnimation {
+                                proxy.scrollTo(0, anchor: .bottom)
+                            }
                         }
                     }
                 }

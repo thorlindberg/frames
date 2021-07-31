@@ -33,7 +33,7 @@ struct SectionDivider: View {
                     .frame(width: 20)
             }
         }
-        .frame(width: 54)
+        .frame(width: 60)
         .padding(.vertical, -6)
     }
     
@@ -42,14 +42,17 @@ struct SectionDivider: View {
 struct Editor: View {
     
     @ObservedObject var model: Model
+    var index: Int
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
         GeometryReader { geometry in
             List {
-                Section {
+                Section(header: Text("framed \(model.data.frames[model.data.selected].date)").padding(.top, 20)) {
                     SceneView(scene: model.data.scene, options: [.allowsCameraControl])
                         .frame(height: geometry.size.height / 2.5)
+                        .padding(.vertical, -6)
+                        .padding(.horizontal, -10)
                 }
                 Section {
                     HStack(spacing: 0) {
@@ -84,7 +87,13 @@ struct Editor: View {
                             UIApplication.shared.windows.filter({$0.isKeyWindow})
                                 .first?
                                 .rootViewController?
-                                .present(UIActivityViewController(activityItems: [model.data.frames[model.data.selected].framed], applicationActivities: nil), animated: true)
+                                .present(
+                                    UIActivityViewController(
+                                        activityItems: [model.data.frames[model.data.selected].framed],
+                                        applicationActivities: nil
+                                    ),
+                                    animated: true
+                                )
                         }) {
                             HStack {
                                 Text("Share")
@@ -207,6 +216,9 @@ struct Editor: View {
             .listStyle(InsetGroupedListStyle())
         }
         .navigationBarTitle("Customize")
+        .onAppear {
+            model.data.selected = index
+        }
         .toolbar {
             /*
             ToolbarItem(placement: .principal) {
@@ -227,11 +239,4 @@ struct Editor: View {
         }
     }
     
-}
-
-struct Editor_Previews: PreviewProvider {
-    static var previews: some View {
-        Editor(model: Model())
-            .previewDevice("iPhone 12 mini")
-    }
 }

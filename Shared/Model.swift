@@ -19,8 +19,8 @@ final class Model: NSObject, ObservableObject {
         var isWarned: Bool = false
         var selected: Int = 0
         var frames: [Frame] = [
-            Frame(image: UIImage(imageLiteralResourceName: "sample")),
-            Frame(image: UIImage(imageLiteralResourceName: "sample2"))
+            Frame(image: UIImage(imageLiteralResourceName: "sample"), date: DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short)),
+            Frame(image: UIImage(imageLiteralResourceName: "sample2"), date: DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short))
         ]
         var scene: SCNScene? {
 
@@ -63,6 +63,7 @@ final class Model: NSObject, ObservableObject {
     
     struct Frame: Hashable {
         var image: UIImage
+        var date: String
         var width: CGFloat = 60
         var height: CGFloat = 90
         var border: CGFloat = 0.05
@@ -153,7 +154,7 @@ final class Model: NSObject, ObservableObject {
     }
     
     func addImage(image: UIImage) {
-        data.frames.insert(Frame(image: image), at: 0)
+        data.frames.insert(Frame(image: image, date: DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short)), at: 0)
         data.selected = 0
     }
     
@@ -257,7 +258,6 @@ struct ImagePicker: UIViewControllerRepresentable {
     }
     
 }
-
 
 struct Model_Previews: PreviewProvider {
     static var previews: some View {
