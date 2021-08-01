@@ -83,10 +83,6 @@ class ARView: UIViewController, ARSCNViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var arView: ARSCNView {
-        return self.view as! ARSCNView
-    }
-    
     // MARK: - View Controller Life Cycle
     
     override func viewDidLoad() {

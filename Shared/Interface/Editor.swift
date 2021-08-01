@@ -47,93 +47,18 @@ struct Editor: View {
     var body: some View {
         List {
             Section {
-                HStack {
-                    Menu("\(model.data.frames[model.data.selected].dimensions) model") {
-                        Button(action: {
-                            withAnimation {
-                                model.data.frames[model.data.selected].dimensions = "2D"
-                            }
-                        }) {
-                            if model.data.frames[model.data.selected].dimensions == "2D" {
-                                Label("2D model", systemImage: "checkmark")
-                            } else {
-                                Label("2D model", systemImage: "photo")
-                            }
-                        }
-                        .disabled(model.data.frames[model.data.selected].dimensions == "2D")
-                        Button(action: {
-                            withAnimation {
-                                model.data.frames[model.data.selected].dimensions = "3D"
-                            }
-                        }) {
-                            if model.data.frames[model.data.selected].dimensions == "3D" {
-                                Label("3D model", systemImage: "checkmark")
-                            } else {
-                                Label("3D model", systemImage: "move.3d")
-                            }
-                        }
-                        .disabled(model.data.frames[model.data.selected].dimensions == "3D")
-                    }
-                    Spacer()
-                    Image(systemName: model.data.frames[model.data.selected].dimensions == "3D" ? "move.3d" : "photo")
-                        .opacity(0.3)
-                }
-                SceneView(scene: model.data.scene, options: model.data.frames[model.data.selected].dimensions == "3D" ? [.allowsCameraControl] : [])
+                SceneView(scene: model.data.scene, options: model.data.frames[model.data.selected].interactive ? [.allowsCameraControl] : [])
                     .padding(.vertical, -6)
                     .padding(.horizontal, -16)
-                    .padding(model.data.frames[model.data.selected].dimensions == "2D" ? 14 : 0)
-                    .frame(height: 205)
+                    .padding(model.data.frames[model.data.selected].interactive ? 0 : 14)
+                    .frame(height: 200)
             }
             Section {
-                HStack(spacing: 0) {
-                    Button(action: {
-                        model.data.isWarned.toggle()
-                    }) {
-                        HStack {
-                            Text("Delete")
-                            Spacer()
-                            Image(systemName: "delete.left")
-                        }
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .foregroundColor(.red)
-                    .disabled(model.data.frames.count == 1)
-                    .alert(isPresented: $model.data.isWarned) {
-                        Alert(
-                            title: Text("Delete this frame?"),
-                            message: Text("This action cannot be undone"),
-                            primaryButton: .destructive(Text("Delete")) {
-                                withAnimation {
-                                    model.data.isEditing.toggle()
-                                    model.removeImage(index: model.data.selected)
-                                }
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    }
-                    SectionDivider()
-                    Button(action: {
-                        UIApplication.shared.windows.filter({$0.isKeyWindow})
-                            .first?
-                            .rootViewController?
-                            .present(
-                                UIActivityViewController(
-                                    activityItems: [model.data.frames[model.data.selected].framed],
-                                    applicationActivities: nil
-                                ),
-                                animated: true
-                            )
-                    }) {
-                        HStack {
-                            Text("Share")
-                            Spacer()
-                            Image(systemName: "square.and.arrow.up")
-                        }
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .foregroundColor(.accentColor)
+                HStack {
+                    Text("Interactive model")
+                        .opacity(0.3)
+                    Spacer()
+                    Toggle(isOn: $model.data.frames[model.data.selected].interactive) { }
                 }
             }
             Section {
@@ -256,6 +181,58 @@ struct Editor: View {
                     }
                 }
                 .padding(.vertical, 14)
+            }
+            Section {
+                HStack(spacing: 0) {
+                    Button(action: {
+                        model.data.isWarned.toggle()
+                    }) {
+                        HStack {
+                            Text("Delete")
+                            Spacer()
+                            Image(systemName: "delete.left")
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .foregroundColor(.red)
+                    .disabled(model.data.frames.count == 1)
+                    .alert(isPresented: $model.data.isWarned) {
+                        Alert(
+                            title: Text("Delete this frame?"),
+                            message: Text("This action cannot be undone"),
+                            primaryButton: .destructive(Text("Delete")) {
+                                withAnimation {
+                                    model.data.isEditing.toggle()
+                                    model.removeImage(index: model.data.selected)
+                                }
+                            },
+                            secondaryButton: .cancel()
+                        )
+                    }
+                    SectionDivider()
+                    Button(action: {
+                        UIApplication.shared.windows.filter({$0.isKeyWindow})
+                            .first?
+                            .rootViewController?
+                            .present(
+                                UIActivityViewController(
+                                    activityItems: [model.data.frames[model.data.selected].framed],
+                                    applicationActivities: nil
+                                ),
+                                animated: true
+                            )
+                    }) {
+                        HStack {
+                            Text("Share")
+                            Spacer()
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .foregroundColor(.accentColor)
+                }
             }
             Section {
                 HStack {
