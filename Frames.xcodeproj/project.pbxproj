@@ -13,6 +13,22 @@
 		7E13BE392699944B00B1D78B /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE342699944B00B1D78B /* Welcome.swift */; };
 		7E13BE3B2699944B00B1D78B /* Augment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE352699944B00B1D78B /* Augment.swift */; };
 		7E13BE4C2699946100B1D78B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE412699946100B1D78B /* Model.swift */; };
+		7E51F8AC26B71ADA00D8D56D /* ARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8AB26B71ADA00D8D56D /* ARView.swift */; };
+		7E51F8B526B71C6500D8D56D /* ViewController+ObjectSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8AD26B71C6500D8D56D /* ViewController+ObjectSelection.swift */; };
+		7E51F8B626B71C6500D8D56D /* ViewController+ARSCNViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8AE26B71C6500D8D56D /* ViewController+ARSCNViewDelegate.swift */; };
+		7E51F8B726B71C6500D8D56D /* ViewController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8AF26B71C6500D8D56D /* ViewController+Actions.swift */; };
+		7E51F8B926B71C6500D8D56D /* VirtualObjectARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8B126B71C6500D8D56D /* VirtualObjectARView.swift */; };
+		7E51F8BA26B71C6500D8D56D /* ViewController+CoachingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8B226B71C6500D8D56D /* ViewController+CoachingOverlay.swift */; };
+		7E51F8BB26B71C6500D8D56D /* VirtualObjectInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8B326B71C6500D8D56D /* VirtualObjectInteraction.swift */; };
+		7E51F8BC26B71C6500D8D56D /* ThresholdPanGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8B426B71C6500D8D56D /* ThresholdPanGesture.swift */; };
+		7E51F8BF26B71EBA00D8D56D /* VirtualObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8BD26B71EB900D8D56D /* VirtualObject.swift */; };
+		7E51F8C026B71EBA00D8D56D /* VirtualObjectLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8BE26B71EB900D8D56D /* VirtualObjectLoader.swift */; };
+		7E51F8C226B71EC000D8D56D /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C126B71EC000D8D56D /* Utilities.swift */; };
+		7E51F8C526B71ECA00D8D56D /* FocusSquareSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C326B71ECA00D8D56D /* FocusSquareSegment.swift */; };
+		7E51F8C626B71ECA00D8D56D /* FocusSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C426B71ECA00D8D56D /* FocusSquare.swift */; };
+		7E51F8C926B71ED300D8D56D /* StatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C726B71ED300D8D56D /* StatusViewController.swift */; };
+		7E51F8CA26B71ED300D8D56D /* VirtualObjectSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C826B71ED300D8D56D /* VirtualObjectSelection.swift */; };
+		7E51F8CC26B71EF000D8D56D /* Models.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E51F8CB26B71EF000D8D56D /* Models.scnassets */; };
 		7E88617B26B16C5100AAF923 /* Browse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E88617A26B16C5100AAF923 /* Browse.swift */; };
 		7EEA2C0226AC94DB0070FE4C /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEA2C0126AC94DB0070FE4C /* Editor.swift */; };
 		7EEFDCD62699950A006D4984 /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCD42699950A006D4984 /* Window.swift */; };
@@ -39,6 +55,22 @@
 		7E13BE342699944B00B1D78B /* Welcome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		7E13BE352699944B00B1D78B /* Augment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Augment.swift; sourceTree = "<group>"; };
 		7E13BE412699946100B1D78B /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		7E51F8AB26B71ADA00D8D56D /* ARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARView.swift; sourceTree = "<group>"; };
+		7E51F8AD26B71C6500D8D56D /* ViewController+ObjectSelection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewController+ObjectSelection.swift"; sourceTree = "<group>"; };
+		7E51F8AE26B71C6500D8D56D /* ViewController+ARSCNViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewController+ARSCNViewDelegate.swift"; sourceTree = "<group>"; };
+		7E51F8AF26B71C6500D8D56D /* ViewController+Actions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewController+Actions.swift"; sourceTree = "<group>"; };
+		7E51F8B126B71C6500D8D56D /* VirtualObjectARView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualObjectARView.swift; sourceTree = "<group>"; };
+		7E51F8B226B71C6500D8D56D /* ViewController+CoachingOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewController+CoachingOverlay.swift"; sourceTree = "<group>"; };
+		7E51F8B326B71C6500D8D56D /* VirtualObjectInteraction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualObjectInteraction.swift; sourceTree = "<group>"; };
+		7E51F8B426B71C6500D8D56D /* ThresholdPanGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThresholdPanGesture.swift; sourceTree = "<group>"; };
+		7E51F8BD26B71EB900D8D56D /* VirtualObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualObject.swift; sourceTree = "<group>"; };
+		7E51F8BE26B71EB900D8D56D /* VirtualObjectLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualObjectLoader.swift; sourceTree = "<group>"; };
+		7E51F8C126B71EC000D8D56D /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		7E51F8C326B71ECA00D8D56D /* FocusSquareSegment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusSquareSegment.swift; sourceTree = "<group>"; };
+		7E51F8C426B71ECA00D8D56D /* FocusSquare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusSquare.swift; sourceTree = "<group>"; };
+		7E51F8C726B71ED300D8D56D /* StatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusViewController.swift; sourceTree = "<group>"; };
+		7E51F8C826B71ED300D8D56D /* VirtualObjectSelection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualObjectSelection.swift; sourceTree = "<group>"; };
+		7E51F8CB26B71EF000D8D56D /* Models.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = Models.scnassets; sourceTree = "<group>"; };
 		7E88617A26B16C5100AAF923 /* Browse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Browse.swift; sourceTree = "<group>"; };
 		7EEA2C0126AC94DB0070FE4C /* Editor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
 		7EEFDCD42699950A006D4984 /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
@@ -70,6 +102,7 @@
 				7EEFDCDF26999ED3006D4984 /* Frames.entitlements */,
 				7E13BDE8269991E700B1D78B /* Shared */,
 				7E13BDEE269991E900B1D78B /* Assets.xcassets */,
+				7E51F8CB26B71EF000D8D56D /* Models.scnassets */,
 				7E13BDF5269991E900B1D78B /* iOS */,
 				7E13BE06269991E900B1D78B /* Tests iOS */,
 				7E13BDF4269991E900B1D78B /* Products */,
@@ -82,7 +115,8 @@
 			children = (
 				7E13BDEB269991E700B1D78B /* FramesApp.swift */,
 				7E13BE412699946100B1D78B /* Model.swift */,
-				7EEFDCDA26999594006D4984 /* Views */,
+				7E51F8CD26B71FA200D8D56D /* Augmented Reality */,
+				7EEFDCDA26999594006D4984 /* Interface */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -113,7 +147,29 @@
 			path = "Tests iOS";
 			sourceTree = "<group>";
 		};
-		7EEFDCDA26999594006D4984 /* Views */ = {
+		7E51F8CD26B71FA200D8D56D /* Augmented Reality */ = {
+			isa = PBXGroup;
+			children = (
+				7E51F8AB26B71ADA00D8D56D /* ARView.swift */,
+				7E51F8B426B71C6500D8D56D /* ThresholdPanGesture.swift */,
+				7E51F8AF26B71C6500D8D56D /* ViewController+Actions.swift */,
+				7E51F8AE26B71C6500D8D56D /* ViewController+ARSCNViewDelegate.swift */,
+				7E51F8B226B71C6500D8D56D /* ViewController+CoachingOverlay.swift */,
+				7E51F8AD26B71C6500D8D56D /* ViewController+ObjectSelection.swift */,
+				7E51F8B126B71C6500D8D56D /* VirtualObjectARView.swift */,
+				7E51F8B326B71C6500D8D56D /* VirtualObjectInteraction.swift */,
+				7E51F8BD26B71EB900D8D56D /* VirtualObject.swift */,
+				7E51F8BE26B71EB900D8D56D /* VirtualObjectLoader.swift */,
+				7E51F8C126B71EC000D8D56D /* Utilities.swift */,
+				7E51F8C426B71ECA00D8D56D /* FocusSquare.swift */,
+				7E51F8C326B71ECA00D8D56D /* FocusSquareSegment.swift */,
+				7E51F8C726B71ED300D8D56D /* StatusViewController.swift */,
+				7E51F8C826B71ED300D8D56D /* VirtualObjectSelection.swift */,
+			);
+			path = "Augmented Reality";
+			sourceTree = "<group>";
+		};
+		7EEFDCDA26999594006D4984 /* Interface */ = {
 			isa = PBXGroup;
 			children = (
 				7EEFDCD42699950A006D4984 /* Window.swift */,
@@ -122,7 +178,7 @@
 				7EEA2C0126AC94DB0070FE4C /* Editor.swift */,
 				7E13BE352699944B00B1D78B /* Augment.swift */,
 			);
-			path = Views;
+			path = Interface;
 			sourceTree = "<group>";
 		};
 		7EEFDCE026999EE7006D4984 /* Frameworks */ = {
@@ -218,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E13BE1D269991E900B1D78B /* Assets.xcassets in Resources */,
+				7E51F8CC26B71EF000D8D56D /* Models.scnassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,13 +292,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E51F8B526B71C6500D8D56D /* ViewController+ObjectSelection.swift in Sources */,
+				7E51F8C526B71ECA00D8D56D /* FocusSquareSegment.swift in Sources */,
+				7E51F8B926B71C6500D8D56D /* VirtualObjectARView.swift in Sources */,
 				7E13BE392699944B00B1D78B /* Welcome.swift in Sources */,
 				7E88617B26B16C5100AAF923 /* Browse.swift in Sources */,
 				7EEA2C0226AC94DB0070FE4C /* Editor.swift in Sources */,
 				7E13BE17269991E900B1D78B /* FramesApp.swift in Sources */,
+				7E51F8C926B71ED300D8D56D /* StatusViewController.swift in Sources */,
+				7E51F8C226B71EC000D8D56D /* Utilities.swift in Sources */,
+				7E51F8CA26B71ED300D8D56D /* VirtualObjectSelection.swift in Sources */,
+				7E51F8AC26B71ADA00D8D56D /* ARView.swift in Sources */,
+				7E51F8C626B71ECA00D8D56D /* FocusSquare.swift in Sources */,
+				7E51F8C026B71EBA00D8D56D /* VirtualObjectLoader.swift in Sources */,
+				7E51F8BB26B71C6500D8D56D /* VirtualObjectInteraction.swift in Sources */,
 				7EEFDCD62699950A006D4984 /* Window.swift in Sources */,
+				7E51F8B726B71C6500D8D56D /* ViewController+Actions.swift in Sources */,
 				7E13BE3B2699944B00B1D78B /* Augment.swift in Sources */,
+				7E51F8B626B71C6500D8D56D /* ViewController+ARSCNViewDelegate.swift in Sources */,
+				7E51F8BF26B71EBA00D8D56D /* VirtualObject.swift in Sources */,
 				7E13BE4C2699946100B1D78B /* Model.swift in Sources */,
+				7E51F8BA26B71C6500D8D56D /* ViewController+CoachingOverlay.swift in Sources */,
+				7E51F8BC26B71C6500D8D56D /* ThresholdPanGesture.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
