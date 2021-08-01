@@ -153,8 +153,13 @@ struct Editor: View {
                                     model.data.frames[model.data.selected].width = CGFloat(value)
                                 }
                             }) {
-                                Text("\(value) cm")
+                                if model.data.frames[model.data.selected].width == CGFloat(value) {
+                                    Label("\(value) cm", systemImage: "checkmark")
+                                } else {
+                                    Text("\(value) cm")
+                                }
                             }
+                            .disabled(model.data.frames[model.data.selected].width == CGFloat(value))
                         }
                     } label: {
                         Text("\(Int(model.data.frames[model.data.selected].width)) cm")
@@ -170,8 +175,13 @@ struct Editor: View {
                                     model.data.frames[model.data.selected].height = CGFloat(value)
                                 }
                             }) {
-                                Text("\(value) cm")
+                                if model.data.frames[model.data.selected].height == CGFloat(value) {
+                                    Label("\(value) cm", systemImage: "checkmark")
+                                } else {
+                                    Text("\(value) cm")
+                                }
                             }
+                            .disabled(model.data.frames[model.data.selected].height == CGFloat(value))
                         }
                     } label: {
                         Text("\(Int(model.data.frames[model.data.selected].height)) cm")
@@ -181,17 +191,22 @@ struct Editor: View {
                     Text("Border")
                     Spacer()
                     Menu {
-                        ForEach(Array(stride(from: 0.01, to: 0.21, by: 0.01)), id: \.self) { value in
+                        ForEach(Array(stride(from: 0.01, to: 0.51, by: 0.01)), id: \.self) { value in
                             Button(action: {
                                 withAnimation {
                                     model.data.frames[model.data.selected].border = CGFloat(value)
                                 }
                             }) {
-                                Text("\(value, specifier: "%.2f") cm")
+                                if model.data.frames[model.data.selected].border == CGFloat(value) {
+                                    Label("\(Int(value * 100)) %", systemImage: "checkmark")
+                                } else {
+                                    Text("\(Int(value * 100)) %")
+                                }
                             }
+                            .disabled(model.data.frames[model.data.selected].border == CGFloat(value))
                         }
                     } label: {
-                        Text("\(model.data.frames[model.data.selected].border, specifier: "%.2f") cm")
+                        Text("\(Int(model.data.frames[model.data.selected].border * 100)) %")
                     }
                 }
             }
