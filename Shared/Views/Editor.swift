@@ -42,34 +42,47 @@ struct Editor: View {
     
     @ObservedObject var model: Model
     var index: Int
-    @State var dimensions: String = "3D"
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
         List {
-            Section { // (header: Text("framed \(model.data.frames[model.data.selected].date)").padding(.top, 20))
-                Picker(selection: $dimensions, label: Text("Model")) {
-                    Text("2D").tag("2D")
-                    Text("3D").tag("3D")
-                }
-                .pickerStyle(InlinePickerStyle())
-                .opacity(0.3)
-                if dimensions == "3D" {
-                    SceneView(scene: model.data.scene, options: [.allowsCameraControl])
-                        .frame(height: 215)
-                        .padding(.vertical, -6)
-                        .padding(.horizontal, -16)
-                } else {
-                    HStack {
-                        Spacer()
-                        Image(uiImage: model.data.frames[index].framed)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                        Spacer()
+            Section {
+                HStack {
+                    Menu("\(model.data.frames[model.data.selected].dimensions) model") {
+                        Button(action: {
+                            withAnimation {
+                                model.data.frames[model.data.selected].dimensions = "2D"
+                            }
+                        }) {
+                            if model.data.frames[model.data.selected].dimensions == "2D" {
+                                Label("2D model", systemImage: "checkmark")
+                            } else {
+                                Label("2D model", systemImage: "photo")
+                            }
+                        }
+                        .disabled(model.data.frames[model.data.selected].dimensions == "2D")
+                        Button(action: {
+                            withAnimation {
+                                model.data.frames[model.data.selected].dimensions = "3D"
+                            }
+                        }) {
+                            if model.data.frames[model.data.selected].dimensions == "3D" {
+                                Label("3D model", systemImage: "checkmark")
+                            } else {
+                                Label("3D model", systemImage: "move.3d")
+                            }
+                        }
+                        .disabled(model.data.frames[model.data.selected].dimensions == "3D")
                     }
-                    .padding()
-                    .frame(height: 215)
+                    Spacer()
+                    Image(systemName: model.data.frames[model.data.selected].dimensions == "3D" ? "move.3d" : "photo")
+                        .opacity(0.3)
                 }
+                SceneView(scene: model.data.scene, options: model.data.frames[model.data.selected].dimensions == "3D" ? [.allowsCameraControl] : [])
+                    .padding(.vertical, -6)
+                    .padding(.horizontal, -16)
+                    .padding(model.data.frames[model.data.selected].dimensions == "2D" ? 14 : 0)
+                    .frame(height: 205)
             }
             Section {
                 HStack(spacing: 0) {
@@ -270,12 +283,6 @@ struct Editor: View {
 struct Editor_Previews: PreviewProvider {
     static var previews: some View {
         Editor(model: Model(), index: 0)
-            .previewDevice("iPhone 12 Pro Max")
-        Editor(model: Model(), index: 0)
-            .previewDevice("iPhone 12")
-        Editor(model: Model(), index: 0)
             .previewDevice("iPhone 12 mini")
-        Editor(model: Model(), index: 0)
-            .previewDevice("iPhone 8")
     }
 }

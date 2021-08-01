@@ -51,7 +51,9 @@ final class Model: NSObject, ObservableObject {
             )
             
             // rotate frame
-            node.rotation = SCNVector4(1, 0, 0, 350 * Double.pi / 180)
+            if frames[selected].dimensions == "3D" {
+                node.rotation = SCNVector4(1, 0, 0, 350 * Double.pi / 180)
+            }
             
             // add frame to scene
             scene.rootNode.addChildNode(node)
@@ -69,6 +71,16 @@ final class Model: NSObject, ObservableObject {
         var border: CGFloat = 0.05
         var material: UIImage = UIImage(named: "material_oak")!
         var filter: String = ""
+        var dimensions: String = "2D"
+        var description: String {
+            var string: String = ""
+            string += "\(Int(width))x\(Int(height)) cm"
+            string += ", \(Int(border * 100)) mm border"
+            if filter != "" {
+                string += ", \(filter)"
+            }
+            return string
+        }
         var framed: UIImage {
             
             // filter image

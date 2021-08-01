@@ -10,7 +10,7 @@ struct Browse: View {
                 ScrollViewReader { proxy in
                     List {
                         ForEach(model.data.frames.indices, id: \.self) { index in
-                            Section { // (header: Text("framed \(model.data.frames[index].date)").padding(.top, index == 0 ? 20 : 0))
+                            Section {
                                 HStack {
                                     Spacer()
                                     Image(uiImage: model.data.frames[index].framed)
