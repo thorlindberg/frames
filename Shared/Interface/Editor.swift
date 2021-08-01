@@ -51,7 +51,7 @@ struct Editor: View {
                     .padding(.vertical, -6)
                     .padding(.horizontal, -16)
                     .padding(model.data.frames[model.data.selected].interactive ? 0 : 14)
-                    .frame(height: 200)
+                    .frame(height: 245)
             }
             Section {
                 HStack {
