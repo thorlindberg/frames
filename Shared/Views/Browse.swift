@@ -10,7 +10,7 @@ struct Browse: View {
                 ScrollViewReader { proxy in
                     List {
                         ForEach(model.data.frames.indices, id: \.self) { index in
-                            Section(header: Text("framed \(model.data.frames[index].date)").padding(.top, index == 0 ? 20 : 0)) {
+                            Section { // (header: Text("framed \(model.data.frames[index].date)").padding(.top, index == 0 ? 20 : 0))
                                 HStack {
                                     Spacer()
                                     Image(uiImage: model.data.frames[index].framed)
@@ -114,6 +114,12 @@ struct Browse: View {
 struct Browse_Previews: PreviewProvider {
     static var previews: some View {
         Window(model: Model())
+            .previewDevice("iPhone 12 Pro Max")
+        Window(model: Model())
+            .previewDevice("iPhone 12")
+        Window(model: Model())
             .previewDevice("iPhone 12 mini")
+        Window(model: Model())
+            .previewDevice("iPhone 8")
     }
 }
