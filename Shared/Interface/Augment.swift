@@ -7,7 +7,7 @@ struct Augment: View {
     
     var body: some View {
         NavigationView {
-            ARViewContainer()
+            ARViewContainer(model: model)
                 .ignoresSafeArea()
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {

@@ -10,6 +10,8 @@ import ARKit
 
 struct ARViewContainer: UIViewControllerRepresentable {
     
+    @ObservedObject var model: Model
+    
     typealias UIViewControllerType = ARView
     
     func makeUIViewController(context: Context) -> ARView {
@@ -20,6 +22,20 @@ struct ARViewContainer: UIViewControllerRepresentable {
 }
 
 class ARView: UIViewController, ARSCNViewDelegate {
+    
+    // MARK: Object model
+    
+    var model: Model?
+    
+    // MARK: - Initalisation
+    
+    init(model: Model) {
+        self.model = model
+        super.init(nibName: nil, bundle: nil)
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
     
     // MARK: IBOutlets
     
@@ -64,16 +80,6 @@ class ARView: UIViewController, ARSCNViewDelegate {
     /// Convenience accessor for the session owned by ARSCNView.
     var session: ARSession {
         return sceneView.session
-    }
-    
-    // MARK: - Initalisation (ADDED BY ME)
-    
-    init() {
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
     
     // MARK: - View Controller Life Cycle
