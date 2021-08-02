@@ -126,7 +126,7 @@ extension ARView: VirtualObjectSelectionViewControllerDelegate {
         // Show progress indicator.
         spinner.startAnimating()
         
-        addObjectButton.setImage(model.data.frames[model.data.selected].image, for: [])
+        addObjectButton.setImage(#imageLiteral(resourceName: "buttonring"), for: [])
 
         addObjectButton.isEnabled = false
         isRestartAvailable = false
@@ -136,8 +136,8 @@ extension ARView: VirtualObjectSelectionViewControllerDelegate {
         // Hide progress indicator.
         spinner.stopAnimating()
 
-        addObjectButton.setImage(model.data.frames[model.data.selected].image, for: [])
-        addObjectButton.setImage(model.data.frames[model.data.selected].image, for: [.highlighted])
+        addObjectButton.setImage(#imageLiteral(resourceName: "add"), for: [])
+        addObjectButton.setImage(#imageLiteral(resourceName: "addPressed"), for: [.highlighted])
 
         addObjectButton.isEnabled = true
         isRestartAvailable = true

@@ -51,6 +51,8 @@ final class Model: NSObject, ObservableObject {
             )
             
             // rotate frame
+            node.rotation = SCNVector4Make(1, 0, 0, -(.pi / 2))
+            
             if frames[selected].interactive {
                 node.rotation = SCNVector4(1, 0, 0, 350 * Double.pi / 180)
             }
@@ -174,6 +176,14 @@ final class Model: NSObject, ObservableObject {
         data.frames.remove(at: index)
     }
     
+    // source: https://www.hackingwithswift.com/books/ios-swiftui/writing-data-to-the-documents-directory
+    
+    func writeScene() {
+        let scene = data.scene
+        let url = getDocumentsDirectory().appendingPathComponent("frame.scn")
+        scene!.write(to: url, options: nil, delegate: nil, progressHandler: nil)
+    }
+    
 }
 
 func filterImage(image: UIImage, filter: String) -> UIImage {
@@ -197,6 +207,14 @@ func filterImage(image: UIImage, filter: String) -> UIImage {
         }
     }
     return image
+}
+
+func getDocumentsDirectory() -> URL {
+    // find all possible documents directories for this user
+    let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+
+    // just send back the first one, which ought to be the only one
+    return paths[0]
 }
 
 extension Model: VNDocumentCameraViewControllerDelegate {
@@ -273,10 +291,7 @@ struct ImagePicker: UIViewControllerRepresentable {
 
 struct Model_Previews: PreviewProvider {
     static var previews: some View {
-        ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Model())
-                .preferredColorScheme($0)
-        }
-        .previewDevice("iPhone 12 mini")
+        Editor(model: Model(), index: 0)
+            .previewDevice("iPhone 12 mini")
     }
 }

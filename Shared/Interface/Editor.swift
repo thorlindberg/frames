@@ -262,6 +262,7 @@ struct Editor: View {
             */
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
+                    model.writeScene()
                     model.data.isAugmenting.toggle()
                 }) {
                     Text("AR")
