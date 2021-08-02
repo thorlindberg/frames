@@ -15,7 +15,13 @@ struct ARViewContainer: UIViewControllerRepresentable {
     typealias UIViewControllerType = ARView
     
     func makeUIViewController(context: Context) -> ARView {
-        UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "Main") as! ARView
+        let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        if let viewcontroller = storyboard.instantiateViewController(identifier: "Main") as? ARView {
+            viewcontroller.model = model
+            return viewcontroller
+        } else {
+            return storyboard.instantiateViewController(identifier: "Main") as! ARView
+        }
     }
     func updateUIViewController(_ uiViewController: ARViewContainer.UIViewControllerType, context: UIViewControllerRepresentableContext<ARViewContainer>) { }
     
@@ -25,7 +31,7 @@ class ARView: UIViewController, ARSCNViewDelegate {
     
     // MARK: Object model
     
-    var model: Model?
+    var model: Model!
     
     // MARK: - Initalisation
     
