@@ -48,14 +48,16 @@ struct Welcome: View {
                         .opacity(0.2)
                 }
                 Section(header: Text("what's new in this build")) {
-                    Text("No technical features added")
+                    Text("Added coaching to AR experience")
                         .opacity(0.6)
-                    Text("Navigation and editing simplified")
+                    Text("AR objects are now interactive")
                         .opacity(0.6)
-                    Text("Quick start guide removed")
+                    Text("Frame displayed with interactivity toggle")
+                        .opacity(0.6)
+                    Text("Welcome sheet accessible through title")
                         .opacity(0.6)
                 }
-                Section(header: Spacer().frame(height: geometry.size.height - 545)) {
+                Section(header: Spacer().frame(height: geometry.size.height - 587)) {
                     Button(action: {
                         UserDefaults.standard.set(true, forKey: "beta83")
                         model.data.welcome.toggle()
@@ -76,10 +78,7 @@ struct Welcome: View {
 
 struct Welcome_Previews: PreviewProvider {
     static var previews: some View {
-        ForEach(ColorScheme.allCases, id: \.self) {
-            Welcome(model: Model())
-                .preferredColorScheme($0)
-        }
-        .previewDevice("iPhone 12 mini")
+        Welcome(model: Model())
+            .previewDevice("iPhone 8")
     }
 }

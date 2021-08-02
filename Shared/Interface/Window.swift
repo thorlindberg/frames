@@ -9,7 +9,7 @@ struct Window: View {
         Browse(model: model)
             .sheet(isPresented: $model.data.welcome) {
                 Welcome(model: model)
-                    .modifier(DisableModalDismiss(disabled: true))
+                    .modifier(DisableModalDismiss(disabled: !UserDefaults.standard.bool(forKey: "beta83") ? true : false))
             }
             .sheet(isPresented: $model.data.isImporting) {
                 ImagePicker(model: model, type: "import")

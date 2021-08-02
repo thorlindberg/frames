@@ -11,7 +11,7 @@
         <scene sceneID="5Tw-8P-01p">
             <objects>
                 <viewController id="ri3-7p-e6d" customClass="StatusViewController" customModule="Frames" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="RAa-Gm-0Pa">
+                    <view key="view" hidden="YES" contentMode="scaleToFill" id="RAa-Gm-0Pa">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="85"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
