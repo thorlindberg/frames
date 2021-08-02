@@ -9,11 +9,12 @@ final class Model: NSObject, ObservableObject {
     
     struct Format: Hashable {
         var colorscheme: ColorScheme?
-        var welcome: Bool = !UserDefaults.standard.bool(forKey: "beta82")
+        var welcome: Bool = !UserDefaults.standard.bool(forKey: "beta83")
         var guide: String = ""
         var isEditing: Bool = false
         var isImporting: Bool = false
         var isCapturing: Bool = false
+        var isWriting: Bool = false
         var isAugmenting: Bool = false
         var isFlashlight: Bool = false
         var isWarned: Bool = false
@@ -51,9 +52,9 @@ final class Model: NSObject, ObservableObject {
             )
             
             // rotate frame
-            node.rotation = SCNVector4Make(1, 0, 0, -(.pi / 2))
-            
-            if frames[selected].interactive {
+            if isWriting {
+                node.rotation = SCNVector4Make(1, 0, 0, -(.pi / 2))
+            } else if frames[selected].interactive {
                 node.rotation = SCNVector4(1, 0, 0, 350 * Double.pi / 180)
             }
             
@@ -179,7 +180,9 @@ final class Model: NSObject, ObservableObject {
     // source: https://www.hackingwithswift.com/books/ios-swiftui/writing-data-to-the-documents-directory
     
     func writeScene() {
+        data.isWriting.toggle()
         let scene = data.scene
+        data.isWriting.toggle()
         let url = getDocumentsDirectory().appendingPathComponent("frame.scn")
         scene!.write(to: url, options: nil, delegate: nil, progressHandler: nil)
     }

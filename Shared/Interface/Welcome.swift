@@ -29,7 +29,7 @@ struct Welcome: View {
                                 .font(.system(size: 40))
                                 .fontWeight(.bold)
                                 .padding(.bottom, 10)
-                            Text("Beta build 82")
+                            Text("Beta build 83")
                                 .font(.system(size: 18))
                                 .opacity(0.5)
                         }
@@ -57,12 +57,12 @@ struct Welcome: View {
                 }
                 Section(header: Spacer().frame(height: geometry.size.height - 545)) {
                     Button(action: {
-                        UserDefaults.standard.set(true, forKey: "beta82")
+                        UserDefaults.standard.set(true, forKey: "beta83")
                         model.data.welcome.toggle()
                     }) {
                         HStack {
                             Spacer()
-                            Text(!UserDefaults.standard.bool(forKey: "beta82") ? "Get started" : "Close")
+                            Text(!UserDefaults.standard.bool(forKey: "beta83") ? "Get started" : "Close")
                             Spacer()
                         }
                     }
