@@ -10,22 +10,16 @@ import ARKit
 
 struct ARViewContainer: UIViewControllerRepresentable {
     
-    @ObservedObject var model: Model
-    
     typealias UIViewControllerType = ARView
     
     func makeUIViewController(context: Context) -> ARView {
-        return ARView(model)
+        UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "Main") as! ARView
     }
-    func updateUIViewController(_ uiViewController:
-        ARViewContainer.UIViewControllerType, context:
-        UIViewControllerRepresentableContext<ARViewContainer>) { }
+    func updateUIViewController(_ uiViewController: ARViewContainer.UIViewControllerType, context: UIViewControllerRepresentableContext<ARViewContainer>) { }
     
 }
 
 class ARView: UIViewController, ARSCNViewDelegate {
-    
-    @ObservedObject var model: Model
     
     // MARK: IBOutlets
     
@@ -74,13 +68,12 @@ class ARView: UIViewController, ARSCNViewDelegate {
     
     // MARK: - Initalisation (ADDED BY ME)
     
-    init(_ model: Model) {
-        self.model = model
+    init() {
         super.init(nibName: nil, bundle: nil)
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
     
     // MARK: - View Controller Life Cycle

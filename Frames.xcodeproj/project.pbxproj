@@ -29,6 +29,7 @@
 		7E51F8C926B71ED300D8D56D /* StatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C726B71ED300D8D56D /* StatusViewController.swift */; };
 		7E51F8CA26B71ED300D8D56D /* VirtualObjectSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C826B71ED300D8D56D /* VirtualObjectSelection.swift */; };
 		7E51F8CC26B71EF000D8D56D /* Models.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E51F8CB26B71EF000D8D56D /* Models.scnassets */; };
+		7E76765626B7381C00FD276A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E76765426B7381C00FD276A /* Main.storyboard */; };
 		7E88617B26B16C5100AAF923 /* Browse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E88617A26B16C5100AAF923 /* Browse.swift */; };
 		7EEA2C0226AC94DB0070FE4C /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEA2C0126AC94DB0070FE4C /* Editor.swift */; };
 		7EEFDCD62699950A006D4984 /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCD42699950A006D4984 /* Window.swift */; };
@@ -71,6 +72,7 @@
 		7E51F8C726B71ED300D8D56D /* StatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusViewController.swift; sourceTree = "<group>"; };
 		7E51F8C826B71ED300D8D56D /* VirtualObjectSelection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualObjectSelection.swift; sourceTree = "<group>"; };
 		7E51F8CB26B71EF000D8D56D /* Models.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = Models.scnassets; sourceTree = "<group>"; };
+		7E76765526B7381C00FD276A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "ARKit demo/ARKitInteraction/Base.lproj/Main.storyboard"; sourceTree = SOURCE_ROOT; };
 		7E88617A26B16C5100AAF923 /* Browse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Browse.swift; sourceTree = "<group>"; };
 		7EEA2C0126AC94DB0070FE4C /* Editor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
 		7EEFDCD42699950A006D4984 /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 				7E51F8C326B71ECA00D8D56D /* FocusSquareSegment.swift */,
 				7E51F8C726B71ED300D8D56D /* StatusViewController.swift */,
 				7E51F8C826B71ED300D8D56D /* VirtualObjectSelection.swift */,
+				7E76765426B7381C00FD276A /* Main.storyboard */,
 			);
 			path = "Augmented Reality";
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E76765626B7381C00FD276A /* Main.storyboard in Resources */,
 				7E13BE1D269991E900B1D78B /* Assets.xcassets in Resources */,
 				7E51F8CC26B71EF000D8D56D /* Models.scnassets in Resources */,
 			);
@@ -334,6 +338,17 @@
 			targetProxy = 7E13BE04269991E900B1D78B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		7E76765426B7381C00FD276A /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7E76765526B7381C00FD276A /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		7E13BE1F269991E900B1D78B /* Debug */ = {
