@@ -20,6 +20,7 @@ struct Browse: View {
                                 }
                                 .padding(.horizontal, -18)
                                 .padding()
+                                .frame(maxHeight: geometry.size.height / 1.4)
                                 .background(
                                     NavigationLink(destination: Editor(model: model, index: index)) { }
                                         .opacity(0)
@@ -114,12 +115,6 @@ struct Browse: View {
 struct Browse_Previews: PreviewProvider {
     static var previews: some View {
         Window(model: Model())
-            .previewDevice("iPhone 12 Pro Max")
-        Window(model: Model())
-            .previewDevice("iPhone 12")
-        Window(model: Model())
             .previewDevice("iPhone 12 mini")
-        Window(model: Model())
-            .previewDevice("iPhone 8")
     }
 }
