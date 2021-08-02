@@ -3,6 +3,7 @@ import SwiftUI
 struct Browse: View {
     
     @ObservedObject var model: Model
+    @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
         NavigationView {
@@ -20,7 +21,7 @@ struct Browse: View {
                                 }
                                 .padding(.horizontal, -18)
                                 .padding()
-                                .frame(maxHeight: geometry.size.height / 1.4)
+                                .frame(maxHeight: geometry.size.height / 1.3)
                                 .background(
                                     NavigationLink(destination: Editor(model: model, index: index)) { }
                                         .opacity(0)
@@ -63,7 +64,6 @@ struct Browse: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarTitle("Augmented Frames")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Menu {
@@ -88,15 +88,15 @@ struct Browse: View {
                         Image(systemName: "camera.fill")
                     }
                 }
-                /*
                 ToolbarItem(placement: .principal) {
-                    Text(UIDevice.current.userInterfaceIdiom == .pad ? "Augmented Frames" : "Frames")
-                        .bold()
-                        .onTapGesture {
-                            model.data.welcome.toggle()
-                        }
+                    Button(action: {
+                        model.data.welcome.toggle()
+                    }) {
+                        Text("Augmented Frames")
+                            .bold()
+                    }
+                    .accentColor(colorscheme == .dark ? .white : .black)
                 }
-                */
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
                         model.data.isAugmenting.toggle()
