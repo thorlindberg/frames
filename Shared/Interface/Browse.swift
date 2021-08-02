@@ -21,7 +21,7 @@ struct Browse: View {
                                 }
                                 .padding(.horizontal, -18)
                                 .padding()
-                                .frame(maxHeight: geometry.size.height / 1.3)
+                                .frame(maxHeight: UIDevice.current.userInterfaceIdiom == .pad ? geometry.size.height / 2.5 : geometry.size.height / 1.3)
                                 .background(
                                     NavigationLink(destination: Editor(model: model, index: index)) { }
                                         .opacity(0)
