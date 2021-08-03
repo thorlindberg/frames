@@ -172,8 +172,8 @@
 		7EEFDCDA26999594006D4984 /* Interface */ = {
 			isa = PBXGroup;
 			children = (
-				7EEFDCD42699950A006D4984 /* Window.swift */,
 				7E13BE342699944B00B1D78B /* Welcome.swift */,
+				7EEFDCD42699950A006D4984 /* Window.swift */,
 				7E88617A26B16C5100AAF923 /* Browse.swift */,
 				7EEA2C0126AC94DB0070FE4C /* Editor.swift */,
 				7E13BE352699944B00B1D78B /* Augment.swift */,

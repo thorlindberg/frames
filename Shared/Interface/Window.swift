@@ -6,6 +6,112 @@ struct Window: View {
     @Environment(\.colorScheme) var colorscheme
 
     var body: some View {
+        GeometryReader { geometry in
+            ZStack {
+                Rectangle()
+                    .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
+                    .ignoresSafeArea()
+                VStack(spacing: 0) {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
+                        HStack {
+                            Menu {
+                                Button(action: {
+                                    model.data.isImporting.toggle()
+                                }) {
+                                    Label("Choose Photo", systemImage: "photo")
+                                }
+                                Button(action: {
+                                    model.data.isCapturing.toggle()
+                                }) {
+                                    Label("Capture Photo", systemImage: "camera")
+                                }
+                                Button(action: {
+                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                        .first?.rootViewController?
+                                        .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                                }) {
+                                    Label("Scan Photo", systemImage: "viewfinder")
+                                }
+                            } label: {
+                                Image(systemName: "camera.fill")
+                            }
+                            Spacer()
+                            Button(action: {
+                                model.data.isAugmenting.toggle()
+                            }) {
+                                Text("AR")
+                                    .bold()
+                            }
+                        }
+                        .padding(.horizontal)
+                        Text("Augmented Frames")
+                            .bold()
+                    }
+                    .frame(height: 50)
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.black)
+                        RoundedRectangle(corners: [.bottomLeft, .bottomRight], radius: 10)
+                            .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
+                        Image(uiImage: model.data.frames[0].framed)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .padding(28)
+                            .shadow(color: Color.black.opacity(0.2), radius: 20, x: 0, y: 0)
+                            .onTapGesture {
+                                model.data.isEditing.toggle()
+                            }
+                    }
+                    Rectangle()
+                        .foregroundColor(.black)
+                        .frame(height: 5)
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.black)
+                        RoundedRectangle(corners: [.topLeft, .topRight], radius: 10)
+                            .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
+                        VStack {
+                            Capsule()
+                                .foregroundColor(Color(UIColor.systemGray4))
+                                .frame(width: 50, height: 8)
+                            Spacer()
+                        }
+                        .padding()
+                    }
+                    .frame(height: 50)
+                    .onTapGesture {
+                        model.data.isEditing.toggle()
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $model.data.welcome) {
+            Welcome(model: model)
+                .modifier(DisableModalDismiss(disabled: !UserDefaults.standard.bool(forKey: "beta83") ? true : false))
+        }
+        .sheet(isPresented: $model.data.isEditing) {
+            Editor(model: model, index: 0)
+        }
+        .sheet(isPresented: $model.data.isImporting) {
+            ImagePicker(model: model, type: "import")
+        }
+        .sheet(isPresented: $model.data.isCapturing) {
+            ImagePicker(model: model, type: "capture")
+        }
+        .fullScreenCover(isPresented: $model.data.isAugmenting) {
+            Augment(model: model)
+        }
+        .onAppear {
+            model.data.colorscheme = colorscheme
+        }
+        .onChange(of: colorscheme) { value in
+            withAnimation {
+                model.data.colorscheme = value
+            }
+        }
+        /*
         Browse(model: model)
             .sheet(isPresented: $model.data.welcome) {
                 Welcome(model: model)
@@ -28,6 +134,7 @@ struct Window: View {
                     model.data.colorscheme = value
                 }
             }
+        */
     }
     
 }
