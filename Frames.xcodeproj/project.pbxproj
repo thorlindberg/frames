@@ -114,8 +114,8 @@
 			children = (
 				7E13BDEB269991E700B1D78B /* FramesApp.swift */,
 				7E13BE412699946100B1D78B /* Model.swift */,
-				7E51F8CD26B71FA200D8D56D /* Augmented Reality */,
 				7EEFDCDA26999594006D4984 /* Interface */,
+				7E51F8CD26B71FA200D8D56D /* Augmented Reality */,
 			);
 			path = Shared;
 			sourceTree = "<group>";

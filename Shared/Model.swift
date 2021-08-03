@@ -10,7 +10,6 @@ final class Model: NSObject, ObservableObject {
     struct Format: Hashable {
         var colorscheme: ColorScheme?
         var welcome: Bool = !UserDefaults.standard.bool(forKey: "beta83")
-        var guide: String = ""
         var isEditing: Bool = false
         var isImporting: Bool = false
         var isCapturing: Bool = false
@@ -54,8 +53,6 @@ final class Model: NSObject, ObservableObject {
             // rotate frame
             if isWriting {
                 node.rotation = SCNVector4Make(1, 0, 0, -(.pi / 2))
-            } else if frames[selected].interactive {
-                node.rotation = SCNVector4(1, 0, 0, 350 * Double.pi / 180)
             }
             
             // add frame to scene
@@ -74,7 +71,6 @@ final class Model: NSObject, ObservableObject {
         var border: CGFloat = 0.05
         var material: UIImage = UIImage(named: "material_oak")!
         var filter: String = ""
-        var interactive: Bool = false
         var description: String {
             var string: String = ""
             string += "\(Int(width))x\(Int(height)) cm"
@@ -280,13 +276,7 @@ struct ImagePicker: UIViewControllerRepresentable {
             if let uiImage = info[.originalImage] as? UIImage {
                 parent.model.addImage(image: uiImage)
             }
-            if parent.model.data.welcome {
-                withAnimation {
-                    parent.model.data.guide = ""
-                }
-            } else {
-                parent.presentationMode.wrappedValue.dismiss()
-            }
+            parent.presentationMode.wrappedValue.dismiss()
         }
     }
     

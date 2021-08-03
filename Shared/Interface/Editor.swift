@@ -45,204 +45,199 @@ struct Editor: View {
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        List {
-            Section {
-                HStack {
-                    Text("Interactive model")
-                        .opacity(0.3)
-                    Spacer()
-                    Toggle(isOn: $model.data.frames[model.data.selected].interactive) { }
+        GeometryReader { geometry in
+            List {
+                Section {
+                    SceneView(scene: model.data.scene, options: [.allowsCameraControl])
+                        .padding(.vertical, -6)
+                        .padding(.horizontal, -16)
+                        .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 500 : geometry.size.height - 355)
                 }
-                SceneView(scene: model.data.scene, options: model.data.frames[model.data.selected].interactive ? [.allowsCameraControl] : [])
-                    .padding(.vertical, -6)
-                    .padding(.horizontal, -16)
-                    .padding(model.data.frames[model.data.selected].interactive ? 0 : 14)
-                    .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 500 : 205)
-            }
-            Section {
-                HStack(spacing: 0) {
-                    Button(action: {
-                        model.data.isWarned.toggle()
-                    }) {
-                        HStack {
-                            Text("Delete")
-                            Spacer()
-                            Image(systemName: "delete.left")
+                Section {
+                    HStack(spacing: 0) {
+                        Button(action: {
+                            model.data.isWarned.toggle()
+                        }) {
+                            HStack {
+                                Text("Delete")
+                                Spacer()
+                                Image(systemName: "delete.left")
+                            }
+                            .contentShape(Rectangle())
                         }
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .foregroundColor(.red)
-                    .disabled(model.data.frames.count == 1)
-                    .alert(isPresented: $model.data.isWarned) {
-                        Alert(
-                            title: Text("Delete this frame?"),
-                            message: Text("This action cannot be undone"),
-                            primaryButton: .destructive(Text("Delete")) {
-                                withAnimation {
-                                    model.data.isEditing.toggle()
-                                    model.removeImage(index: model.data.selected)
-                                }
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    }
-                    SectionDivider()
-                    Button(action: {
-                        UIApplication.shared.windows.filter({$0.isKeyWindow})
-                            .first?
-                            .rootViewController?
-                            .present(
-                                UIActivityViewController(
-                                    activityItems: [model.data.frames[model.data.selected].framed],
-                                    applicationActivities: nil
-                                ),
-                                animated: true
+                        .buttonStyle(PlainButtonStyle())
+                        .foregroundColor(.red)
+                        .disabled(model.data.frames.count == 1)
+                        .alert(isPresented: $model.data.isWarned) {
+                            Alert(
+                                title: Text("Delete this frame?"),
+                                message: Text("This action cannot be undone"),
+                                primaryButton: .destructive(Text("Delete")) {
+                                    withAnimation {
+                                        model.data.isEditing.toggle()
+                                        model.removeImage(index: model.data.selected)
+                                    }
+                                },
+                                secondaryButton: .cancel()
                             )
-                    }) {
-                        HStack {
-                            Text("Share")
-                            Spacer()
-                            Image(systemName: "square.and.arrow.up")
                         }
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .foregroundColor(.accentColor)
-                }
-            }
-            Section {
-                HStack {
-                    Text("Size")
-                    Spacer()
-                    Image(systemName: "selection.pin.in.out")
-                }
-                .opacity(0.3)
-                HStack {
-                    Text("Width")
-                    Spacer()
-                    Menu {
-                        ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
-                            Button(action: {
-                                withAnimation {
-                                    model.data.frames[model.data.selected].width = CGFloat(value)
-                                }
-                            }) {
-                                if model.data.frames[model.data.selected].width == CGFloat(value) {
-                                    Label("\(value) cm", systemImage: "checkmark")
-                                } else {
-                                    Text("\(value) cm")
-                                }
-                            }
-                            .disabled(model.data.frames[model.data.selected].width == CGFloat(value))
-                        }
-                    } label: {
-                        Text("\(Int(model.data.frames[model.data.selected].width)) cm")
-                    }
-                }
-                HStack {
-                    Text("Height")
-                    Spacer()
-                    Menu {
-                        ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
-                            Button(action: {
-                                withAnimation {
-                                    model.data.frames[model.data.selected].height = CGFloat(value)
-                                }
-                            }) {
-                                if model.data.frames[model.data.selected].height == CGFloat(value) {
-                                    Label("\(value) cm", systemImage: "checkmark")
-                                } else {
-                                    Text("\(value) cm")
-                                }
-                            }
-                            .disabled(model.data.frames[model.data.selected].height == CGFloat(value))
-                        }
-                    } label: {
-                        Text("\(Int(model.data.frames[model.data.selected].height)) cm")
-                    }
-                }
-                HStack {
-                    Text("Border")
-                    Spacer()
-                    Menu {
-                        ForEach(Array(stride(from: 0.01, to: 0.51, by: 0.01)), id: \.self) { value in
-                            Button(action: {
-                                withAnimation {
-                                    model.data.frames[model.data.selected].border = CGFloat(value)
-                                }
-                            }) {
-                                if model.data.frames[model.data.selected].border == CGFloat(value) {
-                                    Label("\(Int(value * 100)) %", systemImage: "checkmark")
-                                } else {
-                                    Text("\(Int(value * 100)) %")
-                                }
-                            }
-                            .disabled(model.data.frames[model.data.selected].border == CGFloat(value))
-                        }
-                    } label: {
-                        Text("\(Int(model.data.frames[model.data.selected].border * 100)) %")
-                    }
-                }
-            }
-            Section {
-                HStack {
-                    Text("Filters")
-                    Spacer()
-                    Image(systemName: "camera.filters")
-                }
-                .opacity(0.3)
-                LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
-                    ForEach(["", "noir", "mono", "invert"], id: \.self) { filter in
+                        SectionDivider()
                         Button(action: {
-                            model.data.frames[model.data.selected].filter = filter
-                        }) {
-                            Image(uiImage: filterImage(image: model.data.frames[model.data.selected].image, filter: filter))
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .border(
-                                    Color.accentColor,
-                                    width: model.data.frames[model.data.selected].filter == filter ? 4 : 0
+                            UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                .first?
+                                .rootViewController?
+                                .present(
+                                    UIActivityViewController(
+                                        activityItems: [model.data.frames[model.data.selected].framed],
+                                        applicationActivities: nil
+                                    ),
+                                    animated: true
                                 )
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                }
-                .padding(.vertical, 14)
-            }
-            Section {
-                HStack {
-                    Text("Materials")
-                    Spacer()
-                    Image(systemName: "cube")
-                }
-                .opacity(0.3)
-                LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
-                    ForEach([UIImage(named: "material_oak"), UIImage(named: "material_steel"), UIImage(named: "material_marble")], id: \.self) { material in
-                        Button(action: {
-                            model.data.frames[model.data.selected].material = material!
                         }) {
-                            Image(uiImage: material!)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .border(Color.accentColor, width: model.data.frames[model.data.selected].material == material ? 4 : 0)
+                            HStack {
+                                Text("Share")
+                                Spacer()
+                                Image(systemName: "square.and.arrow.up")
+                            }
+                            .contentShape(Rectangle())
                         }
                         .buttonStyle(PlainButtonStyle())
+                        .foregroundColor(.accentColor)
                     }
                 }
-                .padding(.vertical, 14)
-            }
-            Section {
-                HStack {
-                    Spacer()
-                    Text("Framed \(model.data.frames[model.data.selected].date)")
-                    Spacer()
-                }
+                Section {
+                    HStack {
+                        Text("Size")
+                        Spacer()
+                        Image(systemName: "selection.pin.in.out")
+                    }
                     .opacity(0.3)
+                    HStack {
+                        Text("Width")
+                        Spacer()
+                        Menu {
+                            ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.frames[model.data.selected].width = CGFloat(value)
+                                    }
+                                }) {
+                                    if model.data.frames[model.data.selected].width == CGFloat(value) {
+                                        Label("\(value) cm", systemImage: "checkmark")
+                                    } else {
+                                        Text("\(value) cm")
+                                    }
+                                }
+                                .disabled(model.data.frames[model.data.selected].width == CGFloat(value))
+                            }
+                        } label: {
+                            Text("\(Int(model.data.frames[model.data.selected].width)) cm")
+                        }
+                    }
+                    HStack {
+                        Text("Height")
+                        Spacer()
+                        Menu {
+                            ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.frames[model.data.selected].height = CGFloat(value)
+                                    }
+                                }) {
+                                    if model.data.frames[model.data.selected].height == CGFloat(value) {
+                                        Label("\(value) cm", systemImage: "checkmark")
+                                    } else {
+                                        Text("\(value) cm")
+                                    }
+                                }
+                                .disabled(model.data.frames[model.data.selected].height == CGFloat(value))
+                            }
+                        } label: {
+                            Text("\(Int(model.data.frames[model.data.selected].height)) cm")
+                        }
+                    }
+                    HStack {
+                        Text("Border")
+                        Spacer()
+                        Menu {
+                            ForEach(Array(stride(from: 0.01, to: 0.51, by: 0.01)), id: \.self) { value in
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.frames[model.data.selected].border = CGFloat(value)
+                                    }
+                                }) {
+                                    if model.data.frames[model.data.selected].border == CGFloat(value) {
+                                        Label("\(Int(value * 100)) %", systemImage: "checkmark")
+                                    } else {
+                                        Text("\(Int(value * 100)) %")
+                                    }
+                                }
+                                .disabled(model.data.frames[model.data.selected].border == CGFloat(value))
+                            }
+                        } label: {
+                            Text("\(Int(model.data.frames[model.data.selected].border * 100)) %")
+                        }
+                    }
+                }
+                Section {
+                    HStack {
+                        Text("Filters")
+                        Spacer()
+                        Image(systemName: "camera.filters")
+                    }
+                    .opacity(0.3)
+                    LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
+                        ForEach(["", "noir", "mono", "invert"], id: \.self) { filter in
+                            Button(action: {
+                                model.data.frames[model.data.selected].filter = filter
+                            }) {
+                                Image(uiImage: filterImage(image: model.data.frames[model.data.selected].image, filter: filter))
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .border(
+                                        Color.accentColor,
+                                        width: model.data.frames[model.data.selected].filter == filter ? 4 : 0
+                                    )
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                    }
+                    .padding(.vertical, 14)
+                }
+                Section {
+                    HStack {
+                        Text("Materials")
+                        Spacer()
+                        Image(systemName: "cube")
+                    }
+                    .opacity(0.3)
+                    LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 3)) {
+                        ForEach([UIImage(named: "material_oak"), UIImage(named: "material_steel"), UIImage(named: "material_marble")], id: \.self) { material in
+                            Button(action: {
+                                model.data.frames[model.data.selected].material = material!
+                            }) {
+                                Image(uiImage: material!)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .border(Color.accentColor, width: model.data.frames[model.data.selected].material == material ? 4 : 0)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                    }
+                    .padding(.vertical, 14)
+                }
+                Section {
+                    HStack {
+                        Spacer()
+                        Text("Framed \(model.data.frames[model.data.selected].date)")
+                        Spacer()
+                    }
+                        .opacity(0.3)
+                }
+                .listRowBackground(colorscheme == .dark ? .black : Color(UIColor.secondarySystemBackground))
             }
-            .listRowBackground(colorscheme == .dark ? .black : Color(UIColor.secondarySystemBackground))
+            .listStyle(InsetGroupedListStyle())
         }
-        .listStyle(InsetGroupedListStyle())
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarTitle("Frame")
         .onAppear {
