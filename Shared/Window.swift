@@ -36,7 +36,6 @@ struct Window: View {
                                 HStack(alignment: .bottom) {
                                     Spacer()
                                     Rectangle()
-                                        .foregroundColor(.accentColor)
                                         .frame(width: 3, height: (device.size.height - 130 - 100) / 6 * 6)
                                     Spacer()
                                     Rectangle()
@@ -44,21 +43,16 @@ struct Window: View {
                                         .padding(.horizontal, 67 / 2)
                                     Spacer()
                                     Rectangle()
-                                        .foregroundColor(.orange)
                                         .frame(width: 3, height: (device.size.height - 130 - 100) / 6 * 4)
                                     Spacer()
                                 }
                                 .opacity(0.25)
                                 VStack {
                                     Text("Add photo")
-                                        .foregroundColor(.accentColor)
                                     Text("for augmentation")
-                                        .foregroundColor(.accentColor)
                                     Spacer()
                                     Text("Define dimensions")
-                                        .foregroundColor(.orange)
                                     Text("manually or with AR")
-                                        .foregroundColor(.orange)
                                     Spacer()
                                     Text("Push photo into")
                                     Text("Augmented Reality")
@@ -146,7 +140,7 @@ struct Window: View {
                                 }
                                 Image(systemName: "arrow.up")
                                     .font(.system(size: 30))
-                                    .foregroundColor(!model.data.isFramed ? .black : nil)
+                                    .foregroundColor(.black)
                                     .rotation3DEffect(
                                         .degrees(model.data.isAugmenting ? 180 : 0),
                                         axis: (x: 1.0, y: 0.0, z: 0.0)
