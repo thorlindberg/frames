@@ -48,10 +48,17 @@ struct Editor: View {
         GeometryReader { geometry in
             List {
                 Section {
-                    SceneView(scene: model.data.scene, options: [.allowsCameraControl])
-                        .padding(.vertical, -6)
-                        .padding(.horizontal, -16)
-                        .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 500 : geometry.size.height - 355)
+                    HStack {
+                        Spacer()
+                        Image(uiImage: model.data.frames[index].framed)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                        Spacer()
+                    }
+                    .padding(.vertical, -6)
+                    .padding(.horizontal, -16)
+                    .padding()
+                    .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 500 : geometry.size.height / 2.5)
                 }
                 Section {
                     HStack(spacing: 0) {
@@ -259,7 +266,7 @@ struct Editor: View {
 
 struct Editor_Previews: PreviewProvider {
     static var previews: some View {
-        Editor(model: Model(), index: 0)
+        Window(model: Model())
             .previewDevice("iPhone 12 mini")
     }
 }
