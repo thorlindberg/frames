@@ -51,7 +51,8 @@ final class Model: NSObject, ObservableObject {
             let border = canvas.width * border / 2
             
             // fill with dominant color in image
-            image.averageColor!.setFill()
+            // image.averageColor!.setFill()
+            UIColor.lightGray.setFill()
             UIRectFill(
                 CGRect(
                     x: border, y: border,
