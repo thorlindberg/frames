@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E032FEA26BBCDA400C1748B /* ACarousel in Frameworks */ = {isa = PBXBuildFile; productRef = 7E032FE926BBCDA400C1748B /* ACarousel */; };
 		7E13BE08269991E900B1D78B /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE07269991E900B1D78B /* Tests_iOS.swift */; };
 		7E13BE17269991E900B1D78B /* FramesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BDEB269991E700B1D78B /* FramesApp.swift */; };
 		7E13BE1D269991E900B1D78B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E13BDEE269991E900B1D78B /* Assets.xcassets */; };
@@ -83,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E032FEA26BBCDA400C1748B /* ACarousel in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,6 +208,7 @@
 			);
 			name = "Frames (iOS)";
 			packageProductDependencies = (
+				7E032FE926BBCDA400C1748B /* ACarousel */,
 			);
 			productName = "Frames (iOS)";
 			productReference = 7E13BDF3269991E900B1D78B /* Frames.app */;
@@ -257,6 +260,7 @@
 			);
 			mainGroup = 7E13BDE3269991E700B1D78B;
 			packageReferences = (
+				7E032FE826BBCDA400C1748B /* XCRemoteSwiftPackageReference "ACarousel" */,
 			);
 			productRefGroup = 7E13BDF4269991E900B1D78B /* Products */;
 			projectDirPath = "";
@@ -574,6 +578,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		7E032FE826BBCDA400C1748B /* XCRemoteSwiftPackageReference "ACarousel" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JWAutumn/ACarousel";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7E032FE926BBCDA400C1748B /* ACarousel */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7E032FE826BBCDA400C1748B /* XCRemoteSwiftPackageReference "ACarousel" */;
+			productName = ACarousel;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7E13BDE4269991E700B1D78B /* Project object */;
 }

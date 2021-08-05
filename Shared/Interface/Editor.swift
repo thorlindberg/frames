@@ -57,9 +57,9 @@ struct Editor: View {
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        ZStack {
+        NavigationView {
             List {
-                Section(header: Text("").padding(.top, 40)) {
+                Section {
                     SceneView(scene: model.data.scene, options: []) // .allowsCameraControl
                         .padding(.vertical, -6)
                         .padding(.horizontal, -16)
@@ -249,19 +249,16 @@ struct Editor: View {
                 .listRowBackground(colorscheme == .dark ? .black : Color(UIColor.secondarySystemBackground))
             }
             .listStyle(InsetGroupedListStyle())
-            VStack {
-                HStack {
-                    Spacer()
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
                     Capsule()
                         .foregroundColor(Color(UIColor.systemGray4))
                         .frame(width: 50, height: 8)
-                    Spacer()
                 }
-                .frame(height: 40)
-                .background(Blur(style: .regular))
-                Spacer()
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
             model.data.selected = index
         }
@@ -271,7 +268,7 @@ struct Editor: View {
 
 struct Editor_Previews: PreviewProvider {
     static var previews: some View {
-        Editor(model: Model(), index: 0)
+        Window(model: Model())
             .previewDevice("iPhone 12 mini")
     }
 }

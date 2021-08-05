@@ -6,7 +6,7 @@ struct Window: View {
     @Environment(\.colorScheme) var colorscheme
 
     var body: some View {
-        GeometryReader { geometry in
+        NavigationView {
             ZStack {
                 Rectangle()
                     .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
@@ -14,55 +14,23 @@ struct Window: View {
                 VStack(spacing: 0) {
                     ZStack {
                         Rectangle()
-                            .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
-                        HStack {
-                            Menu {
-                                Button(action: {
-                                    model.data.isImporting.toggle()
-                                }) {
-                                    Label("Choose Photo", systemImage: "photo")
-                                }
-                                Button(action: {
-                                    model.data.isCapturing.toggle()
-                                }) {
-                                    Label("Capture Photo", systemImage: "camera")
-                                }
-                                Button(action: {
-                                    UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                        .first?.rootViewController?
-                                        .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
-                                }) {
-                                    Label("Scan Photo", systemImage: "viewfinder")
-                                }
-                            } label: {
-                                Image(systemName: "camera.fill")
-                            }
-                            Spacer()
-                            Button(action: {
-                                model.data.isAugmenting.toggle()
-                            }) {
-                                Text("AR")
-                                    .bold()
-                            }
-                        }
-                        .padding(.horizontal)
-                        Text("Augmented Frames")
-                            .bold()
-                    }
-                    .frame(height: 50)
-                    ZStack {
-                        Rectangle()
                             .foregroundColor(.black)
                         RoundedRectangle(corners: [.bottomLeft, .bottomRight], radius: 10)
                             .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
-                        Image(uiImage: model.data.frames[0].framed)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .padding(28)
-                            .shadow(color: Color.black.opacity(0.2), radius: 20, x: 0, y: 0)
-                            .onTapGesture {
-                                model.data.isEditing.toggle()
+                        ScrollView {
+                            VStack(spacing: 28) {
+                                ForEach(model.data.frames.indices, id: \.self) { index in
+                                    Image(uiImage: model.data.frames[index].framed)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        // .shadow(color: Color.black.opacity(0.2), radius: 20, x: 0, y: 0)
+                                        .onTapGesture {
+                                            model.data.isEditing.toggle()
+                                        }
+                                }
                             }
+                            .padding(28)
+                        }
                     }
                     Rectangle()
                         .foregroundColor(.black)
@@ -72,13 +40,9 @@ struct Window: View {
                             .foregroundColor(.black)
                         RoundedRectangle(corners: [.topLeft, .topRight], radius: 10)
                             .foregroundColor(colorscheme == .dark ? Color(UIColor.systemGray6) : .white)
-                        VStack {
-                            Capsule()
-                                .foregroundColor(Color(UIColor.systemGray4))
-                                .frame(width: 50, height: 8)
-                            Spacer()
-                        }
-                        .padding()
+                        Text("Customize")
+                            .bold()
+                            .foregroundColor(.accentColor)
                     }
                     .frame(height: 50)
                     .onTapGesture {
@@ -86,7 +50,43 @@ struct Window: View {
                     }
                 }
             }
+            .navigationBarTitle("Augmented Frames")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Menu {
+                        Button(action: {
+                            model.data.isImporting.toggle()
+                        }) {
+                            Label("Choose Photo", systemImage: "photo")
+                        }
+                        Button(action: {
+                            model.data.isCapturing.toggle()
+                        }) {
+                            Label("Capture Photo", systemImage: "camera")
+                        }
+                        Button(action: {
+                            UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                .first?.rootViewController?
+                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                        }) {
+                            Label("Scan Photo", systemImage: "viewfinder")
+                        }
+                    } label: {
+                        Image(systemName: "camera.fill")
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        model.data.isAugmenting.toggle()
+                    }) {
+                        Text("AR")
+                    }
+                    .disabled(true)
+                }
+            }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $model.data.welcome) {
             Welcome(model: model)
                 .modifier(DisableModalDismiss(disabled: !UserDefaults.standard.bool(forKey: "beta83") ? true : false))
@@ -111,30 +111,6 @@ struct Window: View {
                 model.data.colorscheme = value
             }
         }
-        /*
-        Browse(model: model)
-            .sheet(isPresented: $model.data.welcome) {
-                Welcome(model: model)
-                    .modifier(DisableModalDismiss(disabled: !UserDefaults.standard.bool(forKey: "beta83") ? true : false))
-            }
-            .sheet(isPresented: $model.data.isImporting) {
-                ImagePicker(model: model, type: "import")
-            }
-            .sheet(isPresented: $model.data.isCapturing) {
-                ImagePicker(model: model, type: "capture")
-            }
-            .fullScreenCover(isPresented: $model.data.isAugmenting) {
-                Augment(model: model)
-            }
-            .onAppear {
-                model.data.colorscheme = colorscheme
-            }
-            .onChange(of: colorscheme) { value in
-                withAnimation {
-                    model.data.colorscheme = value
-                }
-            }
-        */
     }
     
 }
