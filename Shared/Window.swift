@@ -5,7 +5,7 @@ import AVFoundation
 struct Window: View {
     
     @ObservedObject var model: Model
-
+    
     var body: some View {
         GeometryReader { device in
             ZStack {
@@ -23,20 +23,20 @@ struct Window: View {
                 VStack {
                     Spacer()
                     if !model.data.isAugmenting {
-                        if model.data.isAdjusting {
-                            Text("Adjust")
-                            Spacer()
-                        } else if model.data.isFramed {
+                        if model.data.isFramed {
                             Image(uiImage: model.data.frame!)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .padding(50)
+                                .padding(.vertical, 30)
+                                .padding(.top, 30)
+                                .padding(.bottom, 30 - 15)
                             Spacer()
                         } else {
                             ZStack {
                                 HStack(alignment: .bottom) {
                                     Spacer()
                                     Rectangle()
+                                        .foregroundColor(.accentColor)
                                         .frame(width: 3, height: (device.size.height - 130 - 100) / 6 * 6)
                                     Spacer()
                                     Rectangle()
@@ -44,19 +44,24 @@ struct Window: View {
                                         .padding(.horizontal, 67 / 2)
                                     Spacer()
                                     Rectangle()
+                                        .foregroundColor(.orange)
                                         .frame(width: 3, height: (device.size.height - 130 - 100) / 6 * 4)
                                     Spacer()
                                 }
                                 .opacity(0.25)
                                 VStack {
-                                    Text("1. Add a photo")
-                                    Text("to create a frame")
+                                    Text("Add photo")
+                                        .foregroundColor(.accentColor)
+                                    Text("for augmentation")
+                                        .foregroundColor(.accentColor)
                                     Spacer()
-                                    Text("2. Define dimensions")
+                                    Text("Define dimensions")
+                                        .foregroundColor(.orange)
                                     Text("manually or with AR")
+                                        .foregroundColor(.orange)
                                     Spacer()
-                                    Text("3. View frame in AR")
-                                    Text("when photo added")
+                                    Text("Push photo into")
+                                    Text("Augmented Reality")
                                         .padding(.bottom, (device.size.height - 130 - 100) / 6 * 1 + 30)
                                 }
                                 .opacity(0.75)
@@ -74,7 +79,7 @@ struct Window: View {
                             }) {
                                 ZStack {
                                     ZStack {
-                                        Blur(style: .dark)
+                                        Blur(style: .systemUltraThinMaterialDark)
                                             .mask(Circle())
                                         Image(systemName: model.data.isFlashlight ? "bolt.fill" : "bolt.slash")
                                             .font(.system(size: 20))
@@ -107,7 +112,7 @@ struct Window: View {
                             } label: {
                                 ZStack {
                                     ZStack {
-                                        Blur(style: .dark)
+                                        Blur(style: .systemUltraThinMaterialDark)
                                             .mask(Circle())
                                         Image(systemName: "camera.fill")
                                     }
@@ -120,25 +125,15 @@ struct Window: View {
                         }
                         Spacer()
                         Button(action: {
-                            if model.data.isAugmenting {
-                                withAnimation {
-                                    model.data.isBlurred.toggle()
-                                }
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    withAnimation {
-                                        model.data.isAugmenting.toggle()
-                                    }
-                                }
-                            } else {
+                            if !model.data.isAugmenting {
                                 model.writeScene() // writes frame to app documents
-                                withAnimation {
-                                    model.data.isAugmenting.toggle()
-                                }
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    withAnimation {
-                                        model.data.isBlurred.toggle()
-                                    }
-                                }
+                            } else {
+                                model.data.isFlashlight = false
+                                toggleTorch(on: model.data.isFlashlight)
+                            }
+                            withAnimation {
+                                model.data.isAugmenting.toggle()
+                                model.data.isBlurred.toggle()
                             }
                         }) {
                             ZStack {
@@ -166,7 +161,7 @@ struct Window: View {
                                 Button(action: {
                                     model.data.alignment = "none"
                                 }) {
-                                    Label("No alignment", systemImage: model.data.alignment == "none" ? "checkmark" : "arrow.up.left.and.arrow.down.right")
+                                    Label("No alignment", systemImage: model.data.alignment == "none" ? "checkmark" : "dot.arrowtriangles.up.right.down.left.circle")
                                 }
                                 .disabled(model.data.alignment == "none")
                                 Button(action: {
@@ -184,7 +179,7 @@ struct Window: View {
                             } label: {
                                 ZStack {
                                     ZStack {
-                                        Blur(style: .dark)
+                                        Blur(style: .systemUltraThinMaterialDark)
                                             .mask(Circle())
                                         Image(systemName: "perspective")
                                             .font(.system(size: 20))
@@ -197,12 +192,21 @@ struct Window: View {
                                 }
                             }
                         } else {
-                            Button(action: {
-                                model.data.isAdjusting.toggle()
-                            }) {
+                            Menu {
+                                Button(action: {
+                                    //
+                                }) {
+                                    Label("Manually measure", systemImage: "square.and.pencil")
+                                }
+                                Button(action: {
+                                    //
+                                }) {
+                                    Label("Measure in AR", systemImage: "move.3d")
+                                }
+                            } label: {
                                 ZStack {
                                     ZStack {
-                                        Blur(style: model.data.isAdjusting ? .light : .dark)
+                                        Blur(style: .systemUltraThinMaterialDark)
                                             .mask(Circle())
                                         Image(systemName: "cube")
                                             .font(.system(size: 20))
@@ -242,11 +246,11 @@ struct Window_Previews: PreviewProvider {
 
 struct Blur: UIViewRepresentable {
     var style: UIBlurEffect.Style = .systemMaterial
-
+    
     func makeUIView(context: Context) -> UIVisualEffectView {
         return UIVisualEffectView(effect: UIBlurEffect(style: style))
     }
-
+    
     func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
         uiView.effect = UIBlurEffect(style: style)
     }

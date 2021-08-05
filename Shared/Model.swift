@@ -11,11 +11,10 @@ final class Model: NSObject, ObservableObject {
         var isImporting: Bool = false
         var isCapturing: Bool = false
         var isAugmenting: Bool = false
-        var isAdjusting: Bool = false
         var isFlashlight: Bool = false
         var isBlurred: Bool = true
         var isFramed: Bool {
-            if let frame = frame {
+            if frame != nil {
                 return true
             } else {
                 return false
@@ -23,8 +22,8 @@ final class Model: NSObject, ObservableObject {
         }
         var alignment: String = "none"
         var image: UIImage?
-        var width: CGFloat = 60
-        var height: CGFloat = 90
+        var width: CGFloat = 50
+        var height: CGFloat = 70
         var border: CGFloat = 0.05
         var frame: UIImage? {
 
@@ -96,7 +95,7 @@ final class Model: NSObject, ObservableObject {
         }
         var scene: SCNScene? {
             
-            guard let image = self.image else { return nil }
+            guard self.image != nil else { return nil }
             
             // create scene and box
             let scene = SCNScene()
