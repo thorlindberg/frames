@@ -38,18 +38,6 @@ struct SectionDivider: View {
     
 }
 
-struct Blur: UIViewRepresentable {
-    var style: UIBlurEffect.Style = .systemMaterial
-
-    func makeUIView(context: Context) -> UIVisualEffectView {
-        return UIVisualEffectView(effect: UIBlurEffect(style: style))
-    }
-
-    func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
-        uiView.effect = UIBlurEffect(style: style)
-    }
-}
-
 struct Editor: View {
     
     @ObservedObject var model: Model
@@ -57,13 +45,13 @@ struct Editor: View {
     @Environment(\.colorScheme) var colorscheme
     
     var body: some View {
-        ZStack {
+        GeometryReader { geometry in
             List {
-                Section(header: Text("").padding(.top, 40)) {
-                    SceneView(scene: model.data.scene, options: []) // .allowsCameraControl
+                Section {
+                    SceneView(scene: model.data.scene, options: [.allowsCameraControl])
                         .padding(.vertical, -6)
                         .padding(.horizontal, -16)
-                        .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 500 : 230)
+                        .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 500 : geometry.size.height - 355)
                 }
                 Section {
                     HStack(spacing: 0) {
@@ -249,21 +237,21 @@ struct Editor: View {
                 .listRowBackground(colorscheme == .dark ? .black : Color(UIColor.secondarySystemBackground))
             }
             .listStyle(InsetGroupedListStyle())
-            VStack {
-                HStack {
-                    Spacer()
-                    Capsule()
-                        .foregroundColor(Color(UIColor.systemGray4))
-                        .frame(width: 50, height: 8)
-                    Spacer()
-                }
-                .frame(height: 40)
-                .background(Blur(style: .regular))
-                Spacer()
-            }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitle("Frame")
         .onAppear {
             model.data.selected = index
+        }
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    model.writeScene()
+                    model.data.isAugmenting.toggle()
+                }) {
+                    Text("AR")
+                }
+            }
         }
     }
     
