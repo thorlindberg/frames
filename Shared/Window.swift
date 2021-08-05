@@ -23,7 +23,10 @@ struct Window: View {
                 VStack {
                     Spacer()
                     if !model.data.isAugmenting {
-                        if model.data.isFramed {
+                        if model.data.isAdjusting {
+                            Text("Adjust")
+                            Spacer()
+                        } else if model.data.isFramed {
                             Image(uiImage: model.data.frame!)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
@@ -195,11 +198,11 @@ struct Window: View {
                             }
                         } else {
                             Button(action: {
-                                //
+                                model.data.isAdjusting.toggle()
                             }) {
                                 ZStack {
                                     ZStack {
-                                        Blur(style: .dark)
+                                        Blur(style: model.data.isAdjusting ? .light : .dark)
                                             .mask(Circle())
                                         Image(systemName: "cube")
                                             .font(.system(size: 20))

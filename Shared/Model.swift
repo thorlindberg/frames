@@ -11,6 +11,7 @@ final class Model: NSObject, ObservableObject {
         var isImporting: Bool = false
         var isCapturing: Bool = false
         var isAugmenting: Bool = false
+        var isAdjusting: Bool = false
         var isFlashlight: Bool = false
         var isBlurred: Bool = true
         var isFramed: Bool {
