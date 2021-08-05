@@ -76,15 +76,24 @@ struct Window: View {
                     }
                     Spacer()
                     Button(action: {
-                        if !model.data.isAugmenting {
+                        if model.data.isAugmenting {
+                            withAnimation {
+                                model.data.isBlurred.toggle()
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                withAnimation {
+                                    model.data.isAugmenting.toggle()
+                                }
+                            }
+                        } else {
+                            withAnimation {
+                                model.data.isAugmenting.toggle()
+                            }
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 withAnimation {
                                     model.data.isBlurred.toggle()
                                 }
                             }
-                        }
-                        withAnimation {
-                            model.data.isAugmenting.toggle()
                         }
                     }) {
                         ZStack {
