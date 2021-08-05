@@ -1,80 +1,126 @@
 import SwiftUI
 
+struct Blur: UIViewRepresentable {
+    var style: UIBlurEffect.Style = .systemMaterial
+
+    func makeUIView(context: Context) -> UIVisualEffectView {
+        return UIVisualEffectView(effect: UIBlurEffect(style: style))
+    }
+
+    func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
+        uiView.effect = UIBlurEffect(style: style)
+    }
+}
+
 struct Window: View {
     
     @ObservedObject var model: Model
-    @Environment(\.colorScheme) var colorscheme
+    @State var isLoaded: Bool = false
+    @State var isBlurred: Bool = true
 
     var body: some View {
-        Browse(model: model)
-            .sheet(isPresented: $model.data.welcome) {
-                Welcome(model: model)
-                    .modifier(DisableModalDismiss(disabled: !UserDefaults.standard.bool(forKey: "beta83") ? true : false))
+        ZStack {
+            if model.data.isAugmenting {
+                ARViewContainer(model: model)
+                    .ignoresSafeArea()
             }
-            .sheet(isPresented: $model.data.isImporting) {
-                ImagePicker(model: model, type: "import")
+            if isBlurred {
+                CameraView()
+                    .ignoresSafeArea()
+                Blur(style: .dark)
+                    .ignoresSafeArea()
             }
-            .sheet(isPresented: $model.data.isCapturing) {
-                ImagePicker(model: model, type: "capture")
-            }
-            .fullScreenCover(isPresented: $model.data.isAugmenting) {
-                Augment(model: model)
-            }
-            .onAppear {
-                model.data.colorscheme = colorscheme
-            }
-            .onChange(of: colorscheme) { value in
-                withAnimation {
-                    model.data.colorscheme = value
+            VStack {
+                Spacer()
+                if !model.data.isAugmenting {
+                    Image(uiImage: model.data.frames[model.data.selected].framed)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding(50)
+                    Spacer()
+                }
+                HStack {
+                    Spacer()
+                    Menu {
+                        Button(action: {
+                            model.data.isImporting.toggle()
+                        }) {
+                            Label("Choose Photo", systemImage: "photo")
+                        }
+                        Button(action: {
+                            model.data.isCapturing.toggle()
+                        }) {
+                            Label("Capture Photo", systemImage: "camera")
+                        }
+                        Button(action: {
+                            UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                .first?.rootViewController?
+                                .present(model.getDocumentCameraViewController(), animated: true, completion: nil)
+                        }) {
+                            Label("Scan Photo", systemImage: "viewfinder")
+                        }
+                    } label: {
+                        ZStack {
+                            Blur(style: .dark)
+                                .mask(Circle())
+                            Image(systemName: "camera.fill")
+                        }
+                        .frame(width: 50, height: 50)
+                    }
+                    Spacer()
+                    Button(action: {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            withAnimation {
+                                isBlurred.toggle()
+                            }
+                        }
+                        withAnimation {
+                            model.data.isAugmenting.toggle()
+                        }
+                    }) {
+                        ZStack {
+                            Circle()
+                                .foregroundColor(.white)
+                            Image(systemName: "arrow.up")
+                                .font(.system(size: 30))
+                                .rotation3DEffect(
+                                    .degrees(model.data.isAugmenting ? 180 : 0),
+                                    axis: (x: 1.0, y: 0.0, z: 0.0)
+                                )
+                        }
+                        .frame(width: 70, height: 70)
+                    }
+                    // .disabled(!isLoaded)
+                    Spacer()
+                    Button(action: {
+                        //
+                    }) {
+                        ZStack {
+                            Blur(style: .dark)
+                                .mask(Circle())
+                            Image(systemName: "crop")
+                                .font(.system(size: 20))
+                        }
+                        .accentColor(.orange)
+                        .frame(width: 50, height: 50)
+                    }
+                    Spacer()
                 }
             }
-    }
-    
-}
-
-// source: https://stackoverflow.com/a/60939207/15072454
-
-extension UIApplication {
-    func visibleViewController() -> UIViewController? {
-        guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) else { return nil }
-        guard let rootViewController = window.rootViewController else { return nil }
-        return UIApplication.getVisibleViewControllerFrom(vc: rootViewController)
-    }
-    private static func getVisibleViewControllerFrom(vc:UIViewController) -> UIViewController {
-        if let navigationController = vc as? UINavigationController,
-            let visibleController = navigationController.visibleViewController  {
-            return UIApplication.getVisibleViewControllerFrom( vc: visibleController )
-        } else if let tabBarController = vc as? UITabBarController,
-            let selectedTabController = tabBarController.selectedViewController {
-            return UIApplication.getVisibleViewControllerFrom(vc: selectedTabController )
-        } else {
-            if let presentedViewController = vc.presentedViewController {
-                return UIApplication.getVisibleViewControllerFrom(vc: presentedViewController)
-            } else {
-                return vc
-            }
+            .padding(.bottom, 30)
+        }
+        .sheet(isPresented: $model.data.isImporting) {
+            ImagePicker(model: model, type: "import")
+        }
+        .sheet(isPresented: $model.data.isCapturing) {
+            ImagePicker(model: model, type: "capture")
         }
     }
-}
-
-struct DisableModalDismiss: ViewModifier {
-    let disabled: Bool
-    func body(content: Content) -> some View {
-        disableModalDismiss()
-        return AnyView(content)
-    }
-    func disableModalDismiss() {
-        guard let visibleController = UIApplication.shared.visibleViewController() else { return }
-        visibleController.isModalInPresentation = disabled
-    }
+    
 }
 
 struct Window_Previews: PreviewProvider {
     static var previews: some View {
-        ForEach(ColorScheme.allCases, id: \.self) {
-            Window(model: Model())
-                .preferredColorScheme($0)
-        }
-        .previewDevice("iPhone 12 mini")
+        Window(model: Model())
     }
 }
