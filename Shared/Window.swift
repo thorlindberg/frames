@@ -149,9 +149,11 @@ struct Window: View {
         }
         .fullScreenCover(isPresented: $model.data.isImporting) {
             ImagePicker(model: model, type: "import")
+                .preferredColorScheme(.dark)
         }
         .fullScreenCover(isPresented: $model.data.isCapturing) {
             ImagePicker(model: model, type: "capture")
+                .preferredColorScheme(.dark)
         }
     }
     
