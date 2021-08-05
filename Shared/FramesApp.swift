@@ -6,6 +6,7 @@ struct FramesApp: App {
     var body: some Scene {
         WindowGroup {
             Window(model: model)
+                .preferredColorScheme(.dark)
         }
     }
     

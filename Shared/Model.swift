@@ -8,90 +8,19 @@ final class Model: NSObject, ObservableObject {
     @Published var data: Format = Format()
     
     struct Format: Hashable {
-        var colorscheme: ColorScheme?
-        var welcome: Bool = !UserDefaults.standard.bool(forKey: "beta83")
-        var isEditing: Bool = false
         var isImporting: Bool = false
         var isCapturing: Bool = false
         var isAugmenting: Bool = false
         var isFlashlight: Bool = false
-        var isWarned: Bool = false
-        var selected: Int = 0
-        var frames: [Frame] = [
-            Frame(image: UIImage(imageLiteralResourceName: "sample"), date: DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short)),
-            Frame(image: UIImage(imageLiteralResourceName: "sample2"), date: DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short))
-        ]
-        var scene: SCNScene? {
-
-            // create scene and box
-            let scene = SCNScene()
-            let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
-            
-            // set scene background
-            scene.background.contents = colorscheme == .dark ? UIColor.systemGray6 : UIColor.white
-            
-            // define materials
-            let front = SCNMaterial()
-            front.diffuse.contents = frames[selected].framed
-            
-            let frame = SCNMaterial()
-            frame.diffuse.contents = frames[selected].material
-            frame.diffuse.wrapT = SCNWrapMode.repeat
-            frame.diffuse.wrapS = SCNWrapMode.repeat
-            
-            // add materials to sides
-            node.geometry?.materials = [front, frame, frame, frame, frame, frame]
-            
-            // frame size
-            node.scale = SCNVector3(
-                Float(frames[selected].width/100),
-                Float(frames[selected].height/100),
-                1
-            )
-            
-            // rotate frame
-            node.rotation = SCNVector4Make(1, 0, 0, -(.pi / 2))
-            
-            // add frame to scene
-            scene.rootNode.addChildNode(node)
-            
-            return scene
-            
-        }
-    }
-    
-    struct Frame: Hashable {
-        var image: UIImage
-        var date: String
+        var isBlurred: Bool = true
+        var image: UIImage = UIImage(named: "sample")!
         var width: CGFloat = 60
         var height: CGFloat = 90
         var border: CGFloat = 0.05
-        var material: UIImage = UIImage(named: "material_oak")!
-        var filter: String = ""
-        var description: String {
-            var string: String = ""
-            string += "\(Int(width))x\(Int(height)) cm"
-            string += ", \(Int(border * 100)) mm border"
-            if filter != "" {
-                string += ", \(filter)"
-            }
-            return string
-        }
-        var framed: UIImage {
+        var frame: UIImage {
             
             // filter image
-            var image: UIImage {
-                switch filter {
-                    case "noir":
-                        return filterImage(image: self.image, filter: "noir")
-                    case "mono":
-                        return filterImage(image: self.image, filter: "mono")
-                    case "invert":
-                        return filterImage(image: self.image, filter: "invert")
-                    default:
-                        return self.image
-                }
-            }
+            let image = self.image
             
             // set frame size
             let canvas = CGSize(
@@ -104,7 +33,7 @@ final class Model: NSObject, ObservableObject {
             
             // set frame material
             let front = CGRect(x: 0, y: 0, width: canvas.width, height: canvas.height)
-            material.drawAsPattern(in: front)
+            UIImage(named: "material_oak")!.drawAsPattern(in: front)
             UIRectFill(front)
             
             // set border size
@@ -153,21 +82,46 @@ final class Model: NSObject, ObservableObject {
             }
             
         }
+        var scene: SCNScene? {
+
+            // create scene and box
+            let scene = SCNScene()
+            let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))
+            
+            // define materials
+            let front = SCNMaterial()
+            front.diffuse.contents = frame
+            
+            let frame = SCNMaterial()
+            frame.diffuse.contents = UIImage(named: "material_oak")
+            frame.diffuse.wrapT = SCNWrapMode.repeat
+            frame.diffuse.wrapS = SCNWrapMode.repeat
+            
+            // add materials to sides
+            node.geometry?.materials = [front, frame, frame, frame, frame, frame]
+            
+            // frame size
+            node.scale = SCNVector3(
+                Float(self.width/100),
+                Float(self.height/100),
+                1
+            )
+            
+            // rotate frame
+            node.rotation = SCNVector4Make(1, 0, 0, -(.pi / 2))
+            
+            // add frame to scene
+            scene.rootNode.addChildNode(node)
+            
+            return scene
+            
+        }
     }
     
     func getDocumentCameraViewController() -> VNDocumentCameraViewController {
         let vc = VNDocumentCameraViewController()
         vc.delegate = self
         return vc
-    }
-    
-    func addImage(image: UIImage) {
-        data.frames.insert(Frame(image: image, date: DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short)), at: 0)
-        data.selected = 0
-    }
-    
-    func removeImage(index: Int) {
-        data.frames.remove(at: index)
     }
     
     // source: https://www.hackingwithswift.com/books/ios-swiftui/writing-data-to-the-documents-directory
@@ -178,29 +132,6 @@ final class Model: NSObject, ObservableObject {
         scene!.write(to: url, options: nil, delegate: nil, progressHandler: nil)
     }
     
-}
-
-func filterImage(image: UIImage, filter: String) -> UIImage {
-    var effect: CIFilter? {
-        switch filter {
-            case "noir":
-                return CIFilter(name: "CIPhotoEffectNoir")
-            case "mono":
-                return CIFilter(name: "CIPhotoEffectNoir")
-            case "invert":
-                return CIFilter(name: "CIColorInvert")
-            default:
-                return nil
-        }
-    }
-    if let effect = effect {
-        let context = CIContext(options: nil)
-        effect.setValue(CIImage(image: image), forKey: kCIInputImageKey)
-        if let output = effect.outputImage, let cgImage = context.createCGImage(output, from: output.extent) {
-            return UIImage(cgImage: cgImage)
-        }
-    }
-    return image
 }
 
 func getDocumentsDirectory() -> URL {
@@ -220,7 +151,7 @@ extension Model: VNDocumentCameraViewControllerDelegate {
     }
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
         for i in 0..<scan.pageCount {
-            addImage(image: scan.imageOfPage(at:i))
+            data.image = scan.imageOfPage(at:i)
         }
         controller.dismiss(animated: true, completion: nil)
     }
@@ -269,17 +200,10 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
             if let uiImage = info[.originalImage] as? UIImage {
-                parent.model.addImage(image: uiImage)
+                parent.model.data.image = uiImage
             }
             parent.presentationMode.wrappedValue.dismiss()
         }
     }
     
-}
-
-struct Model_Previews: PreviewProvider {
-    static var previews: some View {
-        Editor(model: Model(), index: 0)
-            .previewDevice("iPhone 12 mini")
-    }
 }

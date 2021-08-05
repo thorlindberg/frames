@@ -26,10 +26,7 @@
 		7E51F8C626B71ECA00D8D56D /* FocusSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C426B71ECA00D8D56D /* FocusSquare.swift */; };
 		7E51F8C926B71ED300D8D56D /* StatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C726B71ED300D8D56D /* StatusViewController.swift */; };
 		7E51F8CA26B71ED300D8D56D /* VirtualObjectSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C826B71ED300D8D56D /* VirtualObjectSelection.swift */; };
-		7E5E220C26BBDA2700206A6A /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5E220B26BBDA2700206A6A /* Feed.swift */; };
-		7E88617B26B16C5100AAF923 /* Browse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E88617A26B16C5100AAF923 /* Browse.swift */; };
 		7E89A2A626B86938000D9C07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E89A2A526B86938000D9C07 /* Main.storyboard */; };
-		7EEA2C0226AC94DB0070FE4C /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEA2C0126AC94DB0070FE4C /* Editor.swift */; };
 		7EEFDCD62699950A006D4984 /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCD42699950A006D4984 /* Window.swift */; };
 /* End PBXBuildFile section */
 
@@ -67,10 +64,7 @@
 		7E51F8C426B71ECA00D8D56D /* FocusSquare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusSquare.swift; sourceTree = "<group>"; };
 		7E51F8C726B71ED300D8D56D /* StatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusViewController.swift; sourceTree = "<group>"; };
 		7E51F8C826B71ED300D8D56D /* VirtualObjectSelection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualObjectSelection.swift; sourceTree = "<group>"; };
-		7E5E220B26BBDA2700206A6A /* Feed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
-		7E88617A26B16C5100AAF923 /* Browse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Browse.swift; sourceTree = "<group>"; };
 		7E89A2A526B86938000D9C07 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		7EEA2C0126AC94DB0070FE4C /* Editor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
 		7EEFDCD42699950A006D4984 /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		7EEFDCDF26999ED3006D4984 /* Frames.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Frames.entitlements; sourceTree = "<group>"; };
 		7EEFDCE126999EE7006D4984 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -111,8 +105,8 @@
 			isa = PBXGroup;
 			children = (
 				7E13BDEB269991E700B1D78B /* FramesApp.swift */,
+				7EEFDCD42699950A006D4984 /* Window.swift */,
 				7E13BE412699946100B1D78B /* Model.swift */,
-				7EEFDCDA26999594006D4984 /* Interface */,
 				7E51F8CD26B71FA200D8D56D /* Augmented Reality */,
 			);
 			path = Shared;
@@ -165,17 +159,6 @@
 				7E51F8C826B71ED300D8D56D /* VirtualObjectSelection.swift */,
 			);
 			path = "Augmented Reality";
-			sourceTree = "<group>";
-		};
-		7EEFDCDA26999594006D4984 /* Interface */ = {
-			isa = PBXGroup;
-			children = (
-				7EEFDCD42699950A006D4984 /* Window.swift */,
-				7E5E220B26BBDA2700206A6A /* Feed.swift */,
-				7E88617A26B16C5100AAF923 /* Browse.swift */,
-				7EEA2C0126AC94DB0070FE4C /* Editor.swift */,
-			);
-			path = Interface;
 			sourceTree = "<group>";
 		};
 		7EEFDCE026999EE7006D4984 /* Frameworks */ = {
@@ -292,8 +275,6 @@
 				7E51F8B526B71C6500D8D56D /* ViewController+ObjectSelection.swift in Sources */,
 				7E51F8C526B71ECA00D8D56D /* FocusSquareSegment.swift in Sources */,
 				7E51F8B926B71C6500D8D56D /* VirtualObjectARView.swift in Sources */,
-				7E88617B26B16C5100AAF923 /* Browse.swift in Sources */,
-				7EEA2C0226AC94DB0070FE4C /* Editor.swift in Sources */,
 				7E13BE17269991E900B1D78B /* FramesApp.swift in Sources */,
 				7E51F8C926B71ED300D8D56D /* StatusViewController.swift in Sources */,
 				7E51F8C226B71EC000D8D56D /* Utilities.swift in Sources */,
@@ -307,7 +288,6 @@
 				7E51F8B626B71C6500D8D56D /* ViewController+ARSCNViewDelegate.swift in Sources */,
 				7E51F8BF26B71EBA00D8D56D /* VirtualObject.swift in Sources */,
 				7E13BE4C2699946100B1D78B /* Model.swift in Sources */,
-				7E5E220C26BBDA2700206A6A /* Feed.swift in Sources */,
 				7E51F8BA26B71C6500D8D56D /* ViewController+CoachingOverlay.swift in Sources */,
 				7E51F8BC26B71C6500D8D56D /* ThresholdPanGesture.swift in Sources */,
 			);
