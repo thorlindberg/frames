@@ -86,6 +86,7 @@ struct Window: View {
                                 }
                             }
                         } else {
+                            model.writeScene() // writes frame to app documents
                             withAnimation {
                                 model.data.isAugmenting.toggle()
                             }
