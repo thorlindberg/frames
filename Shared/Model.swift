@@ -13,15 +13,21 @@ final class Model: NSObject, ObservableObject {
         var isAugmenting: Bool = false
         var isFlashlight: Bool = false
         var isBlurred: Bool = true
-        var isReset: Bool = false
-        var image: UIImage = UIImage(named: "sample")!
+        var isFramed: Bool {
+            if let frame = frame {
+                return true
+            } else {
+                return false
+            }
+        }
+        var alignment: String = "none"
+        var image: UIImage?
         var width: CGFloat = 60
         var height: CGFloat = 90
         var border: CGFloat = 0.05
-        var frame: UIImage {
-            
-            // filter image
-            let image = self.image
+        var frame: UIImage? {
+
+            guard let image = self.image else { return nil }
             
             // set frame size
             let canvas = CGSize(
@@ -84,7 +90,9 @@ final class Model: NSObject, ObservableObject {
             
         }
         var scene: SCNScene? {
-
+            
+            guard let image = self.image else { return nil }
+            
             // create scene and box
             let scene = SCNScene()
             let node = SCNNode(geometry: SCNBox(width: 1, height: 1, length: 0.02, chamferRadius: 0))

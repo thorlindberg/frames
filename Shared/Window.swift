@@ -9,7 +9,7 @@ struct Window: View {
 
     var body: some View {
         ZStack {
-            if model.data.isAugmenting && !model.data.isReset {
+            if model.data.isAugmenting {
                 ARViewContainer(model: model)
                     .ignoresSafeArea()
             } else {
@@ -17,20 +17,22 @@ struct Window: View {
                     .ignoresSafeArea()
             }
             if model.data.isBlurred {
-                Blur(style: .dark)
+                Blur(style: .regular)
                     .ignoresSafeArea()
             }
             VStack {
                 Spacer()
                 if !model.data.isAugmenting {
-                    if let frame = model.data.frame {
-                        Image(uiImage: frame)
+                    if model.data.isFramed {
+                        Image(uiImage: model.data.frame!)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .padding(50)
-                        Spacer()
+                    } else {
+                        Text("[ Info here ]")
                     }
                 }
+                Spacer()
                 HStack {
                     Spacer()
                     if model.data.isAugmenting {
@@ -90,7 +92,7 @@ struct Window: View {
                             withAnimation {
                                 model.data.isAugmenting.toggle()
                             }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 withAnimation {
                                     model.data.isBlurred.toggle()
                                 }
@@ -109,24 +111,36 @@ struct Window: View {
                         }
                         .frame(width: 70, height: 70)
                     }
+                    .disabled(!model.data.isFramed)
                     Spacer()
                     if model.data.isAugmenting {
-                        Button(action: {
-                            withAnimation {
-                                model.data.isReset.toggle()
+                        Menu {
+                            Button(action: {
+                                model.data.alignment = "none"
+                            }) {
+                                Label("No alignment", systemImage: model.data.alignment == "none" ? "checkmark" : "arrow.up.left.and.arrow.down.right")
                             }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                withAnimation {
-                                    model.data.isReset.toggle()
-                                }
+                            .disabled(model.data.alignment == "none")
+                            Button(action: {
+                                model.data.alignment = "vertical"
+                            }) {
+                                Label("Vertical alignment", systemImage: model.data.alignment == "vertical" ? "checkmark" : "rectangle.arrowtriangle.2.inward")
                             }
-                        }) {
+                            .disabled(model.data.alignment == "vertical")
+                            Button(action: {
+                                model.data.alignment = "horizontal"
+                            }) {
+                                Label("Horizontal alignment", systemImage: model.data.alignment == "horizontal" ? "checkmark" : "rectangle.portrait.arrowtriangle.2.inward")
+                            }
+                            .disabled(model.data.alignment == "horizontal")
+                        } label: {
                             ZStack {
                                 Blur(style: .dark)
                                     .mask(Circle())
-                                Image(systemName: "arrow.uturn.backward")
+                                Image(systemName: "perspective")
                                     .font(.system(size: 20))
                             }
+                            .accentColor(.orange)
                             .frame(width: 50, height: 50)
                         }
                     } else {
@@ -136,7 +150,7 @@ struct Window: View {
                             ZStack {
                                 Blur(style: .dark)
                                     .mask(Circle())
-                                Image(systemName: "crop")
+                                Image(systemName: "cube")
                                     .font(.system(size: 20))
                             }
                             .accentColor(.orange)
