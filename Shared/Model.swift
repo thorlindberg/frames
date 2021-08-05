@@ -13,6 +13,7 @@ final class Model: NSObject, ObservableObject {
         var isAugmenting: Bool = false
         var isFlashlight: Bool = false
         var isBlurred: Bool = true
+        var isReset: Bool = false
         var image: UIImage = UIImage(named: "sample")!
         var width: CGFloat = 60
         var height: CGFloat = 90

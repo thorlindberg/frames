@@ -9,7 +9,7 @@ struct Window: View {
 
     var body: some View {
         ZStack {
-            if model.data.isAugmenting {
+            if model.data.isAugmenting && !model.data.isReset {
                 ARViewContainer(model: model)
                     .ignoresSafeArea()
             } else {
@@ -111,7 +111,14 @@ struct Window: View {
                     Spacer()
                     if model.data.isAugmenting {
                         Button(action: {
-                            //
+                            withAnimation {
+                                model.data.isReset.toggle()
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                withAnimation {
+                                    model.data.isReset.toggle()
+                                }
+                            }
                         }) {
                             ZStack {
                                 Blur(style: .dark)
