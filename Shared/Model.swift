@@ -38,10 +38,14 @@ final class Model: NSObject, ObservableObject {
             // begin image
             UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
             
-            // set frame material
-            let front = CGRect(x: 0, y: 0, width: canvas.width, height: canvas.height)
-            UIImage(named: "material_oak")!.drawAsPattern(in: front)
-            UIRectFill(front)
+            // set frame front color
+            UIColor.white.setFill()
+            UIRectFill(
+                CGRect(
+                    x: 0, y: 0,
+                    width: canvas.width, height: canvas.height
+                )
+            )
             
             // set border size
             let border = canvas.width * border / 2
@@ -102,9 +106,7 @@ final class Model: NSObject, ObservableObject {
             front.diffuse.contents = frame
             
             let frame = SCNMaterial()
-            frame.diffuse.contents = UIImage(named: "material_oak")
-            frame.diffuse.wrapT = SCNWrapMode.repeat
-            frame.diffuse.wrapS = SCNWrapMode.repeat
+            frame.diffuse.contents = UIColor.white
             
             // add materials to sides
             node.geometry?.materials = [front, frame, frame, frame, frame, frame]

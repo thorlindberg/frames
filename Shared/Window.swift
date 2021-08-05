@@ -46,13 +46,13 @@ struct Window: View {
                                 }
                                 .opacity(0.25)
                                 VStack {
-                                    Text("Add an image")
+                                    Text("1. Add a photo")
                                     Text("to create a frame")
                                     Spacer()
-                                    Text("Define dimensions")
+                                    Text("2. Define dimensions")
                                     Text("manually or with AR")
                                     Spacer()
-                                    Text("View frame in AR")
+                                    Text("3. View frame in AR")
                                     Text("when photo added")
                                         .padding(.bottom, (device.size.height - 130 - 100) / 6 * 1 + 30)
                                 }
