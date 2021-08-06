@@ -152,20 +152,59 @@ struct Interface: View {
                     }
                 } else {
                     Menu {
-                        ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
-                            Button(action: {
-                                withAnimation {
-                                    model.data.width = CGFloat(value)
-                                    model.data.height = CGFloat(value)
+                        Menu {
+                            ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.width = CGFloat(value)
+                                    }
+                                }) {
+                                    if model.data.width == CGFloat(value) {
+                                        Label("\(value) cm", systemImage: "checkmark")
+                                    } else {
+                                        Text("\(value) cm")
+                                    }
                                 }
-                            }) {
-                                if model.data.width == CGFloat(value) {
-                                    Label("\(value)x\(value) cm", systemImage: "checkmark")
-                                } else {
-                                    Text("\(value)x\(value) cm")
-                                }
+                                .disabled(model.data.width == CGFloat(value))
                             }
-                            .disabled(model.data.width == CGFloat(value))
+                        } label: {
+                            Label("Width", systemImage: "arrow.left.and.right")
+                        }
+                        Menu {
+                            ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.height = CGFloat(value)
+                                    }
+                                }) {
+                                    if model.data.height == CGFloat(value) {
+                                        Label("\(value) cm", systemImage: "checkmark")
+                                    } else {
+                                        Text("\(value) cm")
+                                    }
+                                }
+                                .disabled(model.data.height == CGFloat(value))
+                            }
+                        } label: {
+                            Label("Height", systemImage: "arrow.up.and.down")
+                        }
+                        Menu {
+                            ForEach(Array(stride(from: 0.01, to: 0.51, by: 0.01)), id: \.self) { value in
+                                Button(action: {
+                                    withAnimation {
+                                        model.data.border = CGFloat(value)
+                                    }
+                                }) {
+                                    if model.data.border == CGFloat(value) {
+                                        Label("\(Int(value * 100)) %", systemImage: "checkmark")
+                                    } else {
+                                        Text("\(Int(value * 100)) %")
+                                    }
+                                }
+                                .disabled(model.data.border == CGFloat(value))
+                            }
+                        } label: {
+                            Label("Border", systemImage: "square.dashed")
                         }
                     } label: {
                         ZStack {
