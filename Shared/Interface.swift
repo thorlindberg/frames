@@ -14,7 +14,9 @@ struct Interface: View {
                 Image(uiImage: model.data.frame)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .padding(50)
+                    .padding(.top, 40)
+                    .padding(.horizontal, 40)
+                    .padding(.bottom, 40 - 15)
                     .transition(.scale(scale: 0.8).combined(with: .opacity))
                 Spacer()
             }
@@ -90,7 +92,7 @@ struct Interface: View {
                             }
                         }
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         withAnimation {
                             model.data.isPlaced.toggle()
                         }

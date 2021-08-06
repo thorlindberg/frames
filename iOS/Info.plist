@@ -25,9 +25,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Access is used to scan objects into photos.</string>
+	<string>Access is used for Augmented Reality.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Access is used to import photos or save screenshots.</string>
+	<string>Access is used to import photos.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
