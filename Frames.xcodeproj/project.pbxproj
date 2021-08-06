@@ -11,6 +11,7 @@
 		7E13BE17269991E900B1D78B /* FramesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BDEB269991E700B1D78B /* FramesApp.swift */; };
 		7E13BE1D269991E900B1D78B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E13BDEE269991E900B1D78B /* Assets.xcassets */; };
 		7E13BE4C2699946100B1D78B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E13BE412699946100B1D78B /* Model.swift */; };
+		7E51625D26BD232400D07AA8 /* Interface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51625C26BD232400D07AA8 /* Interface.swift */; };
 		7E51F8AC26B71ADA00D8D56D /* ARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8AB26B71ADA00D8D56D /* ARView.swift */; };
 		7E51F8B526B71C6500D8D56D /* ViewController+ObjectSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8AD26B71C6500D8D56D /* ViewController+ObjectSelection.swift */; };
 		7E51F8B626B71C6500D8D56D /* ViewController+ARSCNViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8AE26B71C6500D8D56D /* ViewController+ARSCNViewDelegate.swift */; };
@@ -49,6 +50,7 @@
 		7E13BE07269991E900B1D78B /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
 		7E13BE09269991E900B1D78B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7E13BE412699946100B1D78B /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		7E51625C26BD232400D07AA8 /* Interface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interface.swift; sourceTree = "<group>"; };
 		7E51F8AB26B71ADA00D8D56D /* ARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARView.swift; sourceTree = "<group>"; };
 		7E51F8AD26B71C6500D8D56D /* ViewController+ObjectSelection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewController+ObjectSelection.swift"; sourceTree = "<group>"; };
 		7E51F8AE26B71C6500D8D56D /* ViewController+ARSCNViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewController+ARSCNViewDelegate.swift"; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 			children = (
 				7E13BDEB269991E700B1D78B /* FramesApp.swift */,
 				7EEFDCD42699950A006D4984 /* Window.swift */,
+				7E51625C26BD232400D07AA8 /* Interface.swift */,
 				7E13BE412699946100B1D78B /* Model.swift */,
 				7E51F8CD26B71FA200D8D56D /* Augmented Reality */,
 			);
@@ -281,6 +284,7 @@
 				7E51F8CA26B71ED300D8D56D /* VirtualObjectSelection.swift in Sources */,
 				7E51F8AC26B71ADA00D8D56D /* ARView.swift in Sources */,
 				7E51F8C626B71ECA00D8D56D /* FocusSquare.swift in Sources */,
+				7E51625D26BD232400D07AA8 /* Interface.swift in Sources */,
 				7E51F8C026B71EBA00D8D56D /* VirtualObjectLoader.swift in Sources */,
 				7E51F8BB26B71C6500D8D56D /* VirtualObjectInteraction.swift in Sources */,
 				7EEFDCD62699950A006D4984 /* Window.swift in Sources */,
