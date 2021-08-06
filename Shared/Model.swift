@@ -14,89 +14,122 @@ final class Model: NSObject, ObservableObject {
         var isAugmenting: Bool = false
         var isFlashlight: Bool = false
         var isBlurred: Bool = true
-        var isFramed: Bool {
-            if frame != nil {
-                return true
-            } else {
-                return false
-            }
-        }
+        var dimension: String = "width"
         var alignment: String = "none"
         var image: UIImage?
         var width: CGFloat = 50
         var height: CGFloat = 70
         var border: CGFloat = 0.05
-        var frame: UIImage? {
+        var frame: UIImage {
 
-            guard let image = self.image else { return nil }
-            
-            // set frame size
-            let canvas = CGSize(
-                width: image.size.width,
-                height: image.size.width*(height/width)
-            )
-            
-            // begin image
-            UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
-            
-            // set frame front color
-            UIColor.white.setFill()
-            UIRectFill(
-                CGRect(
-                    x: 0, y: 0,
-                    width: canvas.width, height: canvas.height
+            if let image = self.image {
+                
+                // set frame size
+                let canvas = CGSize(
+                    width: image.size.width,
+                    height: image.size.width*(height/width)
                 )
-            )
-            
-            // set border size
-            let border = canvas.width * border / 2
-            
-            // fill with dominant color in image
-            UIColor.lightGray.setFill()
-            UIRectFill(
-                CGRect(
-                    x: border, y: border,
-                    width: canvas.width - border * 2, height: canvas.height - border * 2
+                
+                // begin image
+                UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
+                
+                // set frame front color
+                UIColor.white.setFill()
+                UIRectFill(
+                    CGRect(
+                        x: 0, y: 0,
+                        width: canvas.width, height: canvas.height
+                    )
                 )
-            )
-            
-            // set image size
-            var imageSize: CGRect {
-                if image.size.height > canvas.height {
-                    return CGRect(
-                        x: border + (canvas.width - canvas.height*(image.size.width/image.size.height)) / 2,
-                        y: border,
-                        width: canvas.height * (image.size.width/image.size.height) - border * 2,
-                        height: canvas.height - border * 2
+                
+                // set border size
+                let border = canvas.width * border / 2
+                
+                // fill with gray
+                UIColor.lightGray.setFill()
+                UIRectFill(
+                    CGRect(
+                        x: border, y: border,
+                        width: canvas.width - border * 2, height: canvas.height - border * 2
                     )
-                } else {
-                    return CGRect(
-                        x: border,
-                        y: border + (canvas.height - canvas.width*(image.size.height/image.size.width)) / 2,
-                        width: canvas.width - border * 2,
-                        height: canvas.width * (image.size.height/image.size.width) - border * 2
-                    )
+                )
+                
+                // set image size
+                var imageSize: CGRect {
+                    if image.size.height > canvas.height {
+                        return CGRect(
+                            x: border + (canvas.width - canvas.height*(image.size.width/image.size.height)) / 2,
+                            y: border,
+                            width: canvas.height * (image.size.width/image.size.height) - border * 2,
+                            height: canvas.height - border * 2
+                        )
+                    } else {
+                        return CGRect(
+                            x: border,
+                            y: border + (canvas.height - canvas.width*(image.size.height/image.size.width)) / 2,
+                            width: canvas.width - border * 2,
+                            height: canvas.width * (image.size.height/image.size.width) - border * 2
+                        )
+                    }
                 }
-            }
-            
-            // draw image on frame
-            image.draw(in: imageSize)
-            
-            // end image
-            let newImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            
-            // update transformed image
-            if let newImage = newImage {
-                return newImage
+                
+                // draw image on frame
+                image.draw(in: imageSize)
+                
+                // end image
+                let newImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                
+                // update transformed image
+                if let newImage = newImage {
+                    return newImage
+                } else {
+                    return self.image!
+                }
+                
             } else {
-                return self.image
+                
+                // set frame size
+                let canvas = CGSize(
+                    width: self.width * 10,
+                    height: self.height * 10
+                )
+                
+                // begin image
+                UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
+                
+                // set frame front color
+                UIColor.white.setFill()
+                UIRectFill(
+                    CGRect(
+                        x: 0, y: 0,
+                        width: canvas.width, height: canvas.height
+                    )
+                )
+                
+                // set border size
+                let border = canvas.width * border / 2
+                
+                // fill with gray
+                UIColor.lightGray.setFill()
+                UIRectFill(
+                    CGRect(
+                        x: border, y: border,
+                        width: canvas.width - border * 2, height: canvas.height - border * 2
+                    )
+                )
+                
+                // end image
+                let newImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                
+                // update transformed image
+                return newImage!
+                
             }
             
         }
         var scene: SCNScene? {
-            
-            guard self.image != nil else { return nil }
             
             // create scene and box
             let scene = SCNScene()
