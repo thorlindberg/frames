@@ -168,7 +168,7 @@ struct Interface: View {
                                 .disabled(model.data.width == CGFloat(value))
                             }
                         } label: {
-                            Label("Width", systemImage: "arrow.left.and.right")
+                            Label("Width - \(Int(model.data.width)) cm", systemImage: "arrow.left.and.right")
                         }
                         Menu {
                             ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
@@ -186,7 +186,7 @@ struct Interface: View {
                                 .disabled(model.data.height == CGFloat(value))
                             }
                         } label: {
-                            Label("Height", systemImage: "arrow.up.and.down")
+                            Label("Height - \(Int(model.data.height)) cm", systemImage: "arrow.up.and.down")
                         }
                         Menu {
                             ForEach(Array(stride(from: 0.01, to: 0.51, by: 0.01)), id: \.self) { value in
@@ -204,7 +204,7 @@ struct Interface: View {
                                 .disabled(model.data.border == CGFloat(value))
                             }
                         } label: {
-                            Label("Border", systemImage: "square.dashed")
+                            Label("Border - \(Int(model.data.border * 100)) %", systemImage: "square.dashed")
                         }
                     } label: {
                         ZStack {
