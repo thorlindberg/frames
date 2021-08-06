@@ -10,67 +10,17 @@ struct Interface: View {
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
-            if !model.data.isAugmenting {
+            if !model.data.isPlaced {
                 Image(uiImage: model.data.frame)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .padding(50)
-                    .transition(.scale(scale: 0.6).combined(with: .opacity))
+                    .transition(.scale(scale: 0.8).combined(with: .opacity))
                 Spacer()
-                HStack(spacing: 15) {
-                    Menu {
-                        ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
-                            Button(action: {
-                                withAnimation {
-                                    model.data.width = CGFloat(value)
-                                }
-                            }) {
-                                if model.data.width == CGFloat(value) {
-                                    Label("\(value) cm", systemImage: "checkmark")
-                                } else {
-                                    Text("\(value) cm")
-                                }
-                            }
-                            .disabled(model.data.width == CGFloat(value))
-                        }
-                    } label: {
-                        ZStack {
-                            Blur(style: .dark)
-                                .mask(Capsule())
-                            Text("width: \(Int(model.data.width)) cm")
-                        }
-                        .frame(width: 150, height: 35)
-                    }
-                    .accentColor(.white)
-                    Menu {
-                        ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
-                            Button(action: {
-                                withAnimation {
-                                    model.data.height = CGFloat(value)
-                                }
-                            }) {
-                                if model.data.height == CGFloat(value) {
-                                    Label("\(value) cm", systemImage: "checkmark")
-                                } else {
-                                    Text("\(value) cm")
-                                }
-                            }
-                            .disabled(model.data.height == CGFloat(value))
-                        }
-                    } label: {
-                        ZStack {
-                            Blur(style: .dark)
-                                .mask(Capsule())
-                            Text("height: \(Int(model.data.height)) cm")
-                        }
-                        .frame(width: 150, height: 35)
-                    }
-                    .accentColor(.white)
-                }
             }
             HStack {
                 Spacer()
-                if model.data.isAugmenting {
+                if model.data.isPlaced {
                     Button(action: {
                         model.data.isFlashlight.toggle()
                         toggleTorch(on: model.data.isFlashlight)
@@ -120,42 +70,50 @@ struct Interface: View {
                                 .frame(width: 100, height: 100)
                         }
                     }
-                    .disabled(model.data.isAdjusting)
                 }
                 Spacer()
                 Button(action: {
-                    if !model.data.isAugmenting {
+                    if !model.data.isPlaced {
                         model.writeScene() // writes frame to app documents
                     } else {
                         model.data.isFlashlight = false
                         toggleTorch(on: model.data.isFlashlight)
                     }
+                    if model.data.isAugmenting {
+                        withAnimation {
+                            model.data.isBlurred.toggle()
+                        }
+                    } else {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            withAnimation {
+                                model.data.isBlurred.toggle()
+                            }
+                        }
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        withAnimation {
+                            model.data.isPlaced.toggle()
+                        }
+                    }
                     withAnimation {
                         model.data.isAugmenting.toggle()
-                        model.data.isBlurred.toggle()
                     }
                 }) {
                     ZStack {
-                        if model.data.isAdjusting {
-                            Blur(style: .dark)
-                                .mask(Circle())
-                        } else {
-                            Circle()
-                                .foregroundColor(.white)
-                        }
+                        Circle()
+                            .foregroundColor(.white)
                         Image(systemName: "arrow.up")
                             .font(.system(size: 30))
                             .foregroundColor(.black)
                             .rotation3DEffect(
-                                .degrees(model.data.isAugmenting ? 180 : 0),
+                                .degrees(model.data.isPlaced ? 180 : 0),
                                 axis: (x: 1.0, y: 0.0, z: 0.0)
                             )
                     }
                     .frame(width: 70, height: 70)
                 }
-                .disabled(model.data.isAdjusting)
                 Spacer()
-                if model.data.isAugmenting {
+                if model.data.isPlaced {
                     Menu {
                         Button(action: {
                             model.data.alignment = "none"
@@ -191,20 +149,27 @@ struct Interface: View {
                         }
                     }
                 } else {
-                    Button(action: {
-                        withAnimation {
-                            model.data.isAdjusting.toggle()
+                    Menu {
+                        ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
+                            Button(action: {
+                                withAnimation {
+                                    model.data.width = CGFloat(value)
+                                    model.data.height = CGFloat(value)
+                                }
+                            }) {
+                                if model.data.width == CGFloat(value) {
+                                    Label("\(value)x\(value) cm", systemImage: "checkmark")
+                                } else {
+                                    Text("\(value)x\(value) cm")
+                                }
+                            }
+                            .disabled(model.data.width == CGFloat(value))
                         }
-                    }) {
+                    } label: {
                         ZStack {
                             ZStack {
-                                if model.data.isAdjusting {
-                                    Circle()
-                                        .foregroundColor(.white)
-                                } else {
-                                    Blur(style: .dark)
-                                        .mask(Circle())
-                                }
+                                Blur(style: .dark)
+                                    .mask(Circle())
                                 Image(systemName: "cube")
                                     .font(.system(size: 20))
                             }
@@ -230,116 +195,3 @@ struct Interface_Previews: PreviewProvider {
             .previewDevice("iPhone 12 mini")
     }
 }
-
-/*
-Spacer()
-if !model.data.isAugmenting {
-    if model.data.isAdjusting {
-        VStack(spacing: 50) {
-            HStack {
-                Text("Width")
-                Spacer()
-                Menu {
-                    ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
-                        Button(action: {
-                            withAnimation {
-                                model.data.width = CGFloat(value)
-                            }
-                        }) {
-                            if model.data.width == CGFloat(value) {
-                                Label("\(value) cm", systemImage: "checkmark")
-                            } else {
-                                Text("\(value) cm")
-                            }
-                        }
-                        .disabled(model.data.width == CGFloat(value))
-                    }
-                } label: {
-                    Text("\(Int(model.data.width)) cm")
-                }
-            }
-            HStack {
-                Text("Height")
-                Spacer()
-                Menu {
-                    ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
-                        Button(action: {
-                            withAnimation {
-                                model.data.height = CGFloat(value)
-                            }
-                        }) {
-                            if model.data.height == CGFloat(value) {
-                                Label("\(value) cm", systemImage: "checkmark")
-                            } else {
-                                Text("\(value) cm")
-                            }
-                        }
-                        .disabled(model.data.height == CGFloat(value))
-                    }
-                } label: {
-                    Text("\(Int(model.data.height)) cm")
-                }
-            }
-            HStack {
-                Text("Border")
-                Spacer()
-                Menu {
-                    ForEach(Array(stride(from: 0.01, to: 0.51, by: 0.01)), id: \.self) { value in
-                        Button(action: {
-                            withAnimation {
-                                model.data.border = CGFloat(value)
-                            }
-                        }) {
-                            if model.data.border == CGFloat(value) {
-                                Label("\(Int(value * 100)) %", systemImage: "checkmark")
-                            } else {
-                                Text("\(Int(value * 100)) %")
-                            }
-                        }
-                        .disabled(model.data.border == CGFloat(value))
-                    }
-                } label: {
-                    Text("\(Int(model.data.border * 100)) %")
-                }
-            }
-        }
-        .padding(.horizontal, 50)
-        .transition(.scale(scale: 1.2).combined(with: .opacity))
-        Spacer()
-    } else if model.data.isFramed {
-        
-    } else {
-        ZStack {
-            HStack(alignment: .bottom) {
-                Spacer()
-                Rectangle()
-                    .frame(width: 3, height: (device.size.height - 130 - 100) / 6 * 6)
-                Spacer()
-                Rectangle()
-                    .frame(width: 3, height: (device.size.height - 130 - 100) / 6 * 1)
-                    .padding(.horizontal, 67 / 2)
-                Spacer()
-                Rectangle()
-                    .frame(width: 3, height: (device.size.height - 130 - 100) / 6 * 4)
-                Spacer()
-            }
-            .opacity(0.25)
-            VStack {
-                Text("Add photo")
-                Text("for augmentation")
-                Spacer()
-                Text("Define dimensions")
-                Text("manually or with AR")
-                Spacer()
-                Text("Push photo into")
-                Text("Augmented Reality")
-                    .padding(.bottom, (device.size.height - 130 - 100) / 6 * 1 + 30)
-            }
-            .opacity(0.75)
-            .frame(height: (device.size.height - 130 - 100) / 6 * 6)
-        }
-        .foregroundColor(.white)
-        .transition(.scale(scale: 0.6).combined(with: .opacity))
-    }
-}
-*/

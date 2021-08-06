@@ -10,7 +10,7 @@ final class Model: NSObject, ObservableObject {
     struct Format: Hashable {
         var isImporting: Bool = false
         var isCapturing: Bool = false
-        var isAdjusting: Bool = false
+        var isPlaced: Bool = false
         var isAugmenting: Bool = false
         var isFlashlight: Bool = false
         var isBlurred: Bool = true

@@ -16,10 +16,9 @@ struct Window: View {
                     CameraView()
                         .ignoresSafeArea()
                 }
-                if model.data.isBlurred {
-                    Blur(style: .regular)
-                        .ignoresSafeArea()
-                }
+                Blur(style: .regular)
+                    .opacity(model.data.isBlurred ? 1 : 0)
+                    .ignoresSafeArea()
                 Interface(model: model, device: device)
             }
         }
