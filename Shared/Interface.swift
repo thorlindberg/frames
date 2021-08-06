@@ -120,7 +120,7 @@ struct Interface: View {
                         Button(action: {
                             model.data.alignment = "none"
                         }) {
-                            Label("No alignment", systemImage: model.data.alignment == "none" ? "checkmark" : "dot.arrowtriangles.up.right.down.left.circle")
+                            Label("No alignment", systemImage: model.data.alignment == "none" ? "checkmark" : "")
                         }
                         .disabled(model.data.alignment == "none")
                         Button(action: {
