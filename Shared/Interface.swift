@@ -23,23 +23,42 @@ struct Interface: View {
             HStack {
                 Spacer()
                 if model.data.isPlaced {
-                    Button(action: {
-                        model.data.isFlashlight.toggle()
-                        toggleTorch(on: model.data.isFlashlight)
-                    }) {
+                    Menu {
+                        Button(action: {
+                            model.data.alignment = "none"
+                        }) {
+                            Label("No alignment", systemImage: model.data.alignment == "none" ? "checkmark" : "")
+                        }
+                        .disabled(model.data.alignment == "none")
+                        Button(action: {
+                            model.data.alignment = "vertical"
+                        }) {
+                            Label("Vertical alignment", systemImage: model.data.alignment == "vertical" ? "checkmark" : "rectangle.arrowtriangle.2.inward")
+                        }
+                        .disabled(model.data.alignment == "vertical")
+                        Button(action: {
+                            model.data.alignment = "horizontal"
+                        }) {
+                            Label("Horizontal alignment", systemImage: model.data.alignment == "horizontal" ? "checkmark" : "rectangle.portrait.arrowtriangle.2.inward")
+                        }
+                        .disabled(model.data.alignment == "horizontal")
+                    } label: {
                         ZStack {
                             ZStack {
                                 Blur(style: .dark)
                                     .mask(Circle())
-                                Image(systemName: model.data.isFlashlight ? "bolt.fill" : "bolt.slash")
+                                Image(systemName: "perspective")
                                     .font(.system(size: 20))
                             }
+                            .accentColor(.orange)
                             .frame(width: 50, height: 50)
                             Rectangle()
                                 .opacity(0)
                                 .frame(width: 100, height: 100)
                         }
                     }
+                    .disabled(true)
+                    .opacity(0)
                 } else {
                     Menu {
                         Button(action: {
@@ -116,34 +135,17 @@ struct Interface: View {
                 }
                 Spacer()
                 if model.data.isPlaced {
-                    Menu {
-                        Button(action: {
-                            model.data.alignment = "none"
-                        }) {
-                            Label("No alignment", systemImage: model.data.alignment == "none" ? "checkmark" : "")
-                        }
-                        .disabled(model.data.alignment == "none")
-                        Button(action: {
-                            model.data.alignment = "vertical"
-                        }) {
-                            Label("Vertical alignment", systemImage: model.data.alignment == "vertical" ? "checkmark" : "rectangle.arrowtriangle.2.inward")
-                        }
-                        .disabled(model.data.alignment == "vertical")
-                        Button(action: {
-                            model.data.alignment = "horizontal"
-                        }) {
-                            Label("Horizontal alignment", systemImage: model.data.alignment == "horizontal" ? "checkmark" : "rectangle.portrait.arrowtriangle.2.inward")
-                        }
-                        .disabled(model.data.alignment == "horizontal")
-                    } label: {
+                    Button(action: {
+                        model.data.isFlashlight.toggle()
+                        toggleTorch(on: model.data.isFlashlight)
+                    }) {
                         ZStack {
                             ZStack {
                                 Blur(style: .dark)
                                     .mask(Circle())
-                                Image(systemName: "perspective")
+                                Image(systemName: model.data.isFlashlight ? "bolt.fill" : "bolt.slash")
                                     .font(.system(size: 20))
                             }
-                            .accentColor(.orange)
                             .frame(width: 50, height: 50)
                             Rectangle()
                                 .opacity(0)
