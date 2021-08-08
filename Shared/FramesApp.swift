@@ -5,8 +5,11 @@ struct FramesApp: App {
     @StateObject var model = Model()
     var body: some Scene {
         WindowGroup {
-            Window(model: model)
-                .preferredColorScheme(.dark)
+            RootView {
+                Window(model: model)
+                    .statusBarStyle(.lightContent)
+                    .preferredColorScheme(.dark)
+            }
         }
     }
     

@@ -28,6 +28,7 @@
 		7E51F8C926B71ED300D8D56D /* StatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C726B71ED300D8D56D /* StatusViewController.swift */; };
 		7E51F8CA26B71ED300D8D56D /* VirtualObjectSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E51F8C826B71ED300D8D56D /* VirtualObjectSelection.swift */; };
 		7E89A2A626B86938000D9C07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E89A2A526B86938000D9C07 /* Main.storyboard */; };
+		7EDE672826C00FA100CF2E68 /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EDE672726C00FA100CF2E68 /* StatusBar.swift */; };
 		7EEFDCD62699950A006D4984 /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EEFDCD42699950A006D4984 /* Window.swift */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +68,7 @@
 		7E51F8C726B71ED300D8D56D /* StatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusViewController.swift; sourceTree = "<group>"; };
 		7E51F8C826B71ED300D8D56D /* VirtualObjectSelection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualObjectSelection.swift; sourceTree = "<group>"; };
 		7E89A2A526B86938000D9C07 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		7EDE672726C00FA100CF2E68 /* StatusBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusBar.swift; sourceTree = "<group>"; };
 		7EEFDCD42699950A006D4984 /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		7EEFDCDF26999ED3006D4984 /* Frames.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Frames.entitlements; sourceTree = "<group>"; };
 		7EEFDCE126999EE7006D4984 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -110,6 +112,7 @@
 				7EEFDCD42699950A006D4984 /* Window.swift */,
 				7E51625C26BD232400D07AA8 /* Interface.swift */,
 				7E13BE412699946100B1D78B /* Model.swift */,
+				7EDE672726C00FA100CF2E68 /* StatusBar.swift */,
 				7E51F8CD26B71FA200D8D56D /* Augmented Reality */,
 			);
 			path = Shared;
@@ -290,6 +293,7 @@
 				7EEFDCD62699950A006D4984 /* Window.swift in Sources */,
 				7E51F8B726B71C6500D8D56D /* ViewController+Actions.swift in Sources */,
 				7E51F8B626B71C6500D8D56D /* ViewController+ARSCNViewDelegate.swift in Sources */,
+				7EDE672826C00FA100CF2E68 /* StatusBar.swift in Sources */,
 				7E51F8BF26B71EBA00D8D56D /* VirtualObject.swift in Sources */,
 				7E13BE4C2699946100B1D78B /* Model.swift in Sources */,
 				7E51F8BA26B71C6500D8D56D /* ViewController+CoachingOverlay.swift in Sources */,
