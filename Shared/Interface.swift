@@ -2,16 +2,28 @@ import SwiftUI
 import UIKit
 import AVFoundation
 
+/*
+for index in model.data.frames.indices {
+    if Int(contentWidth / CGFloat(model.data.frames.count)) <= 100 {
+        anchor = index
+    }
+}
+*/
+
 struct Interface: View {
     
     @ObservedObject var model: Model
     var device: GeometryProxy
+    var contentWidth: CGFloat {
+        (device.size.width - 80) * CGFloat(model.data.frames.count) + 80 + CGFloat((model.data.frames.count - 1) * 20)
+    }
+    @State var anchor: Int = 0
     
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
             if !model.data.isPlaced {
-                ScrollView(.horizontal, showsIndicators: false) {
+                ScrollView(axes: .horizontal, showsIndicators: false, offsetChanged: { print($0) }) {
                     ScrollViewReader { proxy in
                         HStack(spacing: 20) {
                             ForEach(model.data.frames.indices, id: \.self) { index in
@@ -19,7 +31,6 @@ struct Interface: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: device.size.width - 80)
-                                    .opacity(model.data.selected == index ? 1 : 1/3)
                                     .id(index)
                                     .contextMenu {
                                         Button(action: {
@@ -38,8 +49,11 @@ struct Interface: View {
                                             }
                                         }
                                     }
-                                    .padding(.top, 40)
-                                    .padding(.bottom, 40 - 15)
+                            }
+                        }
+                        .onChange(of: anchor) { _ in
+                            withAnimation {
+                                proxy.scrollTo(anchor, anchor: .center)
                             }
                         }
                         .onChange(of: model.data.frames.count) { _ in
@@ -50,6 +64,8 @@ struct Interface: View {
                     }
                     .padding(.horizontal, 40)
                 }
+                .padding(.top, 40)
+                .padding(.bottom, 40 - 15)
                 .transition(.scale(scale: 0.8).combined(with: .opacity))
                 Spacer()
             }
@@ -281,6 +297,47 @@ struct Interface: View {
         .padding(.bottom, 15)
     }
     
+}
+
+// source: https://swiftwithmajid.com/2020/09/24/mastering-scrollview-in-swiftui/
+
+private struct ScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGPoint = .zero
+    static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {}
+}
+
+struct ScrollView<Content: View>: View {
+    let axes: Axis.Set
+    let showsIndicators: Bool
+    let offsetChanged: (CGPoint) -> Void
+    let content: Content
+    
+    init(
+        axes: Axis.Set = .vertical,
+        showsIndicators: Bool = true,
+        offsetChanged: @escaping (CGPoint) -> Void = { _ in },
+        @ViewBuilder content: () -> Content
+    ) {
+        self.axes = axes
+        self.showsIndicators = showsIndicators
+        self.offsetChanged = offsetChanged
+        self.content = content()
+    }
+    
+    var body: some View {
+        SwiftUI.ScrollView(axes, showsIndicators: showsIndicators) {
+            GeometryReader { geometry in
+                Color.clear.preference(
+                    key: ScrollOffsetPreferenceKey.self,
+                    value: geometry.frame(in: .named("scrollView")).origin
+                )
+            }
+            .frame(width: 0, height: 0)
+            content
+        }
+        .coordinateSpace(name: "scrollView")
+        .onPreferenceChange(ScrollOffsetPreferenceKey.self, perform: offsetChanged)
+    }
 }
 
 struct Interface_Previews: PreviewProvider {

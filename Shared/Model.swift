@@ -16,7 +16,7 @@ final class Model: NSObject, ObservableObject {
         var isBlurred: Bool = true
         var alignment: String = "none"
         var selected: Int = 0
-        var frames: [Frame] = [Frame()]
+        var frames: [Frame] = [Frame(), Frame(), Frame(), Frame(), Frame(), Frame()]
     }
     
     struct Frame: Hashable {
