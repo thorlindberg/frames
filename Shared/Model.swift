@@ -195,11 +195,13 @@ final class Model: NSObject, ObservableObject {
     func addImage(image: UIImage) {
         data.frames.insert(Frame(image: image), at: 1)
         data.selected = 1
+        updateScenes()
     }
     
     func removeImage(index: Int) {
         data.frames.remove(at: index)
         data.selected -= 1
+        updateScenes()
     }
     
     // source: https://www.hackingwithswift.com/books/ios-swiftui/writing-data-to-the-documents-directory

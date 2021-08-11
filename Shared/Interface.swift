@@ -11,16 +11,46 @@ struct Interface: View {
         VStack(spacing: 0) {
             Spacer()
             if !model.data.isPlaced {
-                ScrollStack(items: model.data.frames.count, size: device.size.width - 80, selection: $model.data.selected) {
-                    ForEach(model.data.frames.indices, id: \.self) { index in
-                        Image(uiImage: model.data.frames[index].frame)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .transition(.scale(scale: 0.8).combined(with: .opacity))
+                ScrollView(.horizontal, showsIndicators: false) {
+                    ScrollViewReader { proxy in
+                        HStack(spacing: 20) {
+                            ForEach(model.data.frames.indices, id: \.self) { index in
+                                Image(uiImage: model.data.frames[index].frame)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: device.size.width - 80)
+                                    .opacity(model.data.selected == index ? 1 : 1/3)
+                                    .id(index)
+                                    .contextMenu {
+                                        Button(action: {
+                                            UIApplication.shared.windows.filter({$0.isKeyWindow})
+                                                .first?
+                                                .rootViewController?
+                                                .present(UIActivityViewController(activityItems: [model.data.frames[index].frame], applicationActivities: nil), animated: true)
+                                        }) {
+                                            Label("Share", systemImage: "square.and.arrow.up")
+                                        }
+                                        if model.data.frames.count > 1 {
+                                            Button(action: {
+                                                model.removeImage(index: index)
+                                            }) {
+                                                Label("Delete", systemImage: "delete.left")
+                                            }
+                                        }
+                                    }
+                                    .padding(.top, 40)
+                                    .padding(.bottom, 40 - 15)
+                            }
+                        }
+                        .onChange(of: model.data.frames.count) { _ in
+                            withAnimation {
+                                proxy.scrollTo(model.data.frames.count > 1 ? 1 : 0, anchor: .center)
+                            }
+                        }
                     }
+                    .padding(.horizontal, 40)
                 }
-                .padding(.top, 40)
-                .padding(.bottom, 40 - 15)
+                .transition(.scale(scale: 0.8).combined(with: .opacity))
                 Spacer()
             }
             HStack {
@@ -116,12 +146,8 @@ struct Interface: View {
                 }
                 Spacer()
                 Button(action: {
-                    if !model.data.isPlaced {
-                        model.updateScenes()
-                    } else {
-                        model.data.isFlashlight = false
-                        toggleTorch(on: model.data.isFlashlight)
-                    }
+                    model.data.isFlashlight = false
+                    toggleTorch(on: model.data.isFlashlight)
                     if model.data.isAugmenting {
                         withAnimation {
                             model.data.isBlurred.toggle()
@@ -155,6 +181,8 @@ struct Interface: View {
                     }
                     .frame(width: 70, height: 70)
                 }
+                .opacity(model.data.selected == 0 ? 1/5 : 1)
+                .disabled(model.data.selected == 0)
                 Spacer()
                 if model.data.isPlaced {
                     Button(action: {
@@ -245,6 +273,7 @@ struct Interface: View {
                                 .frame(width: 100, height: 100)
                         }
                     }
+                    .disabled(model.data.selected == 0)
                 }
                 Spacer()
             }
@@ -259,152 +288,4 @@ struct Interface_Previews: PreviewProvider {
         Window(model: Model())
             .previewDevice("iPhone 12 mini")
     }
-}
-
-struct ScrollStack<Content: View>: View {
-    
-    // input properties
-    
-    var items: Int
-    var direction: Edge.Set = .horizontal
-    var size: CGFloat = 280
-    var spacing: CGFloat = 28
-    @Binding var selection: Int
-    @ViewBuilder var content: Content
-    
-    // computed properties
-    
-    var contentSize: CGFloat {
-        CGFloat(items) * size + CGFloat(items - 1) * spacing
-    }
-    var screenWidth: CGFloat {
-        UIScreen.main.bounds.width
-    }
-    var screenHeight: CGFloat {
-        UIScreen.main.bounds.height
-    }
-    var initialOffset: CGFloat {
-        if direction == .horizontal {
-            return (contentSize/2.0) - (screenWidth/2.0) + ((screenWidth - size) / 2.0)
-        } else {
-            return (contentSize/2.0) - (screenHeight/2.0) + ((screenHeight - size) / 2.0)
-        }
-    }
-    
-    // states
-    
-    @State var scrollOffset: CGFloat = 0
-    @State var dragOffset: CGFloat = 0
-    
-    var body: some View {
-        
-        ZStack {
-            if direction == .horizontal {
-                HStack(spacing: spacing) {
-                    content
-                }
-            } else {
-                VStack(spacing: spacing) {
-                    content
-                }
-            }
-        }
-        .onAppear {
-            scrollOffset = initialOffset
-        }
-        .offset(x: direction == .horizontal ? scrollOffset + dragOffset : 0, y: direction == .horizontal ? 0 : scrollOffset + dragOffset)
-        .gesture(
-            DragGesture()
-                .onChanged({ event in
-                    dragOffset = direction == .horizontal ? event.translation.width : event.translation.height
-                })
-                .onEnded({ event in
-                    
-                    if direction == .horizontal {
-                        
-                        // Scroll to where user dragged
-                        scrollOffset += event.translation.width
-                        dragOffset = 0
-                        
-                        // Now calculate which item to snap to
-                        let contentSize: CGFloat = CGFloat(items) * size + CGFloat(items - 1) * spacing
-                        let screenWidth = UIScreen.main.bounds.width
-                        
-                        // Center position of current offset
-                        let center = scrollOffset + (screenWidth / 2.0) + (contentSize / 2.0)
-                        
-                        // Calculate which item we are closest to using the defined size
-                        var index = (center - (screenWidth / 2.0)) / (size + spacing)
-                        
-                        // Should we stay at current index or are we closer to the next item...
-                        if index.remainder(dividingBy: 1) > 0.5 {
-                            index += 1
-                        } else {
-                            index = CGFloat(Int(index))
-                        }
-                        
-                        // Protect from scrolling out of bounds
-                        index = min(index, CGFloat(items) - 1)
-                        index = max(index, 0)
-                        
-                        // Set final offset (snapping to item)
-                        let newOffset = index * size + (index - 1) * spacing - (contentSize / 2.0) + (screenWidth / 2.0) - ((screenWidth - size) / 2.0) + spacing
-                        
-                        // Animate snapping
-                        withAnimation {
-                            scrollOffset = newOffset
-                        }
-                        
-                        // Update selection
-                        withAnimation {
-                            selection = items - Int(index) - 1
-                        }
-                        
-                    } else {
-                        
-                        // Scroll to where user dragged
-                        scrollOffset += event.translation.height
-                        dragOffset = 0
-                        
-                        // Now calculate which item to snap to
-                        let contentSize: CGFloat = CGFloat(items) * size + CGFloat(items - 1) * spacing
-                        let screenHeight = UIScreen.main.bounds.height
-                        
-                        // Center position of current offset
-                        let center = scrollOffset + (screenHeight / 2.0) + (contentSize / 2.0)
-                        
-                        // Calculate which item we are closest to using the defined size
-                        var index = (center - (screenHeight / 2.0)) / (size + spacing)
-                        
-                        // Should we stay at current index or are we closer to the next item...
-                        if index.remainder(dividingBy: 1) > 0.5 {
-                            index += 1
-                        } else {
-                            index = CGFloat(Int(index))
-                        }
-                        
-                        // Protect from scrolling out of bounds
-                        index = min(index, CGFloat(items) - 1)
-                        index = max(index, 0)
-                        
-                        // Set final offset (snapping to item)
-                        let newOffset = index * size + (index - 1) * spacing - (contentSize / 2.0) + (screenHeight / 2.0) - ((screenHeight - size) / 2.0) + spacing
-                        
-                        // Animate snapping
-                        withAnimation {
-                            scrollOffset = newOffset
-                        }
-                        
-                        // Update selection
-                        withAnimation {
-                            selection = items - Int(index) - 1
-                        }
-                        
-                    }
-                    
-                })
-        )
-        
-    }
-    
 }
