@@ -14,141 +14,75 @@ final class Model: NSObject, ObservableObject {
         var isAugmenting: Bool = false
         var isFlashlight: Bool = false
         var isBlurred: Bool = true
+        var dimension: String = "width"
         var alignment: String = "none"
-        var selected: Int = 0
-        var frames: [Frame] = [Frame(), Frame(), Frame(), Frame(), Frame(), Frame()]
-    }
-    
-    struct Frame: Hashable {
-        var image: UIImage?
+        var image: UIImage = UIImage(named: "sample")!
         var width: CGFloat = 50
         var height: CGFloat = 70
         var border: CGFloat = 0.05
         var frame: UIImage {
+
+            // set frame size
+            let canvas = CGSize(
+                width: image.size.width,
+                height: image.size.width*(height/width)
+            )
             
-            if let image = self.image {
-                
-                // set frame size
-                let canvas = CGSize(
-                    width: image.size.width,
-                    height: image.size.width*(height/width)
+            // begin image
+            UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
+            
+            // set frame front color
+            UIColor.white.setFill()
+            UIRectFill(
+                CGRect(
+                    x: 0, y: 0,
+                    width: canvas.width, height: canvas.height
                 )
-                
-                // begin image
-                UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
-                
-                // set frame front color
-                UIColor.white.setFill()
-                UIRectFill(
-                    CGRect(
-                        x: 0, y: 0,
-                        width: canvas.width, height: canvas.height
+            )
+            
+            // set border size
+            let border = canvas.width * border / 2
+            
+            // fill with gray
+            UIColor.lightGray.setFill()
+            UIRectFill(
+                CGRect(
+                    x: border, y: border,
+                    width: canvas.width - border * 2, height: canvas.height - border * 2
+                )
+            )
+            
+            // set image size
+            var imageSize: CGRect {
+                if image.size.height > canvas.height {
+                    return CGRect(
+                        x: border + (canvas.width - canvas.height*(image.size.width/image.size.height)) / 2,
+                        y: border,
+                        width: canvas.height * (image.size.width/image.size.height) - border * 2,
+                        height: canvas.height - border * 2
                     )
-                )
-                
-                // set border size
-                let border = canvas.width * border / 2
-                
-                // fill with gray
-                UIColor.lightGray.setFill()
-                UIRectFill(
-                    CGRect(
-                        x: border, y: border,
-                        width: canvas.width - border * 2, height: canvas.height - border * 2
-                    )
-                )
-                
-                // set image size
-                var imageSize: CGRect {
-                    if image.size.height > canvas.height {
-                        return CGRect(
-                            x: border + (canvas.width - canvas.height*(image.size.width/image.size.height)) / 2,
-                            y: border,
-                            width: canvas.height * (image.size.width/image.size.height) - border * 2,
-                            height: canvas.height - border * 2
-                        )
-                    } else {
-                        return CGRect(
-                            x: border,
-                            y: border + (canvas.height - canvas.width*(image.size.height/image.size.width)) / 2,
-                            width: canvas.width - border * 2,
-                            height: canvas.width * (image.size.height/image.size.width) - border * 2
-                        )
-                    }
-                }
-                
-                // draw image on frame
-                image.draw(in: imageSize)
-                
-                // end image
-                let newImage = UIGraphicsGetImageFromCurrentImageContext()
-                UIGraphicsEndImageContext()
-                
-                // update transformed image
-                if let newImage = newImage {
-                    return newImage
                 } else {
-                    return image
+                    return CGRect(
+                        x: border,
+                        y: border + (canvas.height - canvas.width*(image.size.height/image.size.width)) / 2,
+                        width: canvas.width - border * 2,
+                        height: canvas.width * (image.size.height/image.size.width) - border * 2
+                    )
                 }
-                
+            }
+            
+            // draw image on frame
+            image.draw(in: imageSize)
+            
+            // end image
+            let newImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            // update transformed image
+            if let newImage = newImage {
+                return newImage
             } else {
-                
-                // set frame size
-                let canvas = CGSize(
-                    width: width*10,
-                    height: width*(height/width)*10
-                )
-                
-                // begin image
-                UIGraphicsBeginImageContextWithOptions(canvas, false, CGFloat(0))
-                
-                // set frame front color
-                UIColor.white.setFill()
-                UIRectFill(
-                    CGRect(
-                        x: 0, y: 0,
-                        width: canvas.width, height: canvas.height
-                    )
-                )
-                
-                // set border size
-                let border = canvas.width * border / 2
-                
-                // fill with gray
-                UIColor.lightGray.setFill()
-                UIRectFill(
-                    CGRect(
-                        x: border, y: border,
-                        width: canvas.width - border * 2, height: canvas.height - border * 2
-                    )
-                )
-                
-                // set image size
-                var imageSize: CGRect {
-                    if height > canvas.height {
-                        return CGRect(
-                            x: border + (canvas.width - canvas.height*(width/height)) / 2,
-                            y: border,
-                            width: canvas.height * (width/height) - border * 2,
-                            height: canvas.height - border * 2
-                        )
-                    } else {
-                        return CGRect(
-                            x: border,
-                            y: border + (canvas.height - canvas.width*(height/width)) / 2,
-                            width: canvas.width - border * 2,
-                            height: canvas.width * (height/width) - border * 2
-                        )
-                    }
-                }
-                
-                // end image
-                let newImage = UIGraphicsGetImageFromCurrentImageContext()
-                UIGraphicsEndImageContext()
-                
-                // update transformed image
-                return newImage!
-                
+                return self.image
             }
             
         }
@@ -192,39 +126,12 @@ final class Model: NSObject, ObservableObject {
         return vc
     }
     
-    func addImage(image: UIImage) {
-        data.frames.insert(Frame(image: image), at: 1)
-        data.selected = 1
-        updateScenes()
-    }
-    
-    func removeImage(index: Int) {
-        data.frames.remove(at: index)
-        data.selected -= 1
-        updateScenes()
-    }
-    
     // source: https://www.hackingwithswift.com/books/ios-swiftui/writing-data-to-the-documents-directory
     
-    func updateScenes() {
-        // delete any existing scenes
-        let fileEnumerator = FileManager().enumerator(at: getDocumentsDirectory(), includingPropertiesForKeys: [])!
-        for file in fileEnumerator {
-            let url = file as! URL
-            if url.pathExtension == "scn" {
-                do {
-                    try FileManager().removeItem(at: url)
-                } catch {
-                    print("file could not be deleted")
-                }
-            }
-        }
-        // write new scenes
-        for (index, frame) in data.frames.enumerated() {
-            let scene = frame.scene
-            let url = getDocumentsDirectory().appendingPathComponent("frame \(index+1).scn")
-            scene!.write(to: url, options: nil, delegate: nil, progressHandler: nil)
-        }
+    func writeScene() {
+        let scene = data.scene
+        let url = getDocumentsDirectory().appendingPathComponent("frame.scn")
+        scene!.write(to: url, options: nil, delegate: nil, progressHandler: nil)
     }
     
 }
@@ -246,7 +153,7 @@ extension Model: VNDocumentCameraViewControllerDelegate {
     }
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
         for i in 0..<scan.pageCount {
-            addImage(image: scan.imageOfPage(at:i))
+            data.image = scan.imageOfPage(at:i)
         }
         controller.dismiss(animated: true, completion: nil)
     }
@@ -282,7 +189,7 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
             if let uiImage = info[.originalImage] as? UIImage {
-                parent.model.addImage(image: uiImage)
+                parent.model.data.image = uiImage
             }
             parent.presentationMode.wrappedValue.dismiss()
         }

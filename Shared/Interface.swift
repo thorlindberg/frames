@@ -2,71 +2,22 @@ import SwiftUI
 import UIKit
 import AVFoundation
 
-/*
-for index in model.data.frames.indices {
-    if Int(contentWidth / CGFloat(model.data.frames.count)) <= 100 {
-        anchor = index
-    }
-}
-*/
-
 struct Interface: View {
     
     @ObservedObject var model: Model
     var device: GeometryProxy
-    var contentWidth: CGFloat {
-        (device.size.width - 80) * CGFloat(model.data.frames.count) + 80 + CGFloat((model.data.frames.count - 1) * 20)
-    }
-    @State var anchor: Int = 0
     
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
             if !model.data.isPlaced {
-                ScrollView(axes: .horizontal, showsIndicators: false, offsetChanged: { print($0) }) {
-                    ScrollViewReader { proxy in
-                        HStack(spacing: 20) {
-                            ForEach(model.data.frames.indices, id: \.self) { index in
-                                Image(uiImage: model.data.frames[index].frame)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: device.size.width - 80)
-                                    .id(index)
-                                    .contextMenu {
-                                        Button(action: {
-                                            UIApplication.shared.windows.filter({$0.isKeyWindow})
-                                                .first?
-                                                .rootViewController?
-                                                .present(UIActivityViewController(activityItems: [model.data.frames[index].frame], applicationActivities: nil), animated: true)
-                                        }) {
-                                            Label("Share", systemImage: "square.and.arrow.up")
-                                        }
-                                        if model.data.frames.count > 1 {
-                                            Button(action: {
-                                                model.removeImage(index: index)
-                                            }) {
-                                                Label("Delete", systemImage: "delete.left")
-                                            }
-                                        }
-                                    }
-                            }
-                        }
-                        .onChange(of: anchor) { _ in
-                            withAnimation {
-                                proxy.scrollTo(anchor, anchor: .center)
-                            }
-                        }
-                        .onChange(of: model.data.frames.count) { _ in
-                            withAnimation {
-                                proxy.scrollTo(model.data.frames.count > 1 ? 1 : 0, anchor: .center)
-                            }
-                        }
-                    }
+                Image(uiImage: model.data.frame)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .padding(.top, 40)
                     .padding(.horizontal, 40)
-                }
-                .padding(.top, 40)
-                .padding(.bottom, 40 - 15)
-                .transition(.scale(scale: 0.8).combined(with: .opacity))
+                    .padding(.bottom, 40 - 15)
+                    .transition(.scale(scale: 0.8).combined(with: .opacity))
                 Spacer()
             }
             HStack {
@@ -108,25 +59,6 @@ struct Interface: View {
                     }
                     .disabled(true)
                     .opacity(0)
-                } else if model.data.selected != 0 {
-                    Button(action: {
-                        withAnimation {
-                            model.removeImage(index: model.data.selected)
-                        }
-                    }) {
-                        ZStack {
-                            ZStack {
-                                Blur(style: .dark)
-                                    .mask(Circle())
-                                Image(systemName: "xmark")
-                            }
-                            .frame(width: 50, height: 50)
-                            Rectangle()
-                                .opacity(0)
-                                .frame(width: 100, height: 100)
-                        }
-                    }
-                    .accentColor(.red)
                 } else {
                     Menu {
                         Button(action: {
@@ -162,8 +94,12 @@ struct Interface: View {
                 }
                 Spacer()
                 Button(action: {
-                    model.data.isFlashlight = false
-                    toggleTorch(on: model.data.isFlashlight)
+                    if !model.data.isPlaced {
+                        model.writeScene() // writes frame to app documents
+                    } else {
+                        model.data.isFlashlight = false
+                        toggleTorch(on: model.data.isFlashlight)
+                    }
                     if model.data.isAugmenting {
                         withAnimation {
                             model.data.isBlurred.toggle()
@@ -197,8 +133,6 @@ struct Interface: View {
                     }
                     .frame(width: 70, height: 70)
                 }
-                .opacity(model.data.selected == 0 ? 1/5 : 1)
-                .disabled(model.data.selected == 0)
                 Spacer()
                 if model.data.isPlaced {
                     Button(action: {
@@ -224,55 +158,55 @@ struct Interface: View {
                             ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
                                 Button(action: {
                                     withAnimation {
-                                        model.data.frames[model.data.selected].width = CGFloat(value)
+                                        model.data.width = CGFloat(value)
                                     }
                                 }) {
-                                    if model.data.frames[model.data.selected].width == CGFloat(value) {
+                                    if model.data.width == CGFloat(value) {
                                         Label("\(value) cm", systemImage: "checkmark")
                                     } else {
                                         Text("\(value) cm")
                                     }
                                 }
-                                .disabled(model.data.frames[model.data.selected].width == CGFloat(value))
+                                .disabled(model.data.width == CGFloat(value))
                             }
                         } label: {
-                            Label("Width - \(Int(model.data.frames[model.data.selected].width)) cm", systemImage: "arrow.left.and.right")
+                            Label("Width - \(Int(model.data.width)) cm", systemImage: "arrow.left.and.right")
                         }
                         Menu {
                             ForEach(Array(stride(from: 10, to: 201, by: 5)), id: \.self) { value in
                                 Button(action: {
                                     withAnimation {
-                                        model.data.frames[model.data.selected].height = CGFloat(value)
+                                        model.data.height = CGFloat(value)
                                     }
                                 }) {
-                                    if model.data.frames[model.data.selected].height == CGFloat(value) {
+                                    if model.data.height == CGFloat(value) {
                                         Label("\(value) cm", systemImage: "checkmark")
                                     } else {
                                         Text("\(value) cm")
                                     }
                                 }
-                                .disabled(model.data.frames[model.data.selected].height == CGFloat(value))
+                                .disabled(model.data.height == CGFloat(value))
                             }
                         } label: {
-                            Label("Height - \(Int(model.data.frames[model.data.selected].height)) cm", systemImage: "arrow.up.and.down")
+                            Label("Height - \(Int(model.data.height)) cm", systemImage: "arrow.up.and.down")
                         }
                         Menu {
                             ForEach(Array(stride(from: 0.01, to: 0.51, by: 0.01)), id: \.self) { value in
                                 Button(action: {
                                     withAnimation {
-                                        model.data.frames[model.data.selected].border = CGFloat(value)
+                                        model.data.border = CGFloat(value)
                                     }
                                 }) {
-                                    if model.data.frames[model.data.selected].border == CGFloat(value) {
+                                    if model.data.border == CGFloat(value) {
                                         Label("\(Int(value * 100)) %", systemImage: "checkmark")
                                     } else {
                                         Text("\(Int(value * 100)) %")
                                     }
                                 }
-                                .disabled(model.data.frames[model.data.selected].border == CGFloat(value))
+                                .disabled(model.data.border == CGFloat(value))
                             }
                         } label: {
-                            Label("Border - \(Int(model.data.frames[model.data.selected].border * 100)) %", systemImage: "square.dashed")
+                            Label("Border - \(Int(model.data.border * 100)) %", systemImage: "square.dashed")
                         }
                     } label: {
                         ZStack {
@@ -289,7 +223,6 @@ struct Interface: View {
                                 .frame(width: 100, height: 100)
                         }
                     }
-                    .disabled(model.data.selected == 0)
                 }
                 Spacer()
             }
@@ -297,47 +230,6 @@ struct Interface: View {
         .padding(.bottom, 15)
     }
     
-}
-
-// source: https://swiftwithmajid.com/2020/09/24/mastering-scrollview-in-swiftui/
-
-private struct ScrollOffsetPreferenceKey: PreferenceKey {
-    static var defaultValue: CGPoint = .zero
-    static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {}
-}
-
-struct ScrollView<Content: View>: View {
-    let axes: Axis.Set
-    let showsIndicators: Bool
-    let offsetChanged: (CGPoint) -> Void
-    let content: Content
-    
-    init(
-        axes: Axis.Set = .vertical,
-        showsIndicators: Bool = true,
-        offsetChanged: @escaping (CGPoint) -> Void = { _ in },
-        @ViewBuilder content: () -> Content
-    ) {
-        self.axes = axes
-        self.showsIndicators = showsIndicators
-        self.offsetChanged = offsetChanged
-        self.content = content()
-    }
-    
-    var body: some View {
-        SwiftUI.ScrollView(axes, showsIndicators: showsIndicators) {
-            GeometryReader { geometry in
-                Color.clear.preference(
-                    key: ScrollOffsetPreferenceKey.self,
-                    value: geometry.frame(in: .named("scrollView")).origin
-                )
-            }
-            .frame(width: 0, height: 0)
-            content
-        }
-        .coordinateSpace(name: "scrollView")
-        .onPreferenceChange(ScrollOffsetPreferenceKey.self, perform: offsetChanged)
-    }
 }
 
 struct Interface_Previews: PreviewProvider {
