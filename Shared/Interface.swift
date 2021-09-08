@@ -18,6 +18,7 @@ struct Interface: View {
                     .padding(.horizontal, 40)
                     .padding(.bottom, 40 - 15)
                     .transition(.scale(scale: 0.8).combined(with: .opacity))
+                    .frame(maxHeight: UIDevice.current.userInterfaceIdiom == .pad ? 600 : nil)
                 Spacer()
             }
             HStack {
@@ -226,6 +227,7 @@ struct Interface: View {
                 }
                 Spacer()
             }
+            .frame(maxWidth: UIDevice.current.userInterfaceIdiom == .pad ? 400 : nil)
         }
         .padding(.bottom, 15)
     }
@@ -235,6 +237,5 @@ struct Interface: View {
 struct Interface_Previews: PreviewProvider {
     static var previews: some View {
         Window(model: Model())
-            .previewDevice("iPhone 12 mini")
     }
 }
